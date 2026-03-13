@@ -1,20 +1,24 @@
 # LaTeX build
-build/
-*.aux
-*.log
-*.out
-*.toc
-*.lof
-*.lot
-*.bcf
-*.run.xml
-*.bbl
-*.blg
-*.synctex.gz
-*.fdb_latexmk
-*.fls
+**/build/
+**/*.aux
+**/*.log
+**/*.out
+**/*.toc
+**/*.lof
+**/*.lot
+**/*.bcf
+**/*.run.xml
+**/*.bbl
+**/*.blg
+**/*.synctex.gz
+**/*.fdb_latexmk
+**/*.fls
+**/*-SAVE-ERROR
 
-# OS and editor
+# PDFs generados (opcional, yo los ignoraría)
+**/tf.pdf
+
+# Editor/OS
+.vscode/
 .DS_Store
 Thumbs.db
-.vscode/
