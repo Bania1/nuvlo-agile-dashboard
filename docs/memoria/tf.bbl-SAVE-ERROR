@@ -1,0 +1,197 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{LOU}{article}{}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{BOE}
+      \field{note}{Última actualización 28 de junio de 2017}
+      \field{title}{Ley Orgánica 6/2001, de 21 de diciembre, de Universidades (LOU)}
+      \field{volume}{307}
+      \field{year}{24 de diciembre de 2001}
+      \field{pages}{49400\bibrangedash 49425}
+      \range{pages}{26}
+      \verb{urlraw}
+      \verb https://www.boe.es/buscar/act.php?id=BOE-A-2001-24515
+      \endverb
+      \verb{url}
+      \verb https://www.boe.es/buscar/act.php?id=BOE-A-2001-24515
+      \endverb
+    \endentry
+    \entry{recTitulosOficiales}{article}{}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{BOE}
+      \field{title}{Resolución de 8 de junio de 2009, de la Secretaría General de Universidades, por la que se da publicidad al Acuerdo del Consejo de Universidades, por el que se establecen recomendaciones para la propuesta por las universidades de memorias de solicitud de títulos oficiales en los ámbitos de la Ingeniería Informática, Ingeniería Técnica Informática e Ingeniería Química}
+      \field{volume}{187}
+      \field{year}{24 de diciembre de 2001}
+      \field{pages}{66699\bibrangedash 66710}
+      \range{pages}{12}
+      \verb{urlraw}
+      \verb https://www.boe.es/diario_boe/txt.php?id=BOE-A-2009-12977
+      \endverb
+      \verb{url}
+      \verb https://www.boe.es/diario_boe/txt.php?id=BOE-A-2009-12977
+      \endverb
+    \endentry
+    \entry{OrtegayGasset1982}{inbook}{}
+      \name{author}{1}{}{%
+        {{hash=a914ad0d9bb725277532c6c0cf31e61b}{%
+           family={Ortega\bibnamedelimb y\bibnamedelima Gasset},
+           familyi={O\bibinitperiod\bibinitdelim y\bibinitperiod\bibinitdelim G\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=96cd458eb360f771cc4183452cccbf71}{%
+           family={Garagorri},
+           familyi={G\bibinitperiod},
+           given={Paulino},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Alianza Editorial}%
+      }
+      \strng{namehash}{a914ad0d9bb725277532c6c0cf31e61b}
+      \strng{fullhash}{a914ad0d9bb725277532c6c0cf31e61b}
+      \strng{bibnamehash}{a914ad0d9bb725277532c6c0cf31e61b}
+      \strng{authorbibnamehash}{a914ad0d9bb725277532c6c0cf31e61b}
+      \strng{authornamehash}{a914ad0d9bb725277532c6c0cf31e61b}
+      \strng{authorfullhash}{a914ad0d9bb725277532c6c0cf31e61b}
+      \strng{editorbibnamehash}{96cd458eb360f771cc4183452cccbf71}
+      \strng{editornamehash}{96cd458eb360f771cc4183452cccbf71}
+      \strng{editorfullhash}{96cd458eb360f771cc4183452cccbf71}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{chapter}{Misión de la Universidad}
+      \field{title}{Obras de J. Ortega y Gasset}
+      \field{year}{1982}
+      \field{pages}{313\bibrangedash 353}
+      \range{pages}{41}
+    \endentry
+    \entry{DatosMECD}{online}{}
+      \name{author}{1}{}{%
+        {{hash=e3377c2ce19519e0455a900b809b9790}{%
+           family={Ministerio\bibnamedelimb de\bibnamedelima Educación},
+           familyi={M\bibinitperiod\bibinitdelim d\bibinitperiod\bibinitdelim E\bibinitperiod},
+           given={Cultura\bibnamedelimb y\bibnamedelima Deporte},
+           giveni={C\bibinitperiod\bibinitdelim y\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{e3377c2ce19519e0455a900b809b9790}
+      \strng{fullhash}{e3377c2ce19519e0455a900b809b9790}
+      \strng{bibnamehash}{e3377c2ce19519e0455a900b809b9790}
+      \strng{authorbibnamehash}{e3377c2ce19519e0455a900b809b9790}
+      \strng{authornamehash}{e3377c2ce19519e0455a900b809b9790}
+      \strng{authorfullhash}{e3377c2ce19519e0455a900b809b9790}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Datos y Cifras del Sistema Universitario Español 2015-2016}
+      \field{urlday}{18}
+      \field{urlmonth}{11}
+      \field{urlyear}{2017}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.mecd.gob.es/servicios-al-ciudadano-mecd/estadisticas/educacion/universitaria/datos-cifras.html
+      \endverb
+      \verb{url}
+      \verb https://www.mecd.gob.es/servicios-al-ciudadano-mecd/estadisticas/educacion/universitaria/datos-cifras.html
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+
+\refsection{1}
+  \datalist[entry]{none/global//global/global}
+    \entry{BuzzFeedNews}{online}{}
+      \name{author}{1}{}{%
+        {{hash=ff0aabbef046fe5c00ccb7b34a52a0a5}{%
+           family={BuzzFeedNews},
+           familyi={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{ff0aabbef046fe5c00ccb7b34a52a0a5}
+      \strng{fullhash}{ff0aabbef046fe5c00ccb7b34a52a0a5}
+      \strng{bibnamehash}{ff0aabbef046fe5c00ccb7b34a52a0a5}
+      \strng{authorbibnamehash}{ff0aabbef046fe5c00ccb7b34a52a0a5}
+      \strng{authornamehash}{ff0aabbef046fe5c00ccb7b34a52a0a5}
+      \strng{authorfullhash}{ff0aabbef046fe5c00ccb7b34a52a0a5}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Fact-Checking Facebook Politics Pages}
+      \field{urlday}{9}
+      \field{urlmonth}{6}
+      \field{urlyear}{2020}
+      \field{year}{2016}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/BuzzFeedNews/2016-10-facebook-fact-check/
+      \endverb
+      \verb{url}
+      \verb https://github.com/BuzzFeedNews/2016-10-facebook-fact-check/
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+
+\refsection{3}
+  \datalist[entry]{none/global//global/global}
+    \entry{PythonSF}{online}{}
+      \name{author}{1}{}{%
+        {{hash=9688a568902e4b07b60557b566bdd820}{%
+           family={Foundation},
+           familyi={F\bibinitperiod},
+           given={Python\bibnamedelima Software},
+           giveni={P\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{9688a568902e4b07b60557b566bdd820}
+      \strng{fullhash}{9688a568902e4b07b60557b566bdd820}
+      \strng{bibnamehash}{9688a568902e4b07b60557b566bdd820}
+      \strng{authorbibnamehash}{9688a568902e4b07b60557b566bdd820}
+      \strng{authornamehash}{9688a568902e4b07b60557b566bdd820}
+      \strng{authorfullhash}{9688a568902e4b07b60557b566bdd820}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Python (Versión 3.7) [Software]}
+      \field{urlday}{2}
+      \field{urlmonth}{7}
+      \field{urlyear}{2020}
+      \field{year}{2018}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb http://www.python.org
+      \endverb
+      \verb{url}
+      \verb http://www.python.org
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

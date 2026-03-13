@@ -1,0 +1,103 @@
+\chapter{Resultados detallados de la experimentación}\label{anexo-resultados}
+\begin{refsection} % Para la bibliografía propia de este anexo
+
+En este apéndice se incluyen una serie de tablas que se ha considerado que, incluidas dentro del capítulo de experimentación, dificultaban su lectura y la comprensión de la estructura experimental.
+
+Estas tablas describen...
+
+\begin{itemize}
+    \item Buzzfeed~\cite{BuzzFeedNews}: tablas~\ref{tab:BuzzfeedRL} a~\ref{tab:BuzzfeedRL}.
+    \item Politifact: ...
+\end{itemize}
+
+\begin{table}[hbtp]
+\caption{Resultados de regresión logística en Buzzfeed}
+\label{tab:BuzzfeedRL}
+\begin{tabular}{m{.12\textwidth}m{.15\textwidth}m{.14\textwidth}m{.12\textwidth}m{.12\textwidth}m{.22\textwidth}}
+\toprule
+ Fichero & Balanceo & \% Clase mayoritaria & Acc. (\%) entrenamiento & Acc. (\%) test \\
+\midrule
+ \rowcolor{lightback}\nolinkurl{fase\_1\_y\_2\_data.csv} & Sin balanceo & 84 & 85.7  ± 0.6 & 84.0  ± 2.7 \\
+ \rowcolor{lightback}\nolinkurl{fase\_1\_y\_2\_data.csv} & Upsample & 50 en train y 84 en test & 79.8  ± 1.8 & 72.7  ± 4 \\
+ \rowcolor{lightback}\nolinkurl{fase\_1\_y\_2\_data.csv} & Downsample & 50 en train y 84 en test & 79.0  ± 3.3 & 71.1  ± 3.5 \\
+ \bfseries\nolinkurl{fase3\_data\_1\_Grams.csv} & \bfseries Sin balanceo & \bfseries84 & \bfseries98.5  ± 1.8 & \bfseries86.4  ± 4.1 \\
+ \bfseries\nolinkurl{fase3\_data\_1\_Grams.csv} & \bfseries Upsample & \bfseries 50 en train y 84 en test & \bfseries99.5  ± 0.1 & \bfseries86.3  ± 3.4 \\
+ \nolinkurl{fase3\_data\_1\_Grams.csv} & Downsample & 50 en train y 84 en test & 95.4  ± 1.03 & 74.7  ± 6.4 \\
+ \rowcolor{lightback}\nolinkurl{fase3\_data\_2\_Grams.csv} & Sin balanceo & 84 & 99.2  ± 0.2 & 85.0  ± 5.2 \\
+ \rowcolor{lightback}\nolinkurl{fase3\_data\_2\_Grams.csv} & Upsample & 50 en train y 84 en test & 99.5  ± 0.001 & 84.7  ± 4.3 \\
+ \rowcolor{lightback}\bfseries\nolinkurl{fase3\_data\_2\_Grams.csv} & \bfseries Downsample & \bfseries50 en train y 84 en test & \bfseries94.4  ± 7.3 & \bfseries77.6  ±  2.5 \\
+ \nolinkurl{fase3\_data\_3\_Grams.csv} & Sin balanceo & 84 & 88.7  ± 7.2 & 84.3  ± 1.7 \\
+ \nolinkurl{fase3\_data\_3\_Grams.csv} & Upsample & 50 en train y 84 en test & 99.2  ± 0.4 & 81.8  ± 3.1 \\
+ \nolinkurl{fase3\_data\_3\_Grams.csv} & Downsample & 50 en train y 84 en test & 93.3  ± 8.3 & 77.6  ± 5.8 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Ejemplo de estilo para poner dos figuras en paralelo:
+
+\begin{figure}
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=0.85\textwidth]{access.png}
+        \caption{Pantalla de acceso.}
+        \label{fig:accessScreen}
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.45\linewidth}
+        \centering
+        \includegraphics[width=0.85\textwidth]{profile.png}
+        \caption{Pantalla de perfil de usuario.}
+        \label{fig:myProfileScreen}
+    \end{minipage}
+\end{figure}
+
+
+Ejemplo para casos de uso:
+
+\begin{table}
+    \centering
+    \scalebox{0.8}{
+        \begin{tabular}{ m{8em} m{33em} } 
+        \textbf{Caso de Uso} &  Nombre del caso de uso \\
+        \hline
+        \textbf{Actores} & Usuario no registrado. \\
+        \hline
+        \textbf{Descripción} & El objetivo del caso de uso es que cualquier usuario pueda registrarse para hacer uso de la aplicación. \\
+        \hline
+        \textbf{Precondición} & El usuario no debe estar previamente registrado en la aplicación. \\  
+        \hline
+        \textbf{Flujo principal} & 
+            \begin{enumerate}
+                \item El Caso de Uso comienza cuando el usuario selecciona la opción de registro.
+                \item La Aplicación solicita al usuario un email y una contraseña.
+                \item El usuario introduce el email.
+                \item El usuario introduce la contraseña.
+                \item La aplicación valida que el email y la contraseña es correcto.
+                \item \textbf{Mientras} la contraseña o email no sean correctos.
+                    \begin{enumerate}
+                    \item La aplicación solicita al usuario un email.
+                    \item El usuario introduce el email.
+                    \item La aplicación solicita al usuario una contraseña.
+                    \item El usuario introduce la contraseña.
+                    \item La aplicación valida los datos son correctos.
+                    \end{enumerate}
+                \item El usuario selecciona la opción de finalizar registro
+                \item La aplicación informa al usuario que se ha registrado correctamente.
+            \end{enumerate} \\
+        \hline
+        \textbf{Postcondición} & El usuario se ha registrado aplicación. \\
+        \hline
+        \textbf{Flujo Alternativo} & Cancelar: el usuario cancela el registro y vuelve a la página de Inicio. \\
+        \hline
+        \end{tabular}
+    }
+    \caption{CU01: Registro en la aplicación}
+    \label{table:CU01}
+\end{table}
+
+
+
+\phantomsection
+\addcontentsline{toc}{section}{Referencias}
+\printbibliography[heading=subbibliography]
+\end{refsection}

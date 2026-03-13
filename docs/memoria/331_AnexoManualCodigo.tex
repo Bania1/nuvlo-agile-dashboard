@@ -1,0 +1,106 @@
+\chapter{Manual de código fuente}\label{manual-codigo}
+\begin{refsection}
+
+\section{Contenidos del manual de código fuente}
+
+\begin{itemize}
+    \item Introducción del documento, explicando: a que proyecto corresponde, que lenguajes de programación, entornos, o librerías se han utilizado, y todo aquello que tenga relación con como se ha creado y organizado el código fuente. (obligatorio)
+    \item Instrucciones de compilación, empaquetado, actualización... (si proceden)
+    \item Instrucciones de instalación y desinstalación (si procede aquí en vez de en el manual de usuario)
+    \item Descripción de la organización del código en archivos y como se corresponde con la organización modular explicada en la memoria técnica. (obligatorio)
+    \item Sí ayuda a la comprensión de la organización del código y se considera útil, documentación generada por sistemas automáticos de documentación, o breve explicación y enlace a la web (ej. \href{http://www.uco.es/grupos/ayrna/jclec/javadoc/index.html}) donde se puede encontrar esta documentación. (si procede)
+    \item Todos los ficheros con el código fuente de la aplicación (ej. código fuente .py, código fuente .c, cabeceras .h, Makefile, configure, ficheros de creación de bases de datos .sql, páginas web .html, código fuente .php, ficheros de carga de datos básicos, scripts del sistema operativo .sh....) (obligatorio, puede ser en repositorio accesible)
+\end{itemize}
+
+En vez de preparar todo el código con estilo de impresión, es adecuado incluir el código en un repositorio donde el tribunal pueda consultarlo indicandolo en este manual. En ese caso, ya no es necesario poner el código en este manual pero sí las explicaciones de su estructura. Ejemplo:
+
+... todo el código aquí descrito se puede encontrar en el siguiente repositorio:
+\url{https://gitlab.com/angelpavon97/fake-news-detector/}
+
+
+\section{Código fuente de otros autores}
+
+No se debe incluir código fuente que no haya sido desarrollado por el autor para el proyecto. 
+\begin{itemize}
+    \item Si hay ficheros completos tomados de otras fuentes que son necesarios para el proyecto, estos deberán ser referenciados y explicar como se integran en el proyecto.
+    \item Si se han realizado modificaciones a código de otras fuentes, cuando se incluyan estos ficheros modificados, se deberá explicar claramente su origen y el alcance de las modificaciones realizadas. Todo esto debe quedar muy claro, de forma que no dé lugar a duda sobre la intención del autor al incluirlo en el manual.
+    \item Nota: en cualquier caso, el autor debe recordar que debe cumplir con toda la legislación sobre derechos de propiedad intelectual.
+\end{itemize}
+
+
+\section{¿Qué va a mirar el tribunal en tú código?}
+
+Puede ver que el código esté desarrollado de forma adecuada. Por ejemplo, en una ocasión vi una secuencia de una centena de instrucciones if encadenadas que claramente deberían haber sido sustituidas por un vector de datos y el acceso al mismo. Otra cosa que se puede es si hay valores insertados en el código que deberían ser configuraciones (\textit{hard-coded}). Si has hecho un código con un mínimo de cuidado, no es algo que deba preocuparte.
+
+También puede mirar que el estilo de código sea consistente (igual a lo largo de todo el código) y adecuado (nombres de variables descriptivos, no ofuscado...). Además, que se incluyen comentarios adecuados, que ayuden entender rápidamente el código y trabajar con él, a la vez que se siguen las reglas de Ottinger:
+\begin{enumerate}
+\item Comments are for things that cannot be expressed in code.
+\item Comments which restate code must be deleted.
+\item If the comment says what the code could say, then the code must change to make the comment redundant.
+\end{enumerate}
+
+
+\section{Estilo del texto de los ficheros de código fuente}
+
+Es importante que para incluir el código fuente se sigan algunas normas básicas. Se debe recordar siempre que la finalidad es facilitar el estudio y comprensión del código. Por tanto, éste deberá aparecer de la forma más parecida posible a como aparece en el editor y es mejor tener la mayor cantidad posible de código en cada página para reducir al máximo el tener que andar pasando páginas hacia atrás y hacia delante. No de debe en ningún caso usar un estilo con el objeto de engordar el código y que aparente mayor volumen de trabajo (en muchos casos esto consigue justo lo contrario).
+
+El estilo para el código fuente debería:
+\begin{itemize}
+    \item Tener espaciado entre líneas y párrafos a cero.
+    \item Fuentes de tamaño fijo o monoespacio (todos los caracteres ocupan lo mismo). Esto hace que los indentados para indicar los bloques de código se vean bien y que todo el código se alinee igual que en el editor.
+    \item Un tamaño de fuente pequeño, para evitar, o al menos reducir, que las líneas no quepan y se pasen a la siguiente. Como el código no va a ser leído de forma continuada, no importa que la letra tenga un tamaño más reducido que en el resto de la documentación, pero debe ser un tamaño legible.
+\end{itemize}
+
+También es posible jugar con el formato (reducir margenes, ponerlo a doble columna) para que ocupe menos páginas.
+A continuación se mostrarán ejemplos de código estilo.
+
+
+Ejemplo de cita al lenguaje de programación:
+
+... se ha realizado con el lenguaje de programación Python~\cite{PythonSF} ...
+
+
+Ejemplo de un listado de directorio:
+
+% Quizá sea bueno meterlo en un float. No corta bien en dos páginas.
+{\footnotesize
+\setlength{\DTbaselineskip}{10pt}
+\dirtree{%
+.1 BaseDeDatosEjemplo.
+.2 data.
+.3 True.
+.4 1.txt.
+.4 2.txt.
+.4 3.txt.
+.3 False.
+.4 1.txt.
+.4 2.txt.
+.4 3.txt.
+.2 BaseDeDatosEjemplo\_1grams.csv.
+.2 BaseDeDatosEjemplo\_2grams.csv.
+.2 BaseDeDatosEjemplo\_3grams.csv.
+.2 BaseDeDatosEjemplo\_reduced\_1grams.csv.
+.2 BaseDeDatosEjemplo\_reduced\_2grams.csv.
+.2 BaseDeDatosEjemplo\_reduced\_3grams.csv.
+.2 fase1\_data.csv.
+.2 fase2\_data.csv.
+.2 fase3\_data\_1\_Grams.csv.
+.2 fase3\_data\_2\_Grams.csv.
+.2 fase3\_data\_3\_Grams.csv.
+.2 fase\_1\_y\_2\_data.csv.
+}
+}
+
+Ejemplo de listado código fuente Python:
+
+\lstinputlisting[language=Python, style=py, extendedchars=true]{code/extract_news-buzz.py}
+
+Y un HTML:
+
+\lstinputlisting[language=HTML, style=htmlcssjs]{code/layout.html}
+
+
+\phantomsection
+\addcontentsline{toc}{section}{Referencias}
+\printbibliography[heading=subbibliography]
+\end{refsection}

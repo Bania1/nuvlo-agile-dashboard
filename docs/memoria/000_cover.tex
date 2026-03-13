@@ -1,0 +1,88 @@
+%------------- Cover --------------
+% XXX
+% - Cambia a el escudo de tu titulación comentando y descomentando las líneas correspondientes
+% - Cambia todos los textos que están entre paréntesis por lo que corresponda en tu proyecto
+% Para ver cambios de PDF >> Código haz Ctrl + click en el texto del PDF
+% Para ver cambios de Código >> PDF haz Ctrl + Alt + j en el texto del código
+%----------------------------------
+\thispagestyle{empty}
+
+% Background images
+\begin{tikzpicture}[remember picture, overlay]
+  % Top
+  \node [anchor=north east, inner sep=0pt]  at (current page.north east)
+     {\includegraphics[height=5cm]{EPSCtopRightCorner.pdf}};
+  % Bottom
+  \node [anchor=south west, inner sep=0pt]  at (current page.south west)
+     {\includegraphics[height=5cm]{EPSCbottomLeftCorner.pdf}};
+  \node (uco) [anchor=south east, inner sep=0pt, xshift=-10mm, yshift=10mm]  at (current page.south east)
+        {\includegraphics[height=2cm]{LogotipoUCO.pdf}};
+  \node [anchor=south east, inner sep=0pt, xshift=-10mm]  at (uco.south west)
+% Uncomment the chosen logo and comment the others:
+        {\includegraphics[height=2cm]{emblema-ing-informatica.pdf}};
+%        {\includegraphics[height=2cm]{emblema-ing-industrial.pdf}};
+%        {\includegraphics[height=2cm]{emblema-ing-tec-industrial.pdf}};
+\end{tikzpicture}
+
+
+\begin{center}
+\fontfamily{\sfdefault}\selectfont
+\vspace*{2cm}
+
+\vfill
+\vfill
+\includegraphics[width=12.5cm]{LogotipoEPSC.pdf}
+\vfill
+\vfill
+
+\large\textbf{\color{epsc:medio}
+  TRABAJO FIN DE GRADO
+}
+\vfill
+
+\Large\textbf{\color{epsc:verde}
+  Grado en Ingeniería Informática \\ Mención en Ingeniería del Sofware
+}
+\vfill
+\vfill
+
+\Huge\textbf{\color{epsc:oscuro}
+  Sistema de Visualización de Métricas
+para Equipos Ágiles con
+Scrum/Kanban
+}
+\vfill
+\vfill
+
+\large\textbf{\color{epsc:medio}
+  (Manual técnico, manual de usuario y manual de código)
+}
+\vfill
+
+
+\large{\color{epsc:oscuro}Autor}\\
+\textbf{\color{epsc:medio}{ Ángel Eduardo Bauste De Nicolais }}
+\vfill
+
+\large{\color{epsc:oscuro} Director(es) }\\
+\textbf{\color{epsc:medio} María Luque Rodríguez \\ Francisco Gracia Ahufinger }
+\vfill
+
+
+
+\textbf{\color{epsc:verde} \monthyeardate\today}
+\vfill
+\vfill
+\vspace{2.7cm}
+\end{center}
+
+
+%-------------------------------------------------------------------------------------------------------
+\clearpage
+
+\thispagestyle{empty}
+\pagecolor{white}
+
+\cleardoublepage
+%-------------------------------------------------------------------------------------------------------
+

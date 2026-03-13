@@ -1,0 +1,66 @@
+\chapter{Introducción}
+\label{Introduccion}
+
+% Ejemplo para un estilo más elaborado con un mini-índice de contenidos por capítulo. Descomentar para probar.
+% \textsl{Resumen o introducción del capítulo ... }
+% \bigskip
+% \minitoc
+% \pagebreak
+
+El objetivo de esta plantilla es simplemente facilitar, a aquellos que lo deseen, la tarea de dar formato a los documentos de su proyecto o trabajo fin de grado o máster. No pretende ser una guía de estilo de obligado cumplimiento que dé uniformidad al estilo de los proyectos fin de carrera. El estilo puede ser adaptado a gusto de cada autor. Por ejemplo, un requisito que sí impone el reglamento es que los manuales vayan impresos a doble cara. El estilo de esta plantilla lo resuelve con páginas izquierda y derecha distintas, con el número de página en el extremo exterior correspondiente (excepto en páginas iniciales de capítulo) y un mayor margen en el centro para la encuadernación. Sin embargo, otra forma válida de resolver esto que puedes elegir es que la numeración de páginas siempre vaya en el centro de la página. También habrá quien prefiera poner el número de página en otro sitio, eliminar el pie o el encabezado y dejar más espacio para el texto. Las posibilidades creativas son infinitas.
+
+Esta plantilla está hecha pensando en proyectos de ingeniería, pero la mayor parte de los estilos, formatos e ideas son validas para los trabajos fin de carrera de cualquier titulación. Son más específicos para los estudiantes de informática los estilos sugeridos en los apéndices~\ref{manual-usuario} (\nameref{manual-usuario}) y~\ref{manual-codigo} (\nameref{manual-codigo}).
+
+En los siguientes apartados, hay ejemplos comentados de cosas diversas como citas a la bibliografía, figuras, tablas... que esperamos os puedan ayudar con lo más importante pero esta plantilla no pretende ser un manual de Latex. Hay mucha documentación sobre Latex de bastante calidad que podéis consultar.
+
+
+\section{Primera sección}
+
+Ejemplo de un texto que lleva un término en otro idioma o que se quiere destacar. Por ejemplo, cuando mencionamos el \emph{front-end} de una aplicación web.
+
+Aquí por ejemplo citamos una Ley~\cite{LOU}, cuya principal modificación...
+
+\subsection{Se pueden hacer subsecciones}
+
+Podemos enumerar una serie de cosas:
+\begin{itemize}
+\item Coherente con las aptitudes y circunstancias de las personas y la disponibilidad de los medios.
+\item Detallado de forma suficientemente extensa y clara como para ponerlo en funcionamiento.
+\item En concordancia con...
+\item Ilustrado.
+\end{itemize}
+
+Ejemplo de un texto con una referencia a una tabla y la tabla: 
+
+En la tabla \ref{tab:GIIestructura}, se detalla la distribución del plan de estudios en créditos ECTS por cada uno de los tipos de materia.
+
+\begin{table}
+\caption{Estructura de las enseñanzas de los GII~\cite{recTitulosOficiales}}
+\label{tab:GIIestructura}
+\begin{tabular}{lc}
+\toprule
+\rowcolor{back} \textit{Módulo mínimo obligatorio} & \textit{\small ECTS} \\
+\midrule
+Formación básica                   & 60 \\
+Comunes a toda la rama informática & 60 \\
+Tecnología específica              & 48 \\
+Proyecto fin de grado              & 12 \\
+\midrule
+\rowcolor{lightback} \multicolumn{1}{r}{Total del mínimo obligado:} & 180 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\section{Otra sección en la que se explica la estructura de la memoria}
+
+Este Proyecto se organiza, por tanto, en siete capítulos:
+\begin{enumerate}
+\item La presente introducción.
+\item Objetivos detallados, donde se describe ...
+\item ...
+\end{enumerate}
+
+\subsection{Unas secciones de relleno para ver el estilo completo}
+
+\lipsum[1-29]

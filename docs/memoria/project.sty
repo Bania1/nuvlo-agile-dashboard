@@ -1,0 +1,247 @@
+% Style for long documents in Spanish (or English by changing lines with comment code: SPA) 
+% © Antonio Araúzo-Azofra 2016-2025
+\usepackage[utf8]{inputenc}
+\usepackage[main=spanish,english]{babel} % (SPA) International, rec. by RAE: http://www.tex-tipografia.com/marca_decimal.html
+\babelprovide{spanish}
+
+% FONTs
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}           % Needed for new symbols like € ?
+%\usepackage{newtxtext}  % Fuente mejorada para Times
+
+%\renewcommand*\rmdefault{pplx} % Palatino with lining (uppercase) nums
+\renewcommand{\rmdefault}{ptm}  % or {ppl}?
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{pcr}
+
+\usepackage[scaled]{berasans} % Font for the cover similar to Vera 33
+%\renewcommand*\familydefault{\sfdefault}  %% To use as the base font of the document is to be sans serif
+
+
+
+% PAGE STYLE
+\usepackage[twoside,bindingoffset=9mm,headheight=16pt,margin=25mm]{geometry} %,verbose,showframe
+\usepackage{fancyhdr} % Page headings
+\pagestyle{fancy}
+
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter{}. #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection{}. #1}}
+
+\fancyhf{}
+\fancyhead[RO]{\mbox{\hfil{\color{lightline}\scriptsize\MakeUppercase{\rightmark}}\rlap{\kern2em\color{lightline}\textbf{\thepage}}}}
+\fancyhead[LE]{\mbox{\llap{\textbf{\color{lightline}\thepage}\kern2em}\color{lightline}\scriptsize\MakeUppercase{\leftmark}\hfil}}
+
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\addtolength{\headheight}{0.5pt}
+
+
+% TABLE OF CONTENTS including indexes
+\usepackage{tocbibind}
+
+
+% BIBLIOGRAPHY
+\usepackage[style=numeric,sorting=none,subentry,backend=biber]{biblatex}
+\addbibresource{biblio.bib}
+%\addbibresource{../temas.bib}
+\usepackage{csquotes} % Nice quotations
+
+
+% TABLES AND FIGURES
+\usepackage{graphicx}
+\usepackage{grffile} % allow files that include a dot in the name
+\graphicspath{ {img/} }
+\usepackage{wrapfig} % figures with text around them
+\usepackage[caption=false]{subfig} % allow subfigures
+\usepackage{booktabs} % professional rules on tables
+%\setlength{\aboverulesep}{0pt} % allow rowcolors with booktabs without the whitespace
+%\setlength{\belowrulesep}{0pt}
+%\setlength{\extrarowheight}{.5ex}
+%\usepackage{array}        % m{} b{} column alignment, used? set to extract CV from SICA
+%\usepackage{supertabular} % for SICA
+%\usepackage{hhline}       % for SICA
+\usepackage{tabularx}     % Auto width paragraph columns X
+\usepackage{multirow}     % Cell spanning rows
+%\usepackage{makecell}    % To force line breaks inside a table cell
+%\usepackage{rotating}    % sidewaystable
+%\usepackage{lscape}      % landscape
+\usepackage{caption}
+\captionsetup[table]{aboveskip=5pt}
+\captionsetup[table]{belowskip=0pt}
+\captionsetup[figure]{aboveskip=5pt}
+\captionsetup[figure]{belowskip=0pt}
+% - Make all tables centered and [htbp]
+\let\originaltable\table
+\let\endoriginaltable\endtable
+\renewenvironment{table}[1][htbp]{%
+  \originaltable[#1]
+  \centering}%
+  {\endoriginaltable}
+% - Make all figures centered and [hbtp]
+\let\originalfigure\figure
+\let\endoriginalfigure\endfigure
+\renewenvironment{figure}[1][hbtp]{%
+  \originalfigure[#1]
+  \centering}%
+  {\endoriginalfigure}
+% - Use "Tabla" instead of "Cuadro" in Spanish (SPA)
+\addto\captionsspanish{%
+  \def\tablename{Tabla}%
+  \def\listtablename{Índice de tablas}%
+}
+% Define a hidden column type to be used in tabular environments
+% to avoid displaing a column without having to remove values manually
+\newcolumntype{H}{>{\setbox0=\hbox\bgroup}c<{\egroup}@{}}
+
+
+% COLOR
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+% Colores EPSC (from Avoco buggy document, to be revised with new style by Aula Software Libre 2020-07-02)
+\definecolor{epsc:oscuro}{HTML}{280091}
+ \definecolor{epsc:medio}{HTML}{4C5CC5}
+ \definecolor{epsc:claro}{HTML}{3FCFD5}
+ \definecolor{epsc:verde}{HTML}{00B299}
+% Colores para estilo (tonos azules)
+\definecolor{lightback}{RGB}{229,240,246}
+     \definecolor{back}{RGB}{205,233,244}
+\definecolor{lightline}{RGB}{56,170,230}
+     \definecolor{line}{RGB}{1,99,161}
+% Colores para estilo (tonos naranjas)
+%\definecolor{lightback}{HTML}{F4E0BF}
+%     \definecolor{back}{HTML}{F3C591}
+%\definecolor{lightline}{HTML}{FCAF5F}
+%     \definecolor{line}{HTML}{ED7900}
+
+
+% LINKS
+\usepackage{nameref} % references to the names of sections
+\usepackage[plainpages=false,pdfpagelabels]{hyperref}
+\hypersetup{%
+  colorlinks=false,% links black when printed
+  linkbordercolor=orange,% internal link borders orange (cites and urls default to green and blue)
+  pdfborderstyle={/S/U/W 1.0}% border style underline of 2pt width
+}
+\urlstyle{rm} % font
+\usepackage{xurl} % allow breaking urls to better fit in lines
+
+% SPACING
+\setlength{\parskip}{0.3cm plus 0.4cm minus 0.1cm} % Entre los párrafos
+\linespread{1.1} % Interlineado
+\emergencystretch 3em % allow more strech, if hyphenation not possible, to avoid words out of the margin, see: https://tex.stackexchange.com/questions/241343/what-is-the-meaning-of-fussy-sloppy-emergencystretch-tolerance-hbadness/241355#241355
+
+
+% FOR blockquotes, based on: https://tex.stackexchange.com/questions/45725/redefining-quote-environment-with-tiny-font-and-double-quote-signs and https://tex.stackexchange.com/questions/59340/how-to-highlight-an-entire-paragraph
+\usepackage{tcolorbox}
+\tcbuselibrary{most}
+%\tcbuselibrary{breakable}
+\renewenvironment{quote}
+               {\begin{tcolorbox}[breakable, enhanced jigsaw, leftright skip=\parindent, boxrule=0.5pt, colback=lightback, colframe=line, arc=6mm]
+                \setlength{\parskip}{3mm plus4mm minus2mm}\sffamily\small\ignorespaces}
+               {\end{tcolorbox}\endlist}
+
+% Color box notes
+\usepackage{etoolbox} % To use \robustify
+\newtcbox{\mynote}{enhanced,nobeforeafter,tcbox raise base,boxrule=0.4pt,top=0mm,bottom=0mm,
+  right=0mm,left=0mm,arc=1pt,boxsep=2pt,before upper={\mdseries\footnotesize},
+  colframe=line,coltext=black,colback=white}
+\robustify{\mynote}
+
+
+% CHAPTER TITLES, based on: https://www.sharelatex.com/learn/Environments#!#Reference_guide
+\makeatletter
+\def\thickhrulefill{\leavevmode \leaders \hrule height 1.2ex \hfill \kern \z@}
+\def\@makechapterhead#1{
+  \vfill
+  \vspace*{5cm plus 10cm minus 4cm}%
+  {\parskip=0cm \parindent=0pt \centering \reset@font
+        \Huge{\color{line} \thickhrulefill\quad
+        \bfseries\textit{\scshape\sffamily\@chapapp{} \thechapter}
+%        \scshape\bfseries {\fontsize{2cm}{2.2cm}\selectfont \thechapter} % \@chapapp{} \textit{
+%        \scshape\bfseries\textit{\fontsize{2cm}{2.2cm}\selectfont\@chapapp{} \thechapter}}
+        \quad \thickhrulefill}
+        \par\nobreak
+        \vspace*{10pt}%
+        \interlinepenalty\@M
+        \hrule
+        \vspace*{10pt}%
+        \Huge \bfseries #1 \par\nobreak
+        \par
+        \vspace*{10pt}%
+        \hrule
+        \bigskip
+  }}
+
+% Symbol of departamento de Ingeniería Rural
+\newcommand{\ingr}{{\tiny\color{blue}\raisebox{0.35ex}{(\raisebox{0.35ex}{$\mathcal{I}$}\hspace{-0.22em}\raisebox{-0.15ex}{$\mathcal{R}$})}}}
+
+
+% ENUMERATIONs and LISTs
+\usepackage{enumitem}
+\setlist[description]{leftmargin=1cm,labelindent=1cm}
+% Para hacer enumerates/itemizes estructurados que se peguen entre ellos y al padre (arriba) y se separen de la siguiente rama (abajo) Uso: \begin{itemize}[structure]
+\SetEnumitemKey{structure}{topsep=2pt plus 2pt,partopsep=0pt plus 1pt, after=\bigskip, itemsep=0pt plus 2pt, parsep=0pt plus 1pt}
+
+% TOC
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{2}
+% Make subsubsection (not numbered) to be indented (without tocloft)
+%\makeatletter
+%\renewcommand*\l@subsubsection{\@dottedtocline{3}{9.0em}{4.1em}}
+%\makeatother
+% Make subsubsection (not numbered) to be indented (with tocloft)
+\usepackage[subfigure,titles]{tocloft}
+\makeatletter
+\cftsetindents{subsubsection}{9em}{4.1em}
+\renewcommand\cftsubsubsecfont{\footnotesize}
+%\setlength{\cftbeforesubsubsecskip}{-1ex} % This reduces separation among subsections but it breaks homogenity and gives problems with Latex adjustments to make chapter indexes start in new page.
+\cftsetindents{figure}{2em}{3em} % Avoid figures numbered xx.xx (four digits) step over text at figure index
+\cftsetindents{table}{2em}{3em}  % The same for tables
+\makeatother
+% To create toc on every chapter
+%\usepackage{minitoc}
+%\usepackage{silence} % Avoid the following useless warnings about harmless hyperref interaction with minitoc
+%\WarningFilter{minitoc(hints)}{W0023}
+%\WarningFilter{minitoc(hints)}{W0028}
+%\WarningFilter{minitoc(hints)}{W0030}
+
+
+% MATH
+\usepackage{amssymb}
+%\DeclareMathSizes{12}{14}{10}{8} % Change the size of math, equations, script style and scriptscript style (first argument is the document text size). However, it has the problem of not rescaling \text{} so it leads to strange formulas
+% https://tex.stackexchange.com/a/160440/26430
+\usepackage{environ}
+\NewEnviron{largeequation}{
+    \begin{equation}
+    \scalebox{1.3}{$\displaystyle \BODY$}
+    \end{equation}
+}
+
+
+
+% OTHER
+\usepackage{chronology} % To create timelines
+%\usepackage{gensymb} % To add \degree (no usado, me gusta más \textsuperscript{o})
+
+\usepackage{tikz} % used in cover to place images
+\usepackage{dirtree} % To create Directory tree
+
+\usepackage{datetime} % allow formal date format
+% "Month, YEAR" date format, in spanish with the month uppercased not interfering other dates
+\newcommand\Monthname[1][EMPTY]{
+  \ifnum1=#1Enero\else
+  \ifnum2=#1Febrero\else
+  \ifnum3=#1Marzo\else
+  \ifnum4=#1Abril\else
+  \ifnum5=#1Mayo\else
+  \ifnum6=#1Junio\else
+  \ifnum7=#1Julio\else
+  \ifnum8=#1Agosto\else
+  \ifnum9=#1Septiembre\else
+  \ifnum10=#1Octubre\else
+  \ifnum11=#1Noviembre\else
+  \ifnum12=#1Diciembre\else
+  \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+}
+\newdateformat{monthyeardate}{%
+  \Monthname[\THEMONTH], \THEYEAR}
+

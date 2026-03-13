@@ -1,0 +1,68 @@
+% --------------------------------------------------
+% Plantilla de ejemplo para TFG / TFM
+%  desarrollada por ©Antonio Araúzo-Azofra 2018-2025 
+%  en la EPSC de la Universidad de Córdoba (Spain)
+% --------------------------------------------------
+\documentclass[a4paper,12pt,twoside,final]{book}
+\usepackage{project} % Todos los parámetros del estilo están en project.sty
+\usepackage{listingstyles} % Para incluir código fuente
+\usepackage{lipsum} % Para relleno y ver estilo borrar cuando se quite el lipsum de 011_Introducción.tex
+
+% Descomentar para pruebas con la estructura debería ser 3 (valor por defecto) según las recomendaciones.
+% \setcounter{secnumdepth}{6}
+% \setcounter{tocdepth}{6}
+
+
+\begin{document}
+
+%\dominitoc[n]                % Enable minitoc, with no titles
+%\setcounter{minitocdepth}{1} %  include only sections
+%\setlength{\mtcindent}{40pt} %  adjust indentation
+
+%Height: \the\textheight % Debug: see values of text area
+%Width: \the\textwidth
+
+
+% Info about these commands on the book class or: https://tex.stackexchange.com/a/20547/26430
+\frontmatter
+
+% Pongo los números delante de los ficheros porque así salen ordenados. La idea de las tres cifras
+%  es para permitir meter siempre un fichero en medio y gestionar la estructura.
+%  En XXY, XX es el capítulo y la Y es una posible sección.
+\include{000_cover}
+% XXX incluir pagina de firma
+\include{001_autoria}
+\include{002_resumen}
+\include{005_Agradecimientos}
+%\phantomsection
+%\addcontentsline{toc}{section}{Índice general}
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+% Para editar/compilar más rápido puede ser cómodo comentar algunos capítulo ya terminados, 
+% la siguiente línea permite que la numeración de capitulos no nos confunda.
+%\setcounter{chapter}{3} % para empezar a numerar cuando están comentados los primeros capitulos (ejemplo 3 si 1-3 comentados)
+\include{011_Introduccion}
+%\include{020_Definicion-Problema} % ejemplo con subdivisiones en ficheros del capitulo
+\include{021_Definicion-Problema}
+% \include{031_ElTercero}
+% \include{041_Cuarto}
+\include{071_Requisitos}
+
+% Lo siguiente es para poner una bibliografía de los capítulos aquí y otra en cada apendice
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografía}
+\printbibliography
+
+% Apendices, ver book class (link arriba)
+\appendix
+\include{311_AnexoA}
+\include{321_AnexoManualUsuario}
+\include{331_AnexoManualCodigo}
+
+\backmatter
+
+\end{document}
+

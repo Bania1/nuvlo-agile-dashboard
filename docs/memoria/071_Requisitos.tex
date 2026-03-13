@@ -1,0 +1,89 @@
+\chapter{Requisitos}
+
+\section{Funcionales}
+
+...
+
+\section{Casos de uso}
+
+Ejemplo de como se podría formatear una tabla de caso de uso
+
+\begin{table}
+    \centering
+    \scalebox{0.8}{
+        \begin{tabular}{ m{8em} m{33em} } 
+        \textbf{Caso de uso} & 1 Ordenar Rutinas \\
+        \hline
+        \textbf{Actores} &  Administrador y Cliente\\
+        \hline
+        \textbf{Descripción} & Se selecciona el filtro y se ordena las rutinas. \\
+        \hline
+        \textbf{Precondición} & El usuario está logueado en el sistema.\\  
+        \hline
+        \textbf{Flujo principal} &
+        \begin{enumerate}[noitemsep]
+            \item El Caso de Uso comienza cuando el usuario selecciona la opción de ordenar rutinas.
+            \item El usuario selecciona el filtro para ordenar.
+            \item El sistema pide el dato para ordenar.
+            \item El usuario introduce el dato.
+            \item El sistema devuelve la lista ordenada.
+        \end{enumerate} \\
+        \hline
+        \textbf{Postcondición} & Lista de rutinas ordenadas por un filtro. \\
+        \hline
+        \textbf{Flujo Alternativo} & 
+        Cancelar: el flujo alternativo comienza en cualquier punto del flujo principal. El usuario pulsa cancelar y la operación queda cancelada sin realizar ningun cambio.\\
+        \hline
+        \end{tabular}
+    }
+    \caption{CU30:Ordenar rutinas}
+    \label{table:CU30}
+\end{table}
+
+
+
+\section{Validación de casos de uso}
+
+Ejemplo de una matriz de validacion de casos de uso.
+
+A continuación se lleva a cabo la validación de los casos de uso mediante una matriz de trazabilidad que relaciona los casos de uso con los requisitos funcionales, de manera que es posible comprobar que todos los casos de uso están cubiertos por dichos requisitos y viceversa.
+
+\begin{table}[htbp]
+    \centering 
+    \footnotesize
+    \addtolength{\tabcolsep}{-4pt}
+    \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+      & \multicolumn{29}{c|}{Casos de uso} \\
+      &1 &2 &3 &4 &5 &6 &6 &7 &8 &9 &10&11&12&13&14&15&16&17&18&19&20&21&22&23&24&25&26&27&28 \\\hline
+RF-1  &  &  &  &X &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-2  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-3  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-4  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-5  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-6  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-7  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-8  &  &X &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-9  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-10 &  &  &  &  &  &  &  &  &  &  &  &X  & &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-11 &  &  &  &  &  &  &  &  &  &  &  &X  &X & &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-12 &  &  &  &  &  &  &  &  &  &  &X  & &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-13 &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-14 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  \\\hline
+RF-15 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  \\\hline
+RF-16 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-17 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  \\\hline
+RF-18 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  \\\hline
+RF-19 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &X &  &  &  \\\hline
+RF-20 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-21 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-22 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-23 &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
+RF-24 &X &X &X &X &X &X &X &X &X &  &  &  &  &  &X &X &X &X &X &X &X &X &X &X &X &X &X &X &X \\\hline
+RF-25 &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  \\\hline
+RF-26 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  \\\hline
+    \end{tabular}
+    \caption{Matriz de validación requisitos funcionales y casos de uso}
+    \label{tab:validacionCasosUso}
+\end{table}
+
+
