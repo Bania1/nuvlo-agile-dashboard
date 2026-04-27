@@ -22,3 +22,6 @@
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Entorno (variables sensibles)
+src/jira-backend-test/.env
