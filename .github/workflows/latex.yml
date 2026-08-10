@@ -1,0 +1,49 @@
+name: Build LaTeX memory
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/memoria/**"
+      - ".github/workflows/latex.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "docs/memoria/**"
+      - ".github/workflows/latex.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Compile TFG memory
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            make \
+            biber \
+            latexmk \
+            texlive-latex-base \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-lang-spanish
+
+      - name: Compile memory
+        working-directory: docs/memoria
+        run: make
+
+      - name: Upload generated PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfg-memory-pdf
+          path: docs/memoria/tf.pdf
+          if-no-files-found: error
