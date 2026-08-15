@@ -1,89 +1,281 @@
 \chapter{Requisitos}
 
-\section{Funcionales}
+\section{Introducción}
 
-...
+En este capítulo se definen los requisitos que debe cumplir el sistema propuesto, estableciendo las funcionalidades principales, las restricciones técnicas y los datos necesarios para su funcionamiento. Esta especificación sirve como base para el diseño, la implementación y la posterior validación del sistema.
 
+Para su elaboración se toma como referencia la práctica recomendada IEEE Std 830-1998, que propone que una especificación de requisitos software sea correcta, no ambigua, completa, consistente, verificable, modificable y trazable~\cite{IEEE8301998}. En este trabajo se adopta dicha referencia como guía para estructurar los requisitos y facilitar su posterior comprobación.
+
+Asimismo, los requisitos se priorizan mediante la técnica MoSCoW, que clasifica cada requisito como \textit{Must Have}, \textit{Should Have}, \textit{Could Have} o \textit{Won't Have}. Esta técnica permite distinguir los requisitos imprescindibles para una versión funcional del sistema de aquellos que aportan valor, pero pueden planificarse como ampliaciones o mejoras~\cite{AgileBusinessConsortiumMoSCoW}.
+
+\section{Descripción general del sistema}
+
+El sistema consiste en una aplicación web orientada a la visualización de métricas ágiles para equipos que trabajan con marcos como Scrum y Kanban. Su objetivo principal es integrarse con Jira Cloud, obtener información de proyectos e incidencias, procesarla y mostrarla mediante un dashboard que facilite el análisis del flujo de trabajo, la evolución del equipo y determinados indicadores relacionados con la entrega de software.
+
+La aplicación no pretende sustituir a Jira como herramienta de gestión del trabajo, sino proporcionar una capa complementaria de análisis centrada en métricas ágiles. De esta forma, los usuarios pueden consultar información agregada, aplicar filtros, revisar alertas y detectar posibles desviaciones en el comportamiento del equipo o del flujo de trabajo.
+
+\section{Actores del sistema}
+
+Se identifican los siguientes actores principales:
+
+\begin{itemize}
+    \item \textbf{Usuario autenticado}: persona que accede al sistema mediante su cuenta de Atlassian y consulta dashboards, métricas, filtros, alertas y datos procedentes de Jira.
+    \item \textbf{Jira Cloud}: sistema externo del que se obtienen los proyectos, tableros, sprints, incidencias, estados, fechas, estimaciones y demás datos necesarios para calcular las métricas.
+    \item \textbf{Administrador o perfil técnico}: persona encargada de configurar aspectos técnicos de la aplicación, supervisar logs y mantener el correcto funcionamiento del sistema.
+\end{itemize}
+
+\section{Restricciones, supuestos y dependencias}
+
+El sistema depende de la disponibilidad de Jira Cloud y de su API oficial para obtener los datos necesarios. Por tanto, cualquier limitación, cambio o indisponibilidad de dicha API puede afectar al funcionamiento de la aplicación.
+
+Se asume que los proyectos analizados contienen información suficiente y correctamente mantenida para calcular las métricas previstas. Por ejemplo, fechas de creación y resolución, historial de cambios de estado, estimaciones, asignaciones, sprints o campos equivalentes según la configuración del proyecto.
+
+También se considera que la autenticación se realizará mediante los mecanismos oficiales de Atlassian, evitando el registro local de usuarios y el uso de credenciales propias ajenas a Jira. Durante el desarrollo pueden emplearse configuraciones locales de prueba, pero el objetivo del sistema final es apoyarse en un flujo de autenticación adecuado para un entorno real.
+
+\section{Priorización de requisitos}
+
+La priorización de requisitos se realiza mediante la técnica MoSCoW. En este trabajo se interpreta cada categoría de la siguiente forma:
+
+\begin{itemize}
+    \item \textbf{Must Have}: requisito imprescindible para que el sistema cumpla su propósito principal.
+    \item \textbf{Should Have}: requisito importante, pero no estrictamente necesario para una primera versión funcional.
+    \item \textbf{Could Have}: mejora deseable que aporta valor, pero que puede posponerse sin comprometer el objetivo central del sistema.
+    \item \textbf{Won't Have}: requisito descartado para el alcance actual del TFG, aunque podría considerarse en trabajos futuros.
+\end{itemize}
+
+\section{Requisitos funcionales}
+
+Los requisitos funcionales describen los servicios y funcionalidades que debe proporcionar el sistema. Para facilitar su lectura, se agrupan según el área funcional a la que pertenecen.
+
+\subsection{Integración y sincronización con Jira}
+
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\toprule
+\textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
+\midrule
+RF-01 & Must & El sistema debe permitir conectar con Jira Cloud para importar los datos necesarios para calcular métricas y alimentar las vistas del sistema, incluyendo proyectos, tableros, sprints e incidencias. & Prueba de integración con Jira Cloud API. \\
+RF-02 & Must & El sistema debe permitir definir el alcance de la importación mediante filtros por proyecto, tablero, sprint, etiquetas, tipo de incidencia y otros criterios disponibles en Jira Cloud API que se incorporen al sistema. & Prueba funcional de filtros de importación. \\
+RF-03 & Must & El sistema debe permitir ejecutar procesos de sincronización de datos bajo demanda. & Prueba funcional de sincronización manual. \\
+RF-04 & Should & El sistema debería permitir programar sincronizaciones periódicas. & Prueba funcional de planificación de sincronizaciones. \\
+RF-05 & Must & El sistema debe registrar la fecha y hora de la última sincronización realizada para cada origen o ámbito de datos sincronizado. & Revisión de datos de sincronización almacenados. \\
+RF-06 & Should & El sistema debería detectar y señalar incidencias con datos incompletos o inconsistentes que puedan afectar al cálculo de métricas. & Prueba con incidencias de datos incompletos. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\subsection{Configuración del análisis}
+
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\toprule
+\textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
+\midrule
+RF-07 & Must & El sistema debe permitir configurar qué estados del flujo de trabajo representan el inicio y el fin del trabajo efectivo para el cálculo de métricas temporales. & Prueba funcional de configuración de estados. \\
+RF-08 & Should & El sistema debe permitir ajustar parámetros analíticos necesarios para adaptar los cálculos a distintos equipos o tableros, como estados de inicio y fin, rango temporal, campo de esfuerzo, percentiles utilizados y criterios de agrupación. & Prueba funcional de parámetros de análisis. \\
+RF-18 & Should & El sistema debería permitir registrar manualmente eventos necesarios para completar métricas cuando dichos datos no estén disponibles automáticamente. & Prueba funcional de registro manual de eventos. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\subsection{Cálculo de métricas}
+
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\toprule
+\textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
+\midrule
+RF-09 & Must & El sistema debe calcular automáticamente, como mínimo, las métricas Velocity, WIP, Lead Time y Cycle Time a partir de los datos sincronizados. & Prueba con conjunto de datos conocido. \\
+RF-10 & Should & El sistema debería calcular la métrica Deployment Frequency cuando disponga de datos suficientes para ello, por ejemplo mediante una integración con herramientas de control de versiones o CI/CD. & Prueba condicionada a la integración externa disponible. \\
+RF-11 & Must & El sistema debe recalcular las métricas afectadas tras cada sincronización completada con éxito. & Prueba de sincronización y recálculo posterior. \\
+RF-12 & Must & El sistema debe calcular Velocity por sprint a partir de las incidencias completadas y su esfuerzo asociado. & Prueba con datos de sprint y esfuerzo conocidos. \\
+RF-13 & Must & El sistema debe calcular el WIP actual y su evolución histórica por estado, columna, equipo, proyecto o periodo, según proceda. & Prueba con histórico de incidencias por estado. \\
+RF-14 & Must & El sistema debe calcular Lead Time y Cycle Time por incidencia y de forma agregada para periodos de análisis. & Prueba con transiciones temporales conocidas. \\
+RF-15 & Should & El sistema debería proporcionar estadísticas agregadas sobre las métricas temporales, incluyendo al menos media y percentiles. & Prueba de cálculo estadístico sobre datos conocidos. \\
+RF-16 & Should & El sistema debería calcular métricas adicionales específicas de Scrum cuando existan datos suficientes, como el cumplimiento del compromiso del sprint. & Prueba con datos completos de sprint. \\
+RF-17 & Could & El sistema podría calcular métricas adicionales específicas de Kanban cuando existan datos suficientes, como la eficiencia de flujo. & Prueba condicionada a la disponibilidad de datos Kanban. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\subsection{Dashboard y visualización}
+
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\toprule
+\textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
+\midrule
+RF-19 & Must & El sistema debe proporcionar al menos un dashboard principal con visualización de las métricas clave en un periodo seleccionable. & Revisión funcional del dashboard principal. \\
+RF-20 & Must & El sistema debe permitir filtrar dashboards y vistas analíticas por rango temporal y por atributos del trabajo importado. & Prueba funcional de filtros del dashboard. \\
+RF-21 & Should & El sistema debería permitir personalizar parcialmente el dashboard, seleccionando qué métricas o widgets se muestran. & Prueba funcional de personalización. \\
+RF-22 & Should & El sistema debería mostrar ayudas contextuales que expliquen la interpretación de las métricas y visualizaciones. & Revisión de interfaz y textos de ayuda. \\
+RF-23 & Could & El sistema podría proporcionar un modo de visualización simplificado para reuniones o presentaciones. & Revisión funcional del modo simplificado, si se implementa. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\subsection{Alertas y logs}
+
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\toprule
+\textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
+\midrule
+RF-24 & Must & El sistema debe permitir definir reglas de alerta simples, basadas en umbrales configurables sobre métricas calculadas, como WIP, Cycle Time, Lead Time o Velocity. & Prueba funcional con umbrales de ejemplo. \\
+RF-25 & Must & El sistema debe detectar y registrar las alertas activadas cuando se cumplan las condiciones configuradas. & Prueba de activación de alertas. \\
+RF-26 & Must & El sistema debe ofrecer una vista para consultar alertas activas e históricas, incluyendo su estado y momento de activación. & Revisión funcional de la vista de alertas. \\
+RF-27 & Must & El sistema debe registrar logs de eventos relevantes, incluyendo al menos sincronizaciones, errores de integración, errores de cálculo y eventos de autenticación. & Revisión de logs generados durante pruebas. \\
+RF-28 & Should & El sistema debería ofrecer una vista para consultar los logs del sistema con criterios básicos de filtrado. & Revisión funcional de la vista de logs, si se implementa. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\subsection{Autenticación y control de acceso}
+
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\toprule
+\textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
+\midrule
+RF-29 & Must & El sistema debe gestionar la autenticación exclusivamente mediante el mecanismo oficial de autenticación de Jira o Atlassian. & Prueba de autenticación con cuenta de Atlassian. \\
+RF-30 & Must & El sistema no debe permitir registro local de usuarios ni autenticación mediante credenciales propias ajenas a Jira. & Revisión funcional y de código. \\
+RF-31 & Must & El sistema debe proteger las operaciones de configuración, sincronización y consulta de información de acuerdo con la sesión autenticada a través de Jira. & Pruebas de autorización por sesión. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\section{Requisitos no funcionales}
+
+Los requisitos no funcionales recogen propiedades de calidad, restricciones técnicas y criterios generales que debe cumplir el sistema.
+
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\toprule
+\textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
+\midrule
+RNF-01 & Must & El sistema debe ofrecer una interfaz clara y adaptable a dispositivos de escritorio y móviles, permitiendo consultar las métricas principales sin pérdida de información esencial. & Revisión funcional en distintos tamaños de pantalla. \\
+RNF-02 & Must & El sistema debe preservar la integridad y consistencia de los datos importados y calculados. & Pruebas de importación, cálculo y revisión de datos. \\
+RNF-03 & Must & El sistema debe persistir los datos necesarios para soportar análisis históricos y comparativos. & Revisión de almacenamiento y consulta histórica. \\
+RNF-04 & Must & El sistema debe registrar eventos relevantes de operación, errores de integración y fallos de procesamiento para facilitar trazabilidad y diagnóstico. & Revisión de logs durante pruebas funcionales. \\
+RNF-05 & Must & El sistema debe proteger credenciales, tokens y demás información sensible mediante mecanismos de almacenamiento y tratamiento seguro. & Revisión de código, configuración y tratamiento de secretos. \\
+RNF-06 & Must & El sistema debe minimizar el impacto de los límites de uso de servicios externos mediante estrategias de control de acceso, reducción de peticiones o almacenamiento temporal. & Pruebas de integración y revisión de llamadas externas. \\
+RNF-07 & Must & El sistema debe mantener tiempos de respuesta razonables para la consulta interactiva de dashboards en condiciones normales de uso. & Pruebas básicas de rendimiento. \\
+RNF-08 & Should & El sistema debería permitir ampliar el número de proyectos, periodos analizados y métricas sin degradación severa del servicio. & Pruebas de carga o revisión técnica de escalabilidad. \\
+RNF-09 & Must & El sistema debe exponer interfaces de comunicación internas y externas de forma consistente y documentada, especialmente en la comunicación entre frontend, backend y servicios externos. & Revisión de documentación técnica e interfaces. \\
+RNF-10 & Must & El sistema debe diseñarse para facilitar mantenimiento, prueba y evolución incremental. & Revisión de estructura del código y pruebas. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\section{Requisitos de información}
+
+Los requisitos de información describen los datos que el sistema debe gestionar para poder ofrecer sus funcionalidades. En este proyecto incluyen tanto la información obtenida desde Jira Cloud como la información generada o configurada dentro del propio sistema, por ejemplo proyectos, incidencias, estados, métricas calculadas, filtros, alertas y parámetros de análisis.
+
+Este tipo de requisito ayuda a identificar qué información relevante debe estar disponible para alcanzar los objetivos del sistema~\cite{DuranBernardez2000Elicitacion}. En el caso de este proyecto, resultan especialmente importantes porque las métricas ágiles dependen directamente de la calidad, disponibilidad y estructura de los datos procedentes de Jira.
+
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.2cm}p{1.65cm}p{4.6cm}p{3.35cm}p{1.65cm}}
+\toprule
+\textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Datos principales} & \textbf{Origen} \\
+\midrule
+RI-01 & Must & El sistema debe gestionar información básica de las incidencias importadas desde Jira cuando estos datos estén disponibles. & Identificador, resumen, tipo, estado y prioridad. & Jira Cloud API \\
+RI-02 & Must & El sistema debe obtener y gestionar el historial de transiciones de estado de las incidencias para calcular métricas temporales. & Estado origen, estado destino, fecha y hora de transición, incidencia asociada. & Jira Cloud API \\
+RI-03 & Must & El sistema debe gestionar información sobre el esfuerzo asociado a las incidencias cuando sea necesario para calcular Velocity u otras métricas equivalentes. & Puntos de historia, estimación temporal o campo de esfuerzo configurado. & Jira Cloud API \\
+RI-04 & Must & El sistema debe gestionar información de sprint o periodo de trabajo cuando exista. & Nombre, fecha de inicio, fecha de fin y fechas relevantes. & Jira Cloud API \\
+RI-05 & Must & El sistema debe gestionar la relación entre incidencias, proyectos, tableros y equipos necesaria para segmentar los análisis. & Proyecto, tablero, sprint, equipo y relaciones con incidencias. & Jira Cloud API \\
+RI-06 & Should & El sistema debería conservar información de sincronización asociada a los datos importados. & Fecha y hora de actualización, origen de datos y ámbito sincronizado. & Sistema propio \\
+RI-07 & Must & El sistema debe incluir un conjunto mínimo de datos de prueba o demostración que permita validar su comportamiento en ausencia de conexión con fuentes reales. & Proyectos, incidencias, transiciones, sprints y métricas simuladas. & Sistema propio \\
+RI-08 & Must & El sistema debe gestionar información de configuración del análisis. & Filtros aplicados, estados de inicio y fin, rangos temporales, campos de esfuerzo y parámetros de cálculo. & Sistema propio \\
+RI-09 & Must & El sistema debe gestionar información sobre las métricas calculadas. & Tipo de métrica, valor obtenido, periodo analizado, proyecto asociado y filtros aplicados. & Sistema propio \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
 \section{Casos de uso}
 
-Ejemplo de como se podría formatear una tabla de caso de uso
+A partir de los requisitos funcionales se identifican los principales casos de uso del sistema. Esta primera relación sirve como base para elaborar posteriormente el diagrama de casos de uso y las descripciones detalladas que se consideren necesarias. En una fase posterior, cada caso de uso podrá completarse con actores, precondiciones, flujo principal, flujos alternativos y postcondiciones.
 
-\begin{table}
-    \centering
-    \scalebox{0.8}{
-        \begin{tabular}{ m{8em} m{33em} } 
-        \textbf{Caso de uso} & 1 Ordenar Rutinas \\
-        \hline
-        \textbf{Actores} &  Administrador y Cliente\\
-        \hline
-        \textbf{Descripción} & Se selecciona el filtro y se ordena las rutinas. \\
-        \hline
-        \textbf{Precondición} & El usuario está logueado en el sistema.\\  
-        \hline
-        \textbf{Flujo principal} &
-        \begin{enumerate}[noitemsep]
-            \item El Caso de Uso comienza cuando el usuario selecciona la opción de ordenar rutinas.
-            \item El usuario selecciona el filtro para ordenar.
-            \item El sistema pide el dato para ordenar.
-            \item El usuario introduce el dato.
-            \item El sistema devuelve la lista ordenada.
-        \end{enumerate} \\
-        \hline
-        \textbf{Postcondición} & Lista de rutinas ordenadas por un filtro. \\
-        \hline
-        \textbf{Flujo Alternativo} & 
-        Cancelar: el flujo alternativo comienza en cualquier punto del flujo principal. El usuario pulsa cancelar y la operación queda cancelada sin realizar ningun cambio.\\
-        \hline
-        \end{tabular}
-    }
-    \caption{CU30:Ordenar rutinas}
-    \label{table:CU30}
-\end{table}
+{\renewcommand{\arraystretch}{1.28}\footnotesize
+\begin{longtable}{p{1.35cm}p{3.45cm}p{7.55cm}}
+\toprule
+\textbf{ID} & \textbf{Caso de uso} & \textbf{Descripción} \\
+\midrule
+CU-01 & Autenticarse mediante Atlassian & El usuario accede al sistema utilizando el mecanismo oficial de autenticación de Jira o Atlassian. \\
+CU-02 & Seleccionar ámbito de análisis & El usuario selecciona proyecto, tablero, sprint, rango temporal u otros filtros disponibles. \\
+CU-03 & Sincronizar datos de Jira & El usuario ejecuta una sincronización bajo demanda para importar o actualizar datos desde Jira Cloud. \\
+CU-04 & Configurar parámetros de métricas & El usuario define estados de inicio y fin, campos de esfuerzo y otros parámetros necesarios para calcular métricas. \\
+CU-05 & Consultar dashboard principal & El usuario visualiza las métricas clave del sistema en un dashboard principal. \\
+CU-06 & Analizar métricas de flujo & El usuario consulta métricas como Lead Time, Cycle Time, WIP y Throughput o Velocity según el contexto. \\
+CU-07 & Configurar reglas de alerta & El usuario define umbrales simples para detectar situaciones relevantes en las métricas calculadas. \\
+CU-08 & Consultar alertas & El usuario revisa alertas activas e históricas generadas por el sistema. \\
+CU-09 & Consultar logs del sistema & El usuario o perfil técnico consulta eventos relevantes del sistema para diagnóstico y seguimiento. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
 
+\clearpage
+\section{Trazabilidad entre requisitos y casos de uso}
 
+La trazabilidad permite comprobar que los casos de uso identificados cubren los requisitos funcionales principales. En esta fase inicial se plantea una matriz preliminar, que podrá ajustarse cuando se definan con mayor detalle los casos de uso y los diagramas asociados.
 
-\section{Validación de casos de uso}
+{\renewcommand{\arraystretch}{1.25}\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\begin{longtable}{|p{1.35cm}|c|c|c|c|c|c|c|c|c|}
+\caption{Matriz de trazabilidad entre requisitos funcionales y casos de uso}\label{tab:trazabilidad-rf-cu}\\
+\hline
+\textbf{Req.} & \textbf{CU-01} & \textbf{CU-02} & \textbf{CU-03} & \textbf{CU-04} & \textbf{CU-05} & \textbf{CU-06} & \textbf{CU-07} & \textbf{CU-08} & \textbf{CU-09} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Req.} & \textbf{CU-01} & \textbf{CU-02} & \textbf{CU-03} & \textbf{CU-04} & \textbf{CU-05} & \textbf{CU-06} & \textbf{CU-07} & \textbf{CU-08} & \textbf{CU-09} \\
+\hline
+\endhead
+RF-01 &  &  & X &  &  &  &  &  &  \\\hline
+RF-02 &  & X &  &  &  &  &  &  &  \\\hline
+RF-03 &  &  & X &  &  &  &  &  &  \\\hline
+RF-04 &  &  & X &  &  &  &  &  &  \\\hline
+RF-05 &  &  & X &  &  &  &  &  &  \\\hline
+RF-06 &  &  & X &  &  &  &  &  &  \\\hline
+RF-07 &  & X &  & X &  &  &  &  &  \\\hline
+RF-08 &  & X &  & X &  &  &  &  &  \\\hline
+RF-09 &  &  &  &  & X & X &  &  &  \\\hline
+RF-10 &  &  &  &  &  & X &  &  &  \\\hline
+RF-11 &  &  & X &  &  &  &  &  &  \\\hline
+RF-12 &  &  &  &  &  & X &  &  &  \\\hline
+RF-13 &  &  &  &  &  & X &  &  &  \\\hline
+RF-14 &  &  &  &  &  & X &  &  &  \\\hline
+RF-15 &  &  &  &  &  & X &  &  &  \\\hline
+RF-16 &  &  &  &  &  & X &  &  &  \\\hline
+RF-17 &  &  &  &  &  & X &  &  &  \\\hline
+RF-18 &  &  &  & X &  &  &  &  &  \\\hline
+RF-19 &  &  &  &  & X &  &  &  &  \\\hline
+RF-20 &  & X &  &  & X &  &  &  &  \\\hline
+RF-21 &  &  &  &  & X &  &  &  &  \\\hline
+RF-22 &  &  &  &  & X &  &  &  &  \\\hline
+RF-23 &  &  &  &  & X &  &  &  &  \\\hline
+RF-24 &  &  &  &  &  &  & X &  &  \\\hline
+RF-25 &  &  &  &  &  &  &  & X &  \\\hline
+RF-26 &  &  &  &  &  &  &  & X &  \\\hline
+RF-27 &  &  &  &  &  &  &  &  & X \\\hline
+RF-28 &  &  &  &  &  &  &  &  & X \\\hline
+RF-29 & X &  &  &  &  &  &  &  &  \\\hline
+RF-30 & X &  &  &  &  &  &  &  &  \\\hline
+RF-31 & X &  &  &  &  &  &  &  &  \\\hline
+\end{longtable}
+\vspace{0.45em}
+}
 
-Ejemplo de una matriz de validacion de casos de uso.
-
-A continuación se lleva a cabo la validación de los casos de uso mediante una matriz de trazabilidad que relaciona los casos de uso con los requisitos funcionales, de manera que es posible comprobar que todos los casos de uso están cubiertos por dichos requisitos y viceversa.
-
-\begin{table}[htbp]
-    \centering 
-    \footnotesize
-    \addtolength{\tabcolsep}{-4pt}
-    \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-      & \multicolumn{29}{c|}{Casos de uso} \\
-      &1 &2 &3 &4 &5 &6 &6 &7 &8 &9 &10&11&12&13&14&15&16&17&18&19&20&21&22&23&24&25&26&27&28 \\\hline
-RF-1  &  &  &  &X &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-2  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-3  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-4  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-5  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-6  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-7  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-8  &  &X &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-9  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-10 &  &  &  &  &  &  &  &  &  &  &  &X  & &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-11 &  &  &  &  &  &  &  &  &  &  &  &X  &X & &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-12 &  &  &  &  &  &  &  &  &  &  &X  & &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-13 &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-14 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  \\\hline
-RF-15 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  \\\hline
-RF-16 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-17 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  \\\hline
-RF-18 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  \\\hline
-RF-19 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &X &  &  &  \\\hline
-RF-20 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-21 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-22 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-23 &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\\hline
-RF-24 &X &X &X &X &X &X &X &X &X &  &  &  &  &  &X &X &X &X &X &X &X &X &X &X &X &X &X &X &X \\\hline
-RF-25 &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  \\\hline
-RF-26 &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &X &  &  &  &  &  &  &  &  \\\hline
-    \end{tabular}
-    \caption{Matriz de validación requisitos funcionales y casos de uso}
-    \label{tab:validacionCasosUso}
-\end{table}
-
+La matriz anterior no sustituye a la descripción detallada de los casos de uso. Su función es validar de forma visual que los requisitos funcionales quedan cubiertos por, al menos, un caso de uso identificado.
 
