@@ -21,7 +21,6 @@ Se identifican los siguientes actores principales:
 \begin{itemize}
     \item \textbf{Usuario autenticado}: persona que accede al sistema mediante su cuenta de Atlassian y consulta dashboards, métricas, filtros, alertas y datos procedentes de Jira.
     \item \textbf{Jira Cloud}: sistema externo del que se obtienen los proyectos, tableros, sprints, incidencias, estados, fechas, estimaciones y demás datos necesarios para calcular las métricas.
-    \item \textbf{Administrador o perfil técnico}: persona encargada de configurar aspectos técnicos de la aplicación, supervisar logs y mantener el correcto funcionamiento del sistema.
 \end{itemize}
 
 \section{Restricciones, supuestos y dependencias}
@@ -219,7 +218,7 @@ CU-05 & Consultar dashboard principal & El usuario visualiza las métricas clave
 CU-06 & Analizar métricas de flujo & El usuario consulta métricas como Lead Time, Cycle Time, WIP y Throughput o Velocity según el contexto. \\
 CU-07 & Configurar reglas de alerta & El usuario define umbrales simples para detectar situaciones relevantes en las métricas calculadas. \\
 CU-08 & Consultar alertas & El usuario revisa alertas activas e históricas generadas por el sistema. \\
-CU-09 & Consultar logs del sistema & El usuario o perfil técnico consulta eventos relevantes del sistema para diagnóstico y seguimiento. \\
+CU-09 & Consultar logs del sistema & El usuario autenticado consulta eventos relevantes del sistema para diagnóstico y seguimiento. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
