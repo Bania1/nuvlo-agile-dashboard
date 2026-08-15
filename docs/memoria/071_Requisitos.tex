@@ -50,6 +50,7 @@ Los requisitos funcionales describen los servicios y funcionalidades que debe pr
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\caption{Requisitos funcionales de integración y sincronización con Jira}\label{tab:rf-integracion-jira}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
@@ -68,6 +69,7 @@ RF-06 & Should & El sistema debería detectar y señalar incidencias con datos i
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\caption{Requisitos funcionales de configuración del análisis}\label{tab:rf-configuracion-analisis}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
@@ -83,6 +85,7 @@ RF-18 & Should & El sistema debería permitir registrar manualmente eventos nece
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\caption{Requisitos funcionales de cálculo de métricas}\label{tab:rf-calculo-metricas}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
@@ -104,6 +107,7 @@ RF-17 & Could & El sistema podría calcular métricas adicionales específicas d
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\caption{Requisitos funcionales de dashboard y visualización}\label{tab:rf-dashboard-visualizacion}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
@@ -121,6 +125,7 @@ RF-23 & Could & El sistema podría proporcionar un modo de visualización simpli
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\caption{Requisitos funcionales de alertas y logs}\label{tab:rf-alertas-logs}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
@@ -138,6 +143,7 @@ RF-28 & Should & El sistema debería ofrecer una vista para consultar los logs d
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\caption{Requisitos funcionales de autenticación y control de acceso}\label{tab:rf-autenticacion-control-acceso}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
@@ -156,6 +162,7 @@ Los requisitos no funcionales recogen propiedades de calidad, restricciones téc
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
+\caption{Requisitos no funcionales}\label{tab:requisitos-no-funcionales}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
@@ -184,6 +191,7 @@ Este tipo de requisito ayuda a identificar qué información relevante debe esta
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.2cm}p{1.65cm}p{4.6cm}p{3.35cm}p{1.65cm}}
+\caption{Requisitos de información}\label{tab:requisitos-informacion}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Datos principales} & \textbf{Origen} \\
 \midrule
@@ -205,10 +213,11 @@ RI-10 & Should & El sistema debería gestionar información sobre alertas activa
 \clearpage
 \section{Casos de uso}
 
-A partir de los requisitos funcionales se identifican los principales casos de uso del sistema. Esta primera relación sirve como base para elaborar posteriormente el diagrama de casos de uso y las descripciones detalladas que se consideren necesarias. En una fase posterior, cada caso de uso podrá completarse con actores, precondiciones, flujo principal, flujos alternativos y postcondiciones.
+A partir de los requisitos funcionales se identifican los principales casos de uso del sistema. Esta primera relación sirve como base para elaborar posteriormente el diagrama de casos de uso y para describir de forma detallada el comportamiento esperado del sistema desde el punto de vista del usuario.
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{3.45cm}p{7.55cm}}
+\caption{Casos de uso identificados}\label{tab:casos-uso-identificados}\\
 \toprule
 \textbf{ID} & \textbf{Caso de uso} & \textbf{Descripción} \\
 \midrule
@@ -279,4 +288,301 @@ RF-31 & X &  &  &  &  &  &  &  &  \\\hline
 }
 
 La matriz anterior no sustituye a la descripción detallada de los casos de uso. Su función es validar de forma visual que los requisitos funcionales quedan cubiertos por, al menos, un caso de uso identificado.
+\clearpage
+\section{Descripción detallada de los casos de uso}
+
+Una vez identificados los casos de uso principales y validada su relación con los requisitos funcionales, se describen de forma detallada. Cada ficha recoge el actor principal, los actores secundarios, las precondiciones, el flujo principal, los posibles flujos alternativos, las postcondiciones y los requisitos relacionados. Esta descripción permite concretar el comportamiento esperado del sistema desde el punto de vista del usuario.
+
+\subsection{CU-01: Autenticarse mediante Atlassian}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario. \\
+\textbf{Actores secundarios} & Atlassian. \\
+\textbf{Descripción} & Permite al usuario acceder al sistema utilizando el mecanismo oficial de autenticación de Atlassian, evitando el registro local de usuarios y el uso de credenciales propias de la aplicación. \\
+\textbf{Precondiciones} & El usuario dispone de una cuenta válida de Atlassian. El servicio de autenticación de Atlassian está disponible. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede a la aplicación.
+    \item El sistema muestra la opción de autenticación mediante Atlassian.
+    \item El usuario selecciona iniciar sesión.
+    \item El sistema redirige al usuario al mecanismo de autenticación de Atlassian.
+    \item El usuario introduce sus credenciales en Atlassian y autoriza el acceso.
+    \item Atlassian valida la autenticación y devuelve la respuesta al sistema.
+    \item El sistema crea una sesión autenticada.
+    \item El sistema muestra la pantalla principal de la aplicación.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item El servicio de Atlassian no está disponible: el sistema informa de que no se puede completar la autenticación y el usuario permanece sin sesión iniciada.
+    \item El usuario cancela el proceso de autenticación: el sistema vuelve a la pantalla inicial y no crea una sesión.
+    \item La autenticación no es válida: el sistema informa de que no se ha podido iniciar sesión.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & El usuario queda autenticado en el sistema y puede acceder a las funcionalidades protegidas. \\
+\textbf{Requisitos} & RF-29, RF-30, RF-31. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\subsection{CU-02: Seleccionar ámbito de análisis}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario autenticado. \\
+\textbf{Actores secundarios} & Jira Cloud. \\
+\textbf{Descripción} & Permite seleccionar el ámbito de datos sobre el que se desea trabajar, incluyendo proyecto, tablero, sprint, rango temporal, etiquetas, tipo de incidencia u otros criterios disponibles en Jira que se incorporen al sistema. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. El sistema dispone de conexión con Jira Cloud. Existen proyectos, tableros o datos disponibles para el usuario autenticado. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede a la sección de selección de ámbito.
+    \item El sistema consulta los proyectos, tableros u opciones disponibles en Jira.
+    \item El sistema muestra los criterios de selección disponibles.
+    \item El usuario selecciona el proyecto, tablero, sprint, rango temporal u otros filtros.
+    \item El sistema valida la selección realizada.
+    \item El sistema guarda el ámbito de análisis seleccionado.
+    \item El sistema actualiza las vistas o prepara la actualización de datos según el ámbito definido.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item Jira Cloud no está disponible: el sistema informa de que no se pueden recuperar los datos y mantiene la selección anterior si existe.
+    \item No existen proyectos o tableros disponibles: el sistema informa de que no se han encontrado ámbitos de análisis.
+    \item La selección no es válida: el sistema informa del error y permite modificar los criterios seleccionados.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & El sistema dispone de un ámbito de análisis válido para actualizar datos, calcular métricas o filtrar visualizaciones. \\
+\textbf{Requisitos} & RF-02, RF-07, RF-08, RF-20. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\subsection{CU-03: Actualizar datos de Jira}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario autenticado. \\
+\textbf{Actores secundarios} & Jira Cloud. \\
+\textbf{Descripción} & Permite actualizar los datos procedentes de Jira Cloud de forma controlada, reutilizando la información almacenada cuando siga siendo válida y evitando sincronizaciones completas innecesarias. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. Existe un ámbito de análisis seleccionado. La conexión con Jira Cloud está disponible cuando sea necesario consultar datos remotos. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede a un ámbito de análisis o solicita una actualización bajo demanda.
+    \item El sistema comprueba la fecha de última actualización y el ámbito seleccionado.
+    \item Si la información almacenada sigue siendo válida, el sistema reutiliza los datos disponibles.
+    \item Si la información está desactualizada, el sistema consulta Jira Cloud API.
+    \item El sistema importa o actualiza únicamente los datos necesarios cuando sea posible.
+    \item El sistema registra la fecha y hora de actualización.
+    \item El sistema detecta posibles datos incompletos o inconsistentes.
+    \item El sistema recalcula las métricas afectadas.
+    \item El sistema informa del estado de la actualización.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item Jira Cloud no está disponible: el sistema informa del error, registra el evento y utiliza datos almacenados si existen.
+    \item La API devuelve datos incompletos: el sistema registra la incidencia detectada y continúa con los datos válidos cuando sea posible.
+    \item Se produce un error durante el cálculo de métricas: el sistema registra el error e informa de que la actualización se completó parcialmente.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & Los datos quedan actualizados o se reutilizan los datos almacenados válidos. Las métricas afectadas se recalculan cuando procede. \\
+\textbf{Requisitos} & RF-01, RF-03, RF-04, RF-05, RF-06, RF-11. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\subsection{CU-04: Configurar criterios de cálculo de métricas}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario autenticado. \\
+\textbf{Actores secundarios} & Ninguno. \\
+\textbf{Descripción} & Permite definir cómo debe interpretar el sistema los datos procedentes de Jira para calcular métricas, incluyendo estados de inicio y fin, campo de esfuerzo, rango temporal, percentiles y criterios de agrupación. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. Existe un ámbito de análisis disponible. El sistema dispone de estados, campos o datos configurables. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede a la sección de configuración de criterios de cálculo.
+    \item El sistema muestra los parámetros configurables según los datos disponibles.
+    \item El usuario selecciona los estados que representan el inicio y el fin del trabajo efectivo.
+    \item El usuario selecciona el campo de esfuerzo y otros criterios de análisis cuando proceda.
+    \item El usuario ajusta percentiles, rango temporal o criterios de agrupación disponibles.
+    \item El sistema valida la configuración introducida.
+    \item El sistema guarda la configuración.
+    \item El sistema aplica la configuración a los cálculos posteriores.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item El usuario no selecciona estados válidos: el sistema informa del problema y solicita corregir la configuración.
+    \item Algún parámetro es incompatible con los datos disponibles: el sistema informa del campo afectado y permite modificarlo.
+    \item El usuario cancela la configuración: el sistema mantiene la configuración anterior.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & La configuración queda guardada y se utiliza para calcular las métricas del sistema. \\
+\textbf{Requisitos} & RF-07, RF-08, RF-18. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\subsection{CU-05: Consultar dashboard principal}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario autenticado. \\
+\textbf{Actores secundarios} & Ninguno. \\
+\textbf{Descripción} & Permite visualizar en un dashboard principal las métricas clave del sistema para un periodo y ámbito de análisis seleccionados. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. Existe un ámbito de análisis seleccionado. El sistema dispone de datos sincronizados, almacenados o de demostración. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede al dashboard principal.
+    \item El sistema obtiene las métricas disponibles para el ámbito seleccionado.
+    \item El sistema muestra las métricas clave mediante widgets o visualizaciones.
+    \item El usuario modifica filtros o rango temporal si lo desea.
+    \item El sistema actualiza el dashboard según los filtros aplicados.
+    \item El usuario consulta la información mostrada.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item No existen datos disponibles: el sistema informa de la situación y puede mostrar datos de demostración si existen.
+    \item Los filtros no devuelven resultados: el sistema informa de que no hay información para los criterios seleccionados.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & El usuario visualiza el estado general del proyecto o equipo mediante las métricas disponibles. \\
+\textbf{Requisitos} & RF-09, RF-19, RF-20, RF-21, RF-22, RF-23. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\subsection{CU-06: Analizar métricas de flujo}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario autenticado. \\
+\textbf{Actores secundarios} & Ninguno. \\
+\textbf{Descripción} & Permite consultar métricas de flujo y rendimiento del equipo, como Velocity, WIP, Lead Time, Cycle Time y otras métricas adicionales cuando existan datos suficientes. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. El sistema dispone de datos sincronizados o almacenados. Los criterios necesarios para el cálculo de métricas están configurados. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede a la vista de análisis de métricas.
+    \item El sistema muestra las métricas disponibles para el ámbito seleccionado.
+    \item El usuario selecciona una métrica o conjunto de métricas.
+    \item El sistema muestra los valores calculados y su evolución cuando proceda.
+    \item El usuario aplica filtros o cambia el periodo de análisis.
+    \item El sistema recalcula o actualiza la visualización.
+    \item El usuario interpreta los resultados mostrados.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item No existen datos suficientes para una métrica: el sistema informa de que la métrica no puede calcularse e indica, cuando sea posible, qué datos faltan.
+    \item Se produce un error en el cálculo: el sistema registra el error e informa al usuario.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & El usuario dispone de información analítica sobre el flujo de trabajo y las métricas seleccionadas. \\
+\textbf{Requisitos} & RF-09, RF-10, RF-12, RF-13, RF-14, RF-15, RF-16, RF-17. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\subsection{CU-07: Configurar reglas de alerta}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario autenticado. \\
+\textbf{Actores secundarios} & Ninguno. \\
+\textbf{Descripción} & Permite definir reglas de alerta simples basadas en umbrales configurables sobre métricas calculadas, como WIP, Cycle Time, Lead Time o Velocity. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. El sistema dispone de métricas calculadas o configurables. El usuario conoce el umbral que desea establecer. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede a la sección de configuración de alertas.
+    \item El sistema muestra las métricas disponibles para crear reglas.
+    \item El usuario selecciona la métrica sobre la que quiere definir una alerta.
+    \item El usuario introduce el umbral o condición simple.
+    \item El usuario guarda la regla de alerta.
+    \item El sistema valida la regla introducida.
+    \item El sistema almacena la regla.
+    \item El sistema evalúa la regla cuando se actualicen las métricas.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item El usuario introduce un umbral no válido: el sistema informa del error y solicita corregir el valor.
+    \item La regla no puede aplicarse a la métrica seleccionada: el sistema informa de la incompatibilidad y permite modificar la regla.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & La regla de alerta queda registrada y podrá activarse cuando se cumpla la condición definida. \\
+\textbf{Requisitos} & RF-24. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\subsection{CU-08: Consultar alertas}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario autenticado. \\
+\textbf{Actores secundarios} & Ninguno. \\
+\textbf{Descripción} & Permite consultar alertas activas e históricas conservadas por el sistema, incluyendo su estado, momento de activación, métrica asociada y periodo de disponibilidad. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. Existen reglas de alerta configuradas. El sistema ha evaluado las métricas disponibles. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede a la sección de alertas.
+    \item El sistema muestra las alertas activas e históricas conservadas.
+    \item El usuario filtra las alertas por estado, métrica o periodo si lo desea.
+    \item El sistema actualiza la lista de alertas según los filtros aplicados.
+    \item El usuario consulta el detalle de una alerta.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item No existen alertas registradas: el sistema informa de que no hay alertas disponibles.
+    \item Los filtros no devuelven resultados: el sistema informa de que no existen alertas para los criterios seleccionados.
+    \item La alerta histórica ha expirado según la política de retención: el sistema no la muestra en la consulta ordinaria.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & El usuario visualiza las alertas relevantes disponibles según los filtros aplicados y la política de retención definida. \\
+\textbf{Requisitos} & RF-25, RF-26. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+\clearpage
+\subsection{CU-09: Consultar logs del sistema}
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{10.2cm}}
+\toprule
+\textbf{Campo} & \textbf{Descripción} \\
+\midrule
+\textbf{Actor principal} & Usuario autenticado. \\
+\textbf{Actores secundarios} & Ninguno. \\
+\textbf{Descripción} & Permite consultar eventos relevantes generados por el sistema, como actualizaciones de datos, errores de integración, errores de cálculo o eventos de autenticación asociados al uso de la aplicación. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. Existen eventos registrados por el sistema. \\
+\textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
+    \item El usuario accede a la sección de logs.
+    \item El sistema muestra una lista de eventos registrados.
+    \item El usuario aplica filtros básicos si lo considera necesario.
+    \item El sistema actualiza la lista según los criterios seleccionados.
+    \item El usuario consulta el detalle de un evento concreto.
+\end{enumerate}\end{minipage} \\
+\textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
+    \item No existen logs disponibles: el sistema informa de que no hay eventos registrados.
+    \item No hay resultados para los filtros aplicados: el sistema muestra un mensaje indicando que no se han encontrado eventos.
+    \item Algunos logs han expirado según la política de retención: el sistema no los muestra en la consulta ordinaria.
+\end{itemize}\end{minipage} \\
+\textbf{Postcondiciones} & El usuario visualiza los eventos relevantes disponibles según los filtros aplicados y la política de retención definida. \\
+\textbf{Requisitos} & RF-27, RF-28. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
 
