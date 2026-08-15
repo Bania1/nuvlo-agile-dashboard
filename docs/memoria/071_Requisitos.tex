@@ -55,8 +55,8 @@ Los requisitos funcionales describen los servicios y funcionalidades que debe pr
 \midrule
 RF-01 & Must & El sistema debe permitir conectar con Jira Cloud para importar los datos necesarios para calcular métricas y alimentar las vistas del sistema, incluyendo proyectos, tableros, sprints e incidencias. & Prueba de integración con Jira Cloud API. \\
 RF-02 & Must & El sistema debe permitir definir el alcance de la importación mediante filtros por proyecto, tablero, sprint, etiquetas, tipo de incidencia y otros criterios disponibles en Jira Cloud API que se incorporen al sistema. & Prueba funcional de filtros de importación. \\
-RF-03 & Must & El sistema debe permitir ejecutar procesos de sincronización de datos bajo demanda. & Prueba funcional de sincronización manual. \\
-RF-04 & Should & El sistema debería permitir programar sincronizaciones periódicas. & Prueba funcional de planificación de sincronizaciones. \\
+RF-03 & Must & El sistema debe permitir ejecutar procesos de actualización de datos bajo demanda, reutilizando la información almacenada cuando no sea necesario realizar una sincronización completa. & Prueba funcional de actualización manual y reutilización de datos almacenados. \\
+RF-04 & Should & El sistema debería permitir actualizar datos automáticamente o de forma periódica cuando detecte que la información almacenada está desactualizada. & Prueba funcional de actualización automática o planificada. \\
 RF-05 & Must & El sistema debe registrar la fecha y hora de la última sincronización realizada para cada origen o ámbito de datos sincronizado. & Revisión de datos de sincronización almacenados. \\
 RF-06 & Should & El sistema debería detectar y señalar incidencias con datos incompletos o inconsistentes que puedan afectar al cálculo de métricas. & Prueba con incidencias de datos incompletos. \\
 \bottomrule
@@ -164,11 +164,12 @@ RNF-02 & Must & El sistema debe preservar la integridad y consistencia de los da
 RNF-03 & Must & El sistema debe persistir los datos necesarios para soportar análisis históricos y comparativos. & Revisión de almacenamiento y consulta histórica. \\
 RNF-04 & Must & El sistema debe registrar eventos relevantes de operación, errores de integración y fallos de procesamiento para facilitar trazabilidad y diagnóstico. & Revisión de logs durante pruebas funcionales. \\
 RNF-05 & Must & El sistema debe proteger credenciales, tokens y demás información sensible mediante mecanismos de almacenamiento y tratamiento seguro. & Revisión de código, configuración y tratamiento de secretos. \\
-RNF-06 & Must & El sistema debe minimizar el impacto de los límites de uso de servicios externos mediante estrategias de control de acceso, reducción de peticiones o almacenamiento temporal. & Pruebas de integración y revisión de llamadas externas. \\
+RNF-06 & Must & El sistema debe minimizar el impacto de los límites de uso de servicios externos mediante estrategias de control de acceso, reducción de peticiones, almacenamiento temporal y evitación de sincronizaciones completas innecesarias. & Pruebas de integración y revisión de llamadas externas. \\
 RNF-07 & Must & El sistema debe mantener tiempos de respuesta razonables para la consulta interactiva de dashboards en condiciones normales de uso. & Pruebas básicas de rendimiento. \\
 RNF-08 & Should & El sistema debería permitir ampliar el número de proyectos, periodos analizados y métricas sin degradación severa del servicio. & Pruebas de carga o revisión técnica de escalabilidad. \\
 RNF-09 & Must & El sistema debe exponer interfaces de comunicación internas y externas de forma consistente y documentada, especialmente en la comunicación entre frontend, backend y servicios externos. & Revisión de documentación técnica e interfaces. \\
 RNF-10 & Must & El sistema debe diseñarse para facilitar mantenimiento, prueba y evolución incremental. & Revisión de estructura del código y pruebas. \\
+RNF-11 & Should & El sistema debería aplicar una política de retención sobre alertas históricas y logs para evitar el crecimiento indefinido del almacenamiento. & Revisión de configuración de retención y pruebas sobre datos históricos. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
@@ -192,9 +193,10 @@ RI-03 & Must & El sistema debe gestionar información sobre el esfuerzo asociado
 RI-04 & Must & El sistema debe gestionar información de sprint o periodo de trabajo cuando exista. & Nombre, fecha de inicio, fecha de fin y fechas relevantes. & Jira Cloud API \\
 RI-05 & Must & El sistema debe gestionar la relación entre incidencias, proyectos, tableros y equipos necesaria para segmentar los análisis. & Proyecto, tablero, sprint, equipo y relaciones con incidencias. & Jira Cloud API \\
 RI-06 & Should & El sistema debería conservar información de sincronización asociada a los datos importados. & Fecha y hora de actualización, origen de datos y ámbito sincronizado. & Sistema propio \\
-RI-07 & Must & El sistema debe incluir un conjunto mínimo de datos de prueba o demostración que permita validar su comportamiento en ausencia de conexión con fuentes reales. & Proyectos, incidencias, transiciones, sprints y métricas simuladas. & Sistema propio \\
+RI-07 & Must & El sistema debe incluir un conjunto mínimo de datos de prueba o demostración que permita validar su comportamiento en ausencia de conexión con fuentes reales. & Proyectos, incidencias, transiciones, sprints y métricas simuladas, cargables mediante script, CSV o dataset local. & Sistema propio \\
 RI-08 & Must & El sistema debe gestionar información de configuración del análisis. & Filtros aplicados, estados de inicio y fin, rangos temporales, campos de esfuerzo y parámetros de cálculo. & Sistema propio \\
 RI-09 & Must & El sistema debe gestionar información sobre las métricas calculadas. & Tipo de métrica, valor obtenido, periodo analizado, proyecto asociado y filtros aplicados. & Sistema propio \\
+RI-10 & Should & El sistema debería gestionar información sobre alertas activadas e históricas conservadas. & Métrica asociada, umbral, fecha de activación, estado y fecha de expiración o periodo de conservación. & Sistema propio \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
@@ -212,12 +214,12 @@ A partir de los requisitos funcionales se identifican los principales casos de u
 \midrule
 CU-01 & Autenticarse mediante Atlassian & El usuario accede al sistema utilizando el mecanismo oficial de autenticación de Jira o Atlassian. \\
 CU-02 & Seleccionar ámbito de análisis & El usuario selecciona proyecto, tablero, sprint, rango temporal u otros filtros disponibles. \\
-CU-03 & Sincronizar datos de Jira & El usuario ejecuta una sincronización bajo demanda para importar o actualizar datos desde Jira Cloud. \\
-CU-04 & Configurar parámetros de métricas & El usuario define estados de inicio y fin, campos de esfuerzo y otros parámetros necesarios para calcular métricas. \\
+CU-03 & Actualizar datos de Jira & El sistema actualiza los datos procedentes de Jira Cloud de forma controlada, reutilizando datos almacenados cuando sean válidos y permitiendo actualización bajo demanda cuando sea necesario. \\
+CU-04 & Configurar criterios de cálculo de métricas & El usuario define cómo debe interpretar el sistema los datos de Jira para calcular métricas, incluyendo estados de inicio y fin, campos de esfuerzo, percentiles y criterios de agrupación. \\
 CU-05 & Consultar dashboard principal & El usuario visualiza las métricas clave del sistema en un dashboard principal. \\
 CU-06 & Analizar métricas de flujo & El usuario consulta métricas como Lead Time, Cycle Time, WIP y Throughput o Velocity según el contexto. \\
 CU-07 & Configurar reglas de alerta & El usuario define umbrales simples para detectar situaciones relevantes en las métricas calculadas. \\
-CU-08 & Consultar alertas & El usuario revisa alertas activas e históricas generadas por el sistema. \\
+CU-08 & Consultar alertas & El usuario revisa alertas activas e históricas conservadas por el sistema según la política de retención definida. \\
 CU-09 & Consultar logs del sistema & El usuario autenticado consulta eventos relevantes del sistema para diagnóstico y seguimiento. \\
 \bottomrule
 \end{longtable}
