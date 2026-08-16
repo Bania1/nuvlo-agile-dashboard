@@ -235,6 +235,49 @@ CU-09 & Consultar logs del sistema & El usuario autenticado consulta eventos rel
 \vspace{0.45em}
 }
 
+\subsection{Diagrama de casos de uso}
+
+La Figura~\ref{fig:casos-uso} representa de forma resumida los actores que interactúan con el sistema y los principales servicios que este ofrece desde el punto de vista funcional.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{diagrams/casos-uso.png}
+    \caption{Diagrama de casos de uso del sistema}
+    \label{fig:casos-uso}
+\end{figure}
+
+Para facilitar su interpretación, se resumen a continuación los elementos principales del diagrama:
+
+\begin{itemize}
+    \item \textbf{Frontera del sistema}: el rectángulo delimita las funcionalidades que pertenecen al sistema de visualización de métricas ágiles.
+    \item \textbf{Actores}: representan usuarios o sistemas externos que interactúan con el sistema.
+    \item \textbf{Casos de uso}: las elipses identifican funcionalidades observables por los actores.
+    \item \textbf{Generalización}: la flecha con triángulo hueco indica especialización entre actores.
+    \item \textbf{Inclusión}: la relación \textit{include} indica que un caso de uso necesita ejecutar otro como parte de su comportamiento.
+    \item \textbf{Extensión}: la relación \textit{extend} indica comportamiento opcional o condicionado que amplía otro caso de uso.
+\end{itemize}
+
+Los actores y sus relaciones principales son:
+
+\begin{itemize}
+    \item \textbf{Usuario}: actor general que puede iniciar el acceso al sistema mediante Atlassian.
+    \item \textbf{Usuario autenticado}: especialización de \textit{Usuario}; puede seleccionar el ámbito de análisis, actualizar datos, consultar dashboards, analizar métricas, configurar reglas de alerta, consultar alertas y revisar logs.
+    \item \textbf{Atlassian Cloud}: actor externo general que agrupa los servicios de Atlassian utilizados por el sistema.
+    \item \textbf{Atlassian OAuth}: especialización de \textit{Atlassian Cloud}; participa en la autenticación mediante Atlassian.
+    \item \textbf{Jira Cloud API}: especialización de \textit{Atlassian Cloud}; proporciona los datos de Jira necesarios para sincronización y cálculo de métricas.
+\end{itemize}
+
+Las relaciones entre casos de uso se interpretan de la siguiente forma:
+
+\begin{itemize}
+    \item \textbf{CU-05 incluye CU-02}: para consultar el dashboard principal es necesario seleccionar previamente el ámbito de análisis.
+    \item \textbf{CU-06 incluye CU-02}: el análisis de métricas de flujo también depende del ámbito de análisis seleccionado.
+    \item \textbf{CU-06 incluye CU-03}: para analizar métricas de flujo se requieren datos actualizados o previamente sincronizados desde Jira.
+    \item \textbf{CU-08 incluye CU-07}: la consulta de alertas parte de reglas de alerta configuradas.
+    \item \textbf{CU-08 extiende CU-05}: las alertas pueden complementar la consulta del dashboard cuando existan avisos relevantes.
+    \item \textbf{CU-09 extiende CU-03}: los logs pueden consultarse como apoyo al diagnóstico de procesos de actualización, errores o eventos relevantes.
+\end{itemize}
+
 \clearpage
 \section{Trazabilidad entre requisitos y casos de uso}
 
@@ -393,6 +436,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \end{longtable}
 \vspace{0.45em}
 }
+
 
 \clearpage
 \subsection{CU-04: Configurar criterios de cálculo de métricas}
@@ -585,4 +629,35 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \end{longtable}
 \vspace{0.45em}
 }
+
+\clearpage
+\section{Diagramas de secuencia}
+
+Los diagramas de secuencia complementan la descripción textual de los casos de uso mostrando el orden temporal de los mensajes intercambiados entre el usuario, la aplicación y los servicios externos. En esta memoria se incluyen únicamente los casos de uso más representativos, ya que son los que concentran la interacción con Atlassian, Jira Cloud API y la lógica principal del sistema.
+
+\subsection{CU-01: Autenticarse mediante Atlassian}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-01, centrado en el inicio de sesión del usuario mediante el proveedor de autenticación de Atlassian.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu01-autenticarse-atlassian.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-01}
+    \label{fig:secuencia-cu01-autenticarse-atlassian}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu01-autenticarse-atlassian} representa el proceso de autenticación mediante Atlassian. El usuario inicia sesión desde la aplicación, el sistema redirige la operación hacia Atlassian OAuth y, si la autenticación es válida, se crea una sesión autenticada. También se contempla el caso alternativo en el que el usuario cancela el proceso o Atlassian devuelve un error.
+
+\subsection{CU-03: Actualizar datos de Jira}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-03, correspondiente a la actualización de la información procedente de Jira y al tratamiento posterior de los datos obtenidos.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu03-actualizar-datos-jira.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-03}
+    \label{fig:secuencia-cu03-actualizar-datos-jira}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu03-actualizar-datos-jira} resume la actualización de datos desde Jira. El usuario autenticado solicita la actualización, el sistema comprueba si los datos almacenados siguen siendo válidos y, en caso contrario, consulta Jira Cloud API. A continuación, persiste la información obtenida, recalcula las métricas afectadas y comunica el resultado, contemplando también situaciones de error o datos incompletos.
 
