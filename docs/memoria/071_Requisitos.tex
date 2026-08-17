@@ -661,6 +661,8 @@ Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU
 
 La Figura~\ref{fig:secuencia-cu03-actualizar-datos-jira} resume la actualización de datos desde Jira. El usuario autenticado solicita la actualización, el sistema comprueba si los datos almacenados siguen siendo válidos y, en caso contrario, consulta Jira Cloud API. A continuación, persiste la información obtenida, recalcula las métricas afectadas y comunica el resultado, contemplando también situaciones de error o datos incompletos.
 
+\newpage
+
 \subsection{CU-05: Consultar dashboard principal}
 
 Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-05, centrado en la visualización del dashboard principal para un ámbito de análisis y unos filtros determinados.
@@ -672,5 +674,33 @@ Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU
     \label{fig:secuencia-cu05-consultar-dashboard-principal}
 \end{figure}
 
-La Figura~\ref{fig:secuencia-cu05-consultar-dashboard-principal} muestra cómo el usuario autenticado accede al dashboard, el frontend solicita los datos al backend y el sistema valida el ámbito y los filtros antes de recuperar las métricas disponibles. El diagrama contempla la respuesta normal con métricas y alertas relevantes, el caso alternativo en el que no existen datos o los filtros no devuelven resultados, y la actualización del dashboard cuando el usuario modifica los filtros o el rango temporal.
+La Figura~\ref{fig:secuencia-cu05-consultar-dashboard-principal} muestra cómo el usuario autenticado accede al dashboard, el frontend solicita los datos al backend y el sistema valida el ámbito y los filtros antes de recuperar las métricas disponibles. El diagrama contempla la respuesta normal con los datos necesarios para construir los widgets, el caso alternativo en el que no existen datos o los filtros no devuelven resultados, y la actualización del dashboard cuando el usuario modifica los filtros o el rango temporal.
+
+\subsection{CU-06: Analizar métricas de flujo}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-06, centrado en la consulta de métricas de flujo y rendimiento a partir de los datos sincronizados y los criterios de cálculo configurados.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu06-analizar-metricas-flujo.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-06}
+    \label{fig:secuencia-cu06-analizar-metricas-flujo}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu06-analizar-metricas-flujo} muestra cómo el usuario autenticado accede a la vista de análisis, el sistema valida el ámbito seleccionado y recupera los datos y criterios necesarios para calcular las métricas disponibles. El diagrama contempla el flujo normal de selección y cálculo de métricas, el caso alternativo en el que no existen datos suficientes, el registro de errores de cálculo y la actualización de resultados cuando el usuario modifica filtros o el periodo de análisis.
+
+\newpage
+
+\subsection{CU-07: Configurar reglas de alerta}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-07, centrado en la creación de reglas de alerta a partir de métricas disponibles y condiciones simples definidas por el usuario.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu07-configurar-reglas-alerta.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-07}
+    \label{fig:secuencia-cu07-configurar-reglas-alerta}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu07-configurar-reglas-alerta} muestra cómo el usuario autenticado accede a la configuración de alertas, selecciona una métrica y define una condición o umbral. El sistema valida la regla propuesta, comprueba que sea compatible con la métrica seleccionada y la almacena para que pueda evaluarse posteriormente cuando se actualicen las métricas. También se contempla el caso alternativo en el que la regla no es válida o no puede aplicarse a la métrica elegida.
 
