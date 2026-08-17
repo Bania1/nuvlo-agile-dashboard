@@ -661,3 +661,16 @@ Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU
 
 La Figura~\ref{fig:secuencia-cu03-actualizar-datos-jira} resume la actualización de datos desde Jira. El usuario autenticado solicita la actualización, el sistema comprueba si los datos almacenados siguen siendo válidos y, en caso contrario, consulta Jira Cloud API. A continuación, persiste la información obtenida, recalcula las métricas afectadas y comunica el resultado, contemplando también situaciones de error o datos incompletos.
 
+\subsection{CU-05: Consultar dashboard principal}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-05, centrado en la visualización del dashboard principal para un ámbito de análisis y unos filtros determinados.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu05-consultar-dashboard-principal.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-05}
+    \label{fig:secuencia-cu05-consultar-dashboard-principal}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu05-consultar-dashboard-principal} muestra cómo el usuario autenticado accede al dashboard, el frontend solicita los datos al backend y el sistema valida el ámbito y los filtros antes de recuperar las métricas disponibles. El diagrama contempla la respuesta normal con métricas y alertas relevantes, el caso alternativo en el que no existen datos o los filtros no devuelven resultados, y la actualización del dashboard cuando el usuario modifica los filtros o el rango temporal.
+
