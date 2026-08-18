@@ -703,4 +703,34 @@ Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU
 \end{figure}
 
 La Figura~\ref{fig:secuencia-cu07-configurar-reglas-alerta} muestra cómo el usuario autenticado accede a la configuración de alertas, selecciona una métrica y define una condición o umbral. El sistema valida la regla propuesta, comprueba que sea compatible con la métrica seleccionada y la almacena para que pueda evaluarse posteriormente cuando se actualicen las métricas. También se contempla el caso alternativo en el que la regla no es válida o no puede aplicarse a la métrica elegida.
+\clearpage
+\section{Diagrama de clases}
+
+El diagrama de clases muestra la estructura estática principal del sistema y las relaciones entre los conceptos del dominio. En este caso se representa una vista de análisis previa a la implementación, por lo que las clases describen entidades y responsabilidades del sistema sin depender de una tecnología concreta.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/clases-dominio-sistema.png}}
+    \caption{Diagrama de clases del sistema}
+    \label{fig:clases-dominio-sistema}
+\end{figure}
+
+La Figura~\ref{fig:clases-dominio-sistema} se interpreta a partir de los verbos situados sobre cada relación. El triángulo del verbo indica la dirección de lectura y las cardinalidades de los extremos concretan cuántas instancias pueden participar en cada asociación. Las clases del diagrama son las siguientes:
+
+\begin{itemize}
+    \item \texttt{UsuarioAutenticado}: representa al usuario que accede al sistema. Inicia sesiones de Atlassian y selecciona los ámbitos de análisis sobre los que desea trabajar.
+    \item \texttt{SesionAtlassian}: recoge la sesión iniciada mediante Atlassian. Queda asociada al usuario autenticado que la ha creado.
+    \item \texttt{AmbitoAnalisis}: define el alcance funcional del análisis. Usa una configuración de análisis, filtra proyectos de Jira, sincroniza datos y delimita las métricas calculadas.
+    \item \texttt{ConfiguracionAnalisis}: contiene los criterios de cálculo, filtros y parámetros seleccionados por el usuario. Parametriza las métricas calculadas que se obtienen para un ámbito.
+    \item \texttt{ProyectoJira}: representa un proyecto procedente de Jira. Es filtrado por el ámbito de análisis, contiene tableros e incluye incidencias.
+    \item \texttt{TableroJira}: modela un tablero de trabajo de Jira. Pertenece a un proyecto y organiza los sprints utilizados en el análisis.
+    \item \texttt{Sprint}: representa una iteración de trabajo. Está organizado por un tablero y agrupa las incidencias planificadas o revisadas durante ese periodo.
+    \item \texttt{IncidenciaJira}: modela una tarea, historia, error u otro elemento importado desde Jira. Pertenece al proyecto, puede estar agrupada en un sprint, registra transiciones de estado, es actualizada por la sincronización y alimenta el cálculo de métricas.
+    \item \texttt{TransicionEstado}: representa un cambio de estado de una incidencia. Queda registrada por la incidencia a la que pertenece y permite analizar tiempos de flujo.
+    \item \texttt{SincronizacionDatos}: representa el proceso de actualización de información desde Jira. Se ejecuta dentro de un ámbito de análisis, actualiza incidencias y registra eventos en el log del sistema.
+    \item \texttt{MetricaCalculada}: almacena el resultado de aplicar los criterios de análisis. Está parametrizada por la configuración, delimitada por el ámbito y alimentada por las incidencias; además, puede ser evaluada por reglas de alerta.
+    \item \texttt{ReglaAlerta}: define una condición o umbral configurable. Evalúa métricas calculadas y genera alertas cuando se cumplen sus condiciones.
+    \item \texttt{AlertaActivada}: representa una alerta producida por una regla. Se genera a partir de una regla de alerta y registra su aparición en el log del sistema.
+    \item \texttt{LogSistema}: recoge eventos relevantes del sistema. Registra tanto procesos de sincronización como alertas activadas para facilitar la trazabilidad.
+\end{itemize}
 
