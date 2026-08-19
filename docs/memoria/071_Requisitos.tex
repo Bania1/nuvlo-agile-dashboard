@@ -780,3 +780,46 @@ Las relaciones principales muestran que el usuario accede al cliente web, el cli
 
 
 
+
+\clearpage
+\section{Prototipo de vistas de la aplicación}
+
+El prototipo de vistas recoge una aproximación visual inicial de la interfaz del sistema. Su objetivo no es cerrar el diseño gráfico definitivo, sino comprobar que las funcionalidades principales descritas en los casos de uso tienen una representación coherente en pantalla: consulta de métricas, revisión del tablero, autenticación, trazabilidad de actividad, gestión de alertas y configuración de la cuenta. Para evitar que el mockup completo pierda legibilidad al insertarse en una única figura, se divide en varios bloques funcionales.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.18\textwidth]{diagrams/vistas-panel-tablero.png}}
+    \caption{Prototipo de las vistas de panel de métricas y tablero Kanban}
+    \label{fig:vistas-panel-tablero}
+\end{figure}
+
+La Figura~\ref{fig:vistas-panel-tablero} muestra las dos vistas principales de consulta. El panel de métricas concentra los indicadores de flujo y actividad del proyecto, mientras que el tablero Kanban permite revisar el estado de las incidencias sincronizadas desde Jira.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-login-registro.png}}
+    \caption{Prototipo de las vistas de inicio de sesión y registro de actividad}
+    \label{fig:vistas-login-registro}
+\end{figure}
+
+La Figura~\ref{fig:vistas-login-registro} agrupa la entrada al sistema mediante Jira y la vista de registro de actividad. Esta última facilita la trazabilidad de sincronizaciones, actualizaciones y eventos relevantes del sistema.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-alertas-prototipo.png}}
+    \caption{Prototipo de la vista de gestión de alertas}
+    \label{fig:vistas-alertas-prototipo}
+\end{figure}
+
+La Figura~\ref{fig:vistas-alertas-prototipo} completa el flujo de alertas previsto en el sistema. La vista permite revisar avisos activos, filtrar por proyecto, estado o métrica, consultar su prioridad y configurar reglas basadas en umbrales para las métricas principales.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-configuracion.png}}
+    \caption{Prototipo de la vista de configuración de la cuenta}
+    \label{fig:vistas-configuracion}
+\end{figure}
+
+La Figura~\ref{fig:vistas-configuracion} presenta la vista de configuración, desde la que el usuario puede revisar información de perfil, gestionar integraciones y acceder a acciones de sesión o cuenta. Esta vista se relaciona con los requisitos de autenticación, configuración del entorno de análisis y gestión básica del acceso al sistema.
+
+
