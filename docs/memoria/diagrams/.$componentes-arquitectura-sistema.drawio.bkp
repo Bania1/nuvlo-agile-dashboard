@@ -1,0 +1,172 @@
+<mxfile host="Electron" agent="Codex">
+  <diagram id="4b9f49da-5724-4946-b870-f185bdc19b4a" name="Página-1">
+    <mxGraphModel dx="2357" dy="1602" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1150" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=34;fontStyle=1;fontFamily=Arial;align=center;verticalAlign=middle;" value="Diagrama de componentes" vertex="1">
+          <mxGeometry height="50" width="1200" x="380" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="cliente" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3f3f3;strokeColor=#444444;strokeWidth=2;fontSize=28;fontStyle=1;fontFamily=Arial;align=center;verticalAlign=top;spacingTop=18;container=1;recursiveResize=0;" value="Cliente web" vertex="1">
+          <mxGeometry height="740" width="420" x="260" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="backend" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3f3f3;strokeColor=#444444;strokeWidth=2;fontSize=28;fontStyle=1;fontFamily=Arial;align=center;verticalAlign=top;spacingTop=18;container=1;recursiveResize=0;" value="Servidor de aplicación" vertex="1">
+          <mxGeometry height="740" width="720" x="780" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="metricas" parent="backend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Cálculo de métricas" vertex="1">
+          <mxGeometry height="120" width="260" x="20" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="externos" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3f3f3;strokeColor=#444444;strokeWidth=2;fontSize=28;fontStyle=1;fontFamily=Arial;align=center;verticalAlign=top;spacingTop=18;container=1;recursiveResize=0;" value="Servicios externos" vertex="1">
+          <mxGeometry height="240" width="360" x="1710" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="persist" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3f3f3;strokeColor=#444444;strokeWidth=2;fontSize=28;fontStyle=1;fontFamily=Arial;align=center;verticalAlign=top;spacingTop=18;container=1;recursiveResize=0;" value="Persistencia" vertex="1">
+          <mxGeometry height="435" width="590" x="1595" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="repo" parent="persist" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Repositorios" vertex="1">
+          <mxGeometry height="90" width="250" x="50" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="db" parent="persist" style="shape=cylinder3d;whiteSpace=wrap;boundedLbl=1;backgroundOutline=1;size=15;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;" value="Base de datos&lt;br&gt;del sistema" vertex="1">
+          <mxGeometry height="90" width="230" x="60" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="e_repo_db" edge="1" parent="persist" source="repo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;" target="db" value="CRUD">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jira" parent="persist" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f7f7f7;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;" value="Jira Cloud API" vertex="1">
+          <mxGeometry height="90" width="240" x="325" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="usuario" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f7f7f7;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;" value="Usuario autenticado" vertex="1">
+          <mxGeometry height="120" width="180" x="10" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="oauth" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f7f7f7;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;" value="Atlassian OAuth" vertex="1">
+          <mxGeometry height="90" width="240" x="1770" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Interfaz web" vertex="1">
+          <mxGeometry height="100" width="250" x="345" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="dashboard" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Dashboard y vistas" vertex="1">
+          <mxGeometry height="100" width="250" x="345" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="filtros" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Filtros y configuración" vertex="1">
+          <mxGeometry height="100" width="250" x="345" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;API REST" vertex="1">
+          <mxGeometry height="100" width="250" x="1015" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="sesion" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Control de sesión" vertex="1">
+          <mxGeometry height="100" width="250" x="850" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="sync" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Sincronización Jira" vertex="1">
+          <mxGeometry height="100" width="260" x="1180" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="alertas" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;strokeWidth=2;fontSize=26;fontFamily=Arial;align=center;verticalAlign=middle;spacing=10;shape=component;jettyWidth=18;jettyHeight=8;" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Alertas y logs" vertex="1">
+          <mxGeometry height="100" width="250" x="1180" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="e_user_front" edge="1" parent="1" source="usuario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="frontend" value="Acceso web">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="90" y="345" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_front_api" edge="1" parent="1" source="frontend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;" target="api" value="HTTPS / JSON">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="345" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dash_front" edge="1" parent="1" source="dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;" target="frontend" value="Usa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_filt_front" edge="1" parent="1" source="filtros" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="dashboard" value="Usa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_api_sesion" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;" target="sesion" value="Autenticación">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="975" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_sesion_oauth" edge="1" parent="1" source="sesion" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="oauth" value="OAuth 2.0">
+          <mxGeometry relative="1" x="0.5186" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1037.5" y="460" />
+              <mxPoint x="1600" y="460" />
+              <mxPoint x="1600" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_api_sync" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;" target="sync" value="Actualización">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1305" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_sync_jira" edge="1" parent="1" source="sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="jira" value="Jira REST API">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1570" y="505" />
+              <mxPoint x="1570" y="580" />
+              <mxPoint x="2040" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_api_metricas" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;" target="metricas" value="Consulta métricas">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="975" y="615" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_metricas_alertas" edge="1" parent="1" source="metricas" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" target="alertas" value="Evalúa umbrales">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="995.06" y="820.06" />
+              <mxPoint x="1242.47" y="820.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_sync_repo" edge="1" parent="1" source="sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;" target="repo" value="Datos Jira">
+          <mxGeometry relative="1" x="0.2121" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1540" y="530" />
+              <mxPoint x="1540" y="655" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_metricas_repo" edge="1" parent="1" source="metricas" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" target="repo" value="Métricas">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="975" y="870" />
+              <mxPoint x="1540" y="870" />
+              <mxPoint x="1540" y="770" />
+              <mxPoint x="1702.57" y="770" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_alertas_repo" edge="1" parent="1" source="alertas" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;strokeColor=#111111;strokeWidth=2;dashed=1;fontSize=24;fontFamily=Arial;align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" target="repo" value="Alertas / logs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1540" y="740" />
+              <mxPoint x="1540" y="688" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
