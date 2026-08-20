@@ -782,6 +782,30 @@ Las relaciones principales muestran que el usuario accede al cliente web, el cli
 
 
 \clearpage
+\section{Diagrama de despliegue}
+
+El diagrama de despliegue representa la distribución física prevista del sistema sobre nodos de ejecución. Según la notación UML, un nodo modela un recurso computacional o entorno de ejecución, un artefacto representa una unidad desplegable del sistema y las rutas de comunicación indican cómo se conectan dichos nodos durante la ejecución~\cite{OMGUML251}. En este trabajo se utiliza para mostrar cómo se ubican el cliente web, el backend, la base de datos, la caché y los servicios externos de Atlassian.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.25\textwidth]{diagrams/despliegue-sistema.png}}
+    \caption{Diagrama de despliegue del sistema}
+    \label{fig:despliegue-sistema}
+\end{figure}
+
+La Figura~\ref{fig:despliegue-sistema} distingue entre el cliente del usuario, la infraestructura propia del sistema y las dependencias externas. El usuario accede desde su navegador al frontend mediante \texttt{HTTPS}; el frontend consume la \texttt{API REST} del servidor de aplicación; y el backend coordina la autenticación, sincronización, cálculo de métricas, gestión de alertas y acceso a datos.
+
+\begin{itemize}
+    \item \textbf{Navegador del usuario}: ejecuta el cliente web y muestra las vistas de panel, tablero, registro, alertas y configuración.
+    \item \textbf{Servidor web / hosting frontend}: aloja el artefacto frontend compuesto por los recursos \texttt{HTML}, \texttt{CSS} y \texttt{JavaScript} de la aplicación.
+    \item \textbf{Servidor de aplicación}: despliega la \texttt{API REST} y los servicios internos encargados de sesión, sincronización con Jira, cálculo de métricas y alertas.
+    \item \textbf{Caché del sistema}: almacena temporalmente datos recientes de Jira, resultados de métricas o información de sesión para reducir lecturas repetidas y evitar recálculos innecesarios.
+    \item \textbf{Base de datos del sistema}: conserva la información persistente, incluyendo datos sincronizados, configuraciones, métricas calculadas, alertas y logs.
+    \item \textbf{Atlassian Cloud}: agrupa los servicios externos usados por el sistema. \texttt{Atlassian OAuth} permite autenticar al usuario y \texttt{Jira Cloud API} proporciona los datos de proyectos, tableros, sprints e incidencias.
+\end{itemize}
+
+Las rutas de comunicación muestran que el navegador puede ser redirigido a Atlassian durante la autenticación OAuth, mientras que el servidor de aplicación se comunica con Jira mediante peticiones \texttt{REST}. La caché se sitúa entre la lógica de aplicación y la persistencia para acelerar consultas frecuentes, pero la base de datos mantiene la información definitiva del sistema.
+\clearpage
 \section{Prototipo de vistas de la aplicación}
 
 El prototipo de vistas recoge una aproximación visual inicial de la interfaz del sistema. Su objetivo no es cerrar el diseño gráfico definitivo, sino comprobar que las funcionalidades principales descritas en los casos de uso tienen una representación coherente en pantalla: consulta de métricas, revisión del tablero, autenticación, trazabilidad de actividad, gestión de alertas y configuración de la cuenta. Para evitar que el mockup completo pierda legibilidad al insertarse en una única figura, se divide en varios bloques funcionales.
@@ -821,5 +845,6 @@ La Figura~\ref{fig:vistas-alertas-prototipo} completa el flujo de alertas previs
 \end{figure}
 
 La Figura~\ref{fig:vistas-configuracion} presenta la vista de configuración, desde la que el usuario puede revisar información de perfil, gestionar integraciones y acceder a acciones de sesión o cuenta. Esta vista se relaciona con los requisitos de autenticación, configuración del entorno de análisis y gestión básica del acceso al sistema.
+
 
 

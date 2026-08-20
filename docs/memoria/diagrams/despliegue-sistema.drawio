@@ -1,0 +1,119 @@
+<mxfile host="Electron" agent="Codex">
+  <diagram id="despliegue" name="Diagrama de despliegue">
+    <mxGraphModel dx="2020" dy="1373" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="b1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;dashed=1;dashPattern=8 6;fontFamily=Arial;fontSize=26;align=center;verticalAlign=top;spacingTop=8;labelBackgroundColor=none;labelBorderColor=default;opacity=60;" value="" vertex="1">
+          <mxGeometry height="330" width="360" x="25" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;dashed=1;dashPattern=8 6;fontFamily=Arial;fontSize=26;align=center;verticalAlign=top;spacingTop=8;" value="" vertex="1">
+          <mxGeometry height="870" width="1040" x="400" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;dashed=1;dashPattern=8 6;fontFamily=Arial;fontSize=26;align=center;verticalAlign=top;spacingTop=8;" value="" vertex="1">
+          <mxGeometry height="360" width="430" x="1460" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=30;fontStyle=1;align=center;verticalAlign=middle;spacing=4;" value="Cliente" vertex="1">
+          <mxGeometry height="42" width="360" x="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=30;fontStyle=1;align=center;verticalAlign=middle;spacing=4;" value="Infraestructura del sistema" vertex="1">
+          <mxGeometry height="42" width="860" x="490" as="geometry" />
+        </mxCell>
+        <mxCell id="t3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=30;fontStyle=1;align=center;verticalAlign=middle;spacing=4;" value="Servicios externos" vertex="1">
+          <mxGeometry height="42" width="430" x="1452.5" as="geometry" />
+        </mxCell>
+        <mxCell id="browser" parent="1" style="shape=folder;tabWidth=78;tabHeight=24;tabPosition=left;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#111111;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=top;spacingTop=24;spacing=12;" value="«device»&lt;br&gt;&lt;b&gt;Navegador del usuario&lt;/b&gt;" vertex="1">
+          <mxGeometry height="225" width="310" x="50" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend" parent="1" style="shape=folder;tabWidth=78;tabHeight=24;tabPosition=left;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#111111;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=top;spacingTop=24;spacing=12;" value="«executionEnvironment»&lt;br&gt;&lt;b&gt;Hosting frontend&lt;/b&gt;" vertex="1">
+          <mxGeometry height="235" width="330" x="550" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="backend" parent="1" style="shape=folder;tabWidth=78;tabHeight=24;tabPosition=left;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#111111;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=top;spacingTop=24;spacing=12;" value="«executionEnvironment»&lt;br&gt;&lt;b&gt;Servidor de aplicación&lt;/b&gt;" vertex="1">
+          <mxGeometry height="280" width="430" x="410" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="cache" parent="1" style="shape=folder;tabWidth=78;tabHeight=24;tabPosition=left;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#111111;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=top;spacingTop=24;spacing=12;" value="«executionEnvironment»&lt;br&gt;&lt;b&gt;Caché del sistema&lt;/b&gt;" vertex="1">
+          <mxGeometry height="240" width="325" x="1100" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="database" parent="1" style="shape=cylinder3d;boundedLbl=1;backgroundOutline=1;size=15;rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#111111;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=top;spacing=10;" value="«database»&lt;br&gt;&lt;b&gt;Base de datos del sistema&lt;/b&gt;" vertex="1">
+          <mxGeometry height="180" width="345" x="1080" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="atlassian" parent="1" style="shape=folder;tabWidth=78;tabHeight=24;tabPosition=left;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#111111;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=top;spacingTop=24;spacing=12;" value="«executionEnvironment»&lt;br&gt;&lt;b&gt;Atlassian Cloud&lt;/b&gt;" vertex="1">
+          <mxGeometry height="270" width="375" x="1480" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="a_browser" parent="1" style="shape=note;size=18;rounded=0;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8fafc;strokeColor=#334155;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=bottom;spacing=10;" value="«artifact»&lt;br&gt;Cliente web" vertex="1">
+          <mxGeometry height="80" width="205" x="105" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="a_frontend" parent="1" style="shape=note;size=18;rounded=0;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8fafc;strokeColor=#334155;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=bottom;spacing=10;" value="«artifact»&lt;br&gt;Aplicación frontend" vertex="1">
+          <mxGeometry height="80" width="240" x="595" y="282.5" as="geometry" />
+        </mxCell>
+        <mxCell id="a_api" parent="1" style="shape=note;size=18;rounded=0;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8fafc;strokeColor=#334155;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=bottom;spacing=10;" value="«artifact»&lt;br&gt;API REST" vertex="1">
+          <mxGeometry height="80" width="180" x="420" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="a_services" parent="1" style="shape=note;size=18;rounded=0;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8fafc;strokeColor=#334155;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=bottom;spacing=10;" value="«artifact»&lt;br&gt;Servicios internos" vertex="1">
+          <mxGeometry height="90" width="225" x="610" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="a_cache" parent="1" style="shape=note;size=18;rounded=0;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8fafc;strokeColor=#334155;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=bottom;spacing=10;" value="«artifact»&lt;br&gt;Datos temporales" vertex="1">
+          <mxGeometry height="90" width="250" x="1140" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="a_db" parent="1" style="shape=note;size=18;rounded=0;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8fafc;strokeColor=#334155;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=bottom;spacing=10;" value="«artifact»&lt;br&gt;Esquema relacional" vertex="1">
+          <mxGeometry height="80" width="250" x="1127.5" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="a_oauth" parent="1" style="shape=note;size=18;rounded=0;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8fafc;strokeColor=#334155;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=bottom;spacing=10;labelPosition=center;verticalLabelPosition=middle;" value="«artifact»&lt;br&gt;Atlassian OAuth" vertex="1">
+          <mxGeometry height="105" width="160" x="1495" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="a_jira" parent="1" style="shape=note;size=18;rounded=0;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#f8fafc;strokeColor=#334155;fontFamily=Arial;fontSize=26;fontStyle=0;align=center;verticalAlign=bottom;spacing=10;" value="«artifact»&lt;br&gt;Jira Cloud API" vertex="1">
+          <mxGeometry height="105" width="160" x="1675" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="c1" edge="1" parent="1" source="browser" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#111111;strokeWidth=2;fontFamily=Arial;fontSize=24;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;exitX=1;exitY=0.52;entryX=0;entryY=0.52;" target="frontend" value="HTTPS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" edge="1" parent="1" source="frontend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#111111;strokeWidth=2;fontFamily=Arial;fontSize=24;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;entryX=0;entryY=0;entryDx=219;entryDy=24;entryPerimeter=0;" target="backend" value="HTTPS / JSON REST">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c3" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#111111;strokeWidth=2;fontFamily=Arial;fontSize=24;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;exitX=1;exitY=0.42;entryX=0;entryY=0.42;" target="cache" value="Lectura/escritura caché">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#111111;strokeWidth=2;fontFamily=Arial;fontSize=24;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;exitX=1;exitY=0.82;entryX=0;entryY=0.55;" target="database" value="SQL / ORM">
+          <mxGeometry relative="1" x="0.2223" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="840" y="717" />
+              <mxPoint x="950" y="717" />
+              <mxPoint x="950" y="829" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c5" edge="1" parent="1" source="cache" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#111111;strokeWidth=2;fontFamily=Arial;fontSize=24;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;exitX=0.5;exitY=1;entryX=0.527;entryY=-0.012;entryDx=0;entryDy=0;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" target="database" value="Persistencia definitiva">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1262.47" y="730.06" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c6" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#111111;strokeWidth=2;fontFamily=Arial;fontSize=24;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;entryX=0;entryY=0;entryDx=0;entryDy=147;entryPerimeter=0;exitX=0;exitY=0;exitDx=254;exitDy=24;exitPerimeter=0;" target="atlassian" value="OAuth 2.0 / REST Jira">
+          <mxGeometry relative="1" x="0.2462" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="664" y="550.14" />
+              <mxPoint x="810" y="550.14" />
+              <mxPoint x="810" y="420.14" />
+              <mxPoint x="920" y="420.14" />
+              <mxPoint x="920" y="277" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c7" edge="1" parent="1" source="browser" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;startArrow=none;strokeColor=#111111;strokeWidth=2;fontFamily=Arial;fontSize=24;labelBackgroundColor=#ffffff;align=center;verticalAlign=middle;exitX=0;exitY=0;entryX=0;entryY=0;entryDx=226.5;entryDy=24;entryPerimeter=0;exitDx=194;exitDy=24;exitPerimeter=0;" target="atlassian" value="Redirección OAuth">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="174.06" />
+              <mxPoint x="240" y="115" />
+              <mxPoint x="1706.47" y="115" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
