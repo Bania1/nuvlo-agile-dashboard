@@ -25,3 +25,22 @@ Thumbs.db
 
 # Entorno (variables sensibles)
 src/jira-backend-test/.env
+
+# Nuvlo app
+node_modules/
+apps/*/node_modules/
+packages/*/node_modules/
+.env
+.env.*
+!.env.example
+dist/
+coverage/
+playwright-report/
+test-results/
+
+# Local secret material
+*.pem
+*.key
+# Local/private TFG support notes
+docs/compliance/
+.local-notes/

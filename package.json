@@ -1,0 +1,32 @@
+{
+  "name": "nuvlo-tfg",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Nuvlo - dashboard de metricas agiles conectado con Jira Cloud",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "npm run dev --workspace=@nuvlo/api",
+    "dev:web": "npm run dev --workspace=@nuvlo/web",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:generate": "npx prisma generate --schema prisma/schema.prisma",
+    "db:migrate": "npx prisma migrate dev --schema prisma/schema.prisma",
+    "db:push": "npx prisma db push --schema prisma/schema.prisma",
+    "db:seed": "node prisma/seed-demo.js"
+  },
+  "devDependencies": {
+    "prisma": "6.12.0"
+  },
+  "overrides": {},
+  "dependencies": {
+    "@prisma/client": "^6.12.0"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  }
+}

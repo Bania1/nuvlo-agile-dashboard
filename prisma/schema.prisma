@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MetricType {
+  VELOCITY
+  WIP
+  LEAD_TIME
+  CYCLE_TIME
+  THROUGHPUT
+}
+
+enum AlertOperator {
+  GT
+  GTE
+  LT
+  LTE
+}
+
+enum AlertStatus {
+  ACTIVE
+  RESOLVED
+}
+
+enum LogEventType {
+  AUTH
+  SYNC
+  METRIC_CALC
+  ALERT
+  JIRA_ERROR
+  SYSTEM_ERROR
+  USER_ACTION
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  atlassianAccountId String   @unique
+  email              String?
+  displayName        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  sessions       AtlassianSession[]
+  analysisScopes AnalysisScope[]
+  logs           ActivityLog[]
+}
+
+model AtlassianSession {
+  id                    String   @id @default(uuid())
+  userId                String
+  cloudId               String
+  siteName              String?
+  siteUrl               String?
+  encryptedAccessToken  String
+  encryptedRefreshToken String?
+  scopes                String[]
+  expiresAt             DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cloudId])
+}
+
+model JiraProject {
+  id        String  @id @default(uuid())
+  cloudId   String
+  jiraId    String
+  key       String
+  name      String
+  avatarUrl String?
+
+  boards Board[]
+  issues Issue[]
+  scopes AnalysisScope[]
+
+  @@unique([cloudId, jiraId])
+}
+
+model Board {
+  id        String @id @default(uuid())
+  jiraId    Int
+  name      String
+  type      String
+  projectId String
+
+  project JiraProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sprints Sprint[]
+
+  @@unique([jiraId, projectId])
+}
+
+model Sprint {
+  id           String    @id @default(uuid())
+  jiraId       Int
+  name         String
+  state        String
+  startDate    DateTime?
+  endDate      DateTime?
+  completeDate DateTime?
+  boardId      String
+
+  board  Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  issues Issue[]
+
+  @@unique([jiraId, boardId])
+}
+
+model Issue {
+  id             String   @id @default(uuid())
+  jiraId         String
+  key            String
+  summary        String
+  issueType      String
+  status         String
+  statusCategory String
+  priority       String?
+  assignee       String?
+  labels         String[]
+  storyPoints    Float?
+  jiraCreatedAt  DateTime
+  jiraUpdatedAt  DateTime
+  projectId      String
+  sprintId       String?
+
+  project     JiraProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sprint      Sprint?     @relation(fields: [sprintId], references: [id], onDelete: SetNull)
+  transitions IssueTransition[]
+
+  @@unique([jiraId, projectId])
+}
+
+model IssueTransition {
+  id         String   @id @default(uuid())
+  issueId    String
+  fromStatus String?
+  toStatus   String
+  happenedAt DateTime
+
+  issue Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+}
+
+model AnalysisScope {
+  id              String   @id @default(uuid())
+  userId          String
+  projectId       String?
+  name            String
+  boardJiraId     Int?
+  sprintJiraId    Int?
+  labels          String[]
+  issueTypes      String[]
+  dateFrom        DateTime?
+  dateTo          DateTime?
+  startStatuses   String[]
+  doneStatuses    String[]
+  effortField     String?
+  percentileMarks Float[]
+  lastSyncAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project JiraProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  metrics Metric[]
+  alerts  AlertRule[]
+}
+
+model Metric {
+  id        String     @id @default(uuid())
+  scopeId   String
+  type      MetricType
+  value     Float
+  unit      String
+  periodKey String?
+  metadata  Json?
+  createdAt DateTime   @default(now())
+
+  scope AnalysisScope @relation(fields: [scopeId], references: [id], onDelete: Cascade)
+}
+
+model AlertRule {
+  id         String        @id @default(uuid())
+  scopeId    String
+  metricType MetricType
+  operator   AlertOperator
+  threshold  Float
+  enabled    Boolean       @default(true)
+  createdAt  DateTime      @default(now())
+
+  scope  AnalysisScope @relation(fields: [scopeId], references: [id], onDelete: Cascade)
+  events AlertEvent[]
+}
+
+model AlertEvent {
+  id          String      @id @default(uuid())
+  ruleId      String
+  status      AlertStatus
+  value       Float
+  triggeredAt DateTime    @default(now())
+  resolvedAt  DateTime?
+
+  rule AlertRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+}
+
+model SyncRun {
+  id          String   @id @default(uuid())
+  scopeId     String?
+  status      String
+  startedAt   DateTime @default(now())
+  finishedAt  DateTime?
+  imported    Json?
+  errorMessage String?
+}
+
+model ActivityLog {
+  id        String       @id @default(uuid())
+  userId    String?
+  eventType LogEventType
+  message   String
+  metadata  Json?
+  createdAt DateTime     @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
