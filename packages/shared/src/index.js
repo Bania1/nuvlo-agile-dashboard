@@ -14,3 +14,5 @@ export const jiraScopes = [
   'read:jira-user',
   'offline_access',
 ];
+
+export { createDemoDataset, demoRowsToCsv, parseDemoCsv, rowsToDemoDataset, simulateDemoDataset } from './demoData.js';

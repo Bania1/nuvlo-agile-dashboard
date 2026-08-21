@@ -6,29 +6,7 @@ import rateLimit from 'express-rate-limit';
 import { env } from './config/env.js';
 import { authRequired, clearSessionCookie, setSessionCookie, signSession } from './security/session.js';
 import { createAuthorizationRequest, exchangeAuthorizationCode, fetchAccessibleResources, fetchAtlassianProfile } from './services/atlassianOAuth.js';
-import { calculateFlowMetrics } from './services/metrics.js';
-
-const demoIssues = [
-  {
-    key: 'TFG-1',
-    status: 'Done',
-    storyPoints: 5,
-    createdAt: '2026-05-01T09:00:00.000Z',
-    transitions: [
-      { fromStatus: 'To Do', toStatus: 'In Progress', at: '2026-05-02T09:00:00.000Z' },
-      { fromStatus: 'In Progress', toStatus: 'Done', at: '2026-05-05T09:00:00.000Z' },
-    ],
-  },
-  {
-    key: 'TFG-2',
-    status: 'In Progress',
-    storyPoints: 3,
-    createdAt: '2026-05-03T09:00:00.000Z',
-    transitions: [
-      { fromStatus: 'To Do', toStatus: 'In Progress', at: '2026-05-04T09:00:00.000Z' },
-    ],
-  },
-];
+import { buildDemoDashboard } from './services/demoDashboard.js';
 
 export function createApp() {
   const app = express();
@@ -86,11 +64,12 @@ export function createApp() {
     res.json({ userId: req.session.sub, atlassianAccountId: req.session.atlassianAccountId });
   });
 
-  app.get('/api/dashboard/demo', (_req, res) => {
-    res.json(calculateFlowMetrics({
-      issues: demoIssues,
-      config: { startStatuses: ['In Progress'], doneStatuses: ['Done'] },
-    }));
+  app.get('/api/dashboard/demo', async (_req, res, next) => {
+    try {
+      res.json(await buildDemoDashboard());
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.use((error, _req, res, _next) => {

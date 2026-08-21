@@ -46,6 +46,7 @@ cp .env.example .env
 npm install
 docker compose up -d
 npm run db:generate
+npm run demo:data
 npm run db:push
 npm run db:seed
 npm run dev
