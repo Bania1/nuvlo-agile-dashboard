@@ -80,6 +80,17 @@ export async function buildDemoDashboard() {
       statusBreakdown: statusBreakdown(dataset.issues),
     },
     recentIssues: recentIssues(dataset.issues),
+    issues: dataset.issues.map((issue) => ({
+      key: issue.key,
+      summary: issue.summary,
+      status: issue.status,
+      type: issue.issueType,
+      team: issue.team,
+      points: issue.storyPoints,
+      assignee: issue.assignee,
+      sprintId: issue.sprintId,
+      updatedAt: issue.updatedAt,
+    })),
     warnings: [
       {
         title: 'Demo offline',

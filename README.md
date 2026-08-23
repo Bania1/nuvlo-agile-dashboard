@@ -54,6 +54,10 @@ npm run dev
 
 La web arranca en `http://localhost:5174` y la API en `http://localhost:3002`.
 
+La demo visual sigue el planteamiento de los prototipos de `docs/memoria/diagrams`: navegacion lateral con Dashboard, Tablero, Alertas, Actividad, Configuracion y proyectos importados. Algunas vistas se iran implementando progresivamente, pero la estructura ya queda alineada con la memoria.
+
+Rutas demo disponibles: `/dashboard`, `/dashboard/board`, `/dashboard/alerts`, `/dashboard/activity` y `/dashboard/settings`. Todas usan el dataset CSV offline y se actualizan cada 5 segundos para simular una sincronizacion.
+
 > Nota: si trabajas dentro de WSL, usa Node.js 24 LTS dentro de Ubuntu antes de ejecutar los scripts de la app. El entorno Windows puede tener Node instalado, pero no siempre puede acceder al filesystem de WSL por permisos.
 
 ## Seguridad
