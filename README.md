@@ -60,6 +60,63 @@ Rutas demo disponibles: `/dashboard`, `/dashboard/board`, `/dashboard/alerts`, `
 
 > Nota: si trabajas dentro de WSL, usa Node.js 24 LTS dentro de Ubuntu antes de ejecutar los scripts de la app. El entorno Windows puede tener Node instalado, pero no siempre puede acceder al filesystem de WSL por permisos.
 
+
+## Acceso a PostgreSQL y Redis
+
+Para inspeccion rapida por CLI:
+
+```bash
+docker exec -it nuvlo_postgres psql -U nuvlo -d nuvlo
+docker exec -it nuvlo_redis redis-cli
+```
+
+Comandos utiles dentro de PostgreSQL:
+
+```sql
+\dt
+SELECT email, "displayName" FROM "User";
+SELECT "siteUrl", scopes, "expiresAt" FROM "AtlassianSession";
+```
+
+Comandos utiles dentro de Redis:
+
+```txt
+PING
+KEYS *
+INFO memory
+```
+
+Tambien hay UIs opcionales mediante perfil Docker:
+
+```bash
+docker compose --profile tools up -d
+```
+
+- pgAdmin: `http://localhost:5050`. Login con `PGADMIN_DEFAULT_EMAIL` y `PGADMIN_DEFAULT_PASSWORD` del `.env`. Para registrar el servidor usa host `postgres`, puerto `5432`, base `nuvlo`, usuario `nuvlo` y la contrasena `POSTGRES_PASSWORD`.
+- RedisInsight: `http://localhost:5540`. Para conectar Redis usa host `redis` y puerto `6379`.
+
+Estas herramientas no se levantan por defecto para mantener ligero el entorno local.
+
+
+## Configurar OAuth Atlassian en local
+
+1. Crea una app OAuth 2.0 en Atlassian Developer Console.
+2. Anade como callback URL: `http://localhost:3002/api/auth/atlassian/callback`.
+3. Configura en `.env` `ATLASSIAN_CLIENT_ID`, `ATLASSIAN_CLIENT_SECRET` y `ATLASSIAN_REDIRECT_URI`.
+4. Genera secretos locales fuertes:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
+```
+
+Usa el primer valor para `ENCRYPTION_KEY` y el segundo para `JWT_SECRET`. No los subas a Git.
+
+El flujo real empieza en `http://localhost:3002/api/auth/atlassian/start`, redirige a Atlassian y vuelve a `/dashboard` si el callback termina correctamente.
+
+Con sesion OAuth activa, `GET /api/jira/projects` lee los proyectos reales del sitio Jira autorizado y la vista `/dashboard/settings` los muestra junto al modo demo.
+Tambien se expone `GET /api/jira/projects/:projectKey/issues`, que usa `search/jql` de Jira Cloud para leer issues del proyecto autorizado y alimentar el tablero real cuando hay sesion OAuth.
+
 ## Seguridad
 
 - No hay registro local ni contrasena propia.
@@ -78,6 +135,7 @@ Consulta:
 - `docs/decisions/0001-monorepo-workspaces.md`
 - `docs/decisions/0002-security-and-jira-api.md`
 - `docs/decisions/0003-testing-strategy.md`
+- `docs/decisions/0004-atlassian-oauth-flow.md`
 
 ---
 

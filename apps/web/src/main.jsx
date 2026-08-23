@@ -70,6 +70,8 @@ function Landing() {
 
 function DashboardApp() {
   const [data, setData] = useState(null);
+  const [jiraProjects, setJiraProjects] = useState(null);
+  const [jiraIssues, setJiraIssues] = useState(null);
   const [currentPath, setCurrentPath] = useState(() => normalizePath(window.location.pathname));
 
   useEffect(() => {
@@ -79,6 +81,44 @@ function DashboardApp() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  useEffect(() => {
+    let alive = true;
+    async function loadJiraProjects() {
+      try {
+        const response = await fetch(`${apiUrl}/api/jira/projects`, { credentials: 'include' });
+        if (!response.ok) return;
+        const payload = await response.json();
+        if (alive) setJiraProjects(payload);
+      } catch {
+        if (alive) setJiraProjects(null);
+      }
+    }
+    loadJiraProjects();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    async function loadJiraIssues() {
+      const projectKey = jiraProjects?.projects?.[0]?.key;
+      if (!projectKey) return;
+      try {
+        const response = await fetch(`${apiUrl}/api/jira/projects/${projectKey}/issues`, { credentials: 'include' });
+        if (!response.ok) return;
+        const payload = await response.json();
+        if (alive) setJiraIssues(payload);
+      } catch {
+        if (alive) setJiraIssues(null);
+      }
+    }
+    loadJiraIssues();
+    return () => {
+      alive = false;
+    };
+  }, [jiraProjects]);
 
   useEffect(() => {
     let alive = true;
@@ -103,7 +143,9 @@ function DashboardApp() {
     return <main className="dashboard-shell"><p className="loading">Cargando demo offline...</p></main>;
   }
 
-  const importedProjects = [data.project.name, 'Aplicacion Movil V2', 'Migracion Backend'];
+  const importedProjects = jiraProjects?.projects?.length
+    ? jiraProjects.projects.map((project) => `${project.key} · ${project.name}`)
+    : [data.project.name, 'Aplicacion Movil V2', 'Migracion Backend'];
   const view = resolveView(currentPath);
 
   function navigateTo(event, href) {
@@ -120,7 +162,7 @@ function DashboardApp() {
       <section className="workspace">
         <div className="view-transition" key={currentPath}>
           <Topbar data={data} view={view} />
-          <ViewContent currentPath={currentPath} data={data} />
+          <ViewContent currentPath={currentPath} data={data} jiraProjects={jiraProjects} jiraIssues={jiraIssues} />
         </div>
       </section>
     </main>
@@ -191,11 +233,11 @@ function Topbar({ data, view }) {
   );
 }
 
-function ViewContent({ currentPath, data }) {
-  if (currentPath.startsWith('/dashboard/board')) return <BoardView data={data} />;
+function ViewContent({ currentPath, data, jiraProjects, jiraIssues }) {
+  if (currentPath.startsWith('/dashboard/board')) return <BoardView data={data} jiraIssues={jiraIssues} />;
   if (currentPath.startsWith('/dashboard/alerts')) return <AlertsView data={data} />;
   if (currentPath.startsWith('/dashboard/activity')) return <ActivityView data={data} />;
-  if (currentPath.startsWith('/dashboard/settings')) return <SettingsView data={data} />;
+  if (currentPath.startsWith('/dashboard/settings')) return <SettingsView data={data} jiraProjects={jiraProjects} jiraIssues={jiraIssues} />;
   return <DashboardView data={data} />;
 }
 
@@ -254,13 +296,22 @@ function DashboardView({ data }) {
   );
 }
 
-function BoardView({ data }) {
-  const columns = ['To Do', 'In Progress', 'Review', 'Done'];
+function BoardView({ data, jiraIssues }) {
+  const issuesSource = jiraIssues?.issues?.length ? jiraIssues.issues : data.issues;
+  const columns = jiraIssues?.issues?.length
+    ? [...new Set(issuesSource.map((issue) => issue.status))]
+    : ['To Do', 'In Progress', 'Review', 'Done'];
 
   return (
-    <section className="kanban-grid">
+    <>
+      {jiraIssues?.issues?.length ? (
+        <p className="source-note">Mostrando issues reales de Jira para {jiraIssues.projectKey}</p>
+      ) : (
+        <p className="source-note">Mostrando tablero demo desde CSV offline</p>
+      )}
+      <section className="kanban-grid">
       {columns.map((status) => {
-        const issues = data.issues.filter((issue) => issue.status === status);
+        const issues = issuesSource.filter((issue) => issue.status === status);
         return (
           <article className="kanban-column" key={status}>
             <div className="column-header">
@@ -273,7 +324,8 @@ function BoardView({ data }) {
           </article>
         );
       })}
-    </section>
+      </section>
+    </>
   );
 }
 
@@ -327,15 +379,27 @@ function ActivityView({ data }) {
   );
 }
 
-function SettingsView({ data }) {
+function SettingsView({ data, jiraProjects, jiraIssues }) {
   return (
     <section className="view-grid two-columns">
       <article className="table-card">
-        <CardHeader title="Integracion Jira" subtitle="OAuth final pendiente de implementar" />
-        <Field label="Estado" value="Demo offline" />
-        <Field label="Fuente actual" value={data.source} />
-        <Field label="Proyecto" value={data.project.name} />
-        <Field label="Tablero" value={data.board.name} />
+        <CardHeader title="Integracion Jira" subtitle={jiraProjects ? 'Sesion OAuth activa' : 'Demo offline sin sesion Jira'} />
+        <Field label="Estado" value={jiraProjects ? 'Conectado con Jira' : 'Demo offline'} />
+        <Field label="Fuente actual" value={jiraProjects?.source || data.source} />
+        <Field label="Sitio" value={jiraProjects?.site?.url || 'Sin sitio Jira activo'} />
+        <Field label="Proyectos Jira" value={jiraProjects?.projects?.length ?? 0} />
+        <Field label="Issues leidas" value={jiraIssues?.issues?.length ?? 0} />
+      </article>
+      <article className="table-card">
+        <CardHeader title="Proyectos detectados" subtitle="Lectura real si OAuth esta activo" />
+        <div className="compact-list">
+          {(jiraProjects?.projects || [{ key: 'DEMO', name: data.project.name }]).map((project) => (
+            <div className="compact-row" key={project.id || project.key}>
+              <strong>{project.key}</strong>
+              <span>{project.name}</span>
+            </div>
+          ))}
+        </div>
       </article>
       <article className="table-card">
         <CardHeader title="Configuracion de analisis" subtitle="Valores iniciales del MVP" />

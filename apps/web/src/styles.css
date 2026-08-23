@@ -370,6 +370,12 @@ button { font: inherit; }
   grid-template-columns: 1.35fr 0.9fr;
 }
 
+.source-note {
+  margin: 0 0 12px;
+  color: #60736c;
+  font-weight: 800;
+}
+
 .kanban-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(210px, 1fr));
@@ -506,6 +512,29 @@ button { font: inherit; }
   font-weight: 800;
 }
 
+.compact-list {
+  display: grid;
+  gap: 8px;
+}
+
+.compact-row {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 16px;
+  background: #f3f8f4;
+}
+
+.compact-row strong {
+  color: #164f37;
+}
+
+.compact-row span {
+  color: #263d36;
+}
+
 .full-button {
   width: 100%;
   margin-top: 10px;
@@ -557,6 +586,6 @@ button { font: inherit; }
   .topbar { align-items: flex-start; flex-direction: column; }
   .topbar-actions { justify-content: flex-start; }
   .metric-grid { grid-template-columns: 1fr; }
-  .issue-row, .alert-row, .timeline-row { grid-template-columns: 1fr; }
+  .issue-row, .alert-row, .timeline-row, .compact-row { grid-template-columns: 1fr; }
   .kanban-grid { grid-template-columns: 1fr; }
 }

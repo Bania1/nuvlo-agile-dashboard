@@ -1,4 +1,14 @@
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { loadEnvFile } from 'node:process';
 import { z } from 'zod';
+
+for (const envPath of [resolve(process.cwd(), '.env'), resolve(process.cwd(), '../..', '.env')]) {
+  if (existsSync(envPath)) {
+    loadEnvFile(envPath);
+    break;
+  }
+}
 
 const envSchema = z.object({
   NODE_ENV: z.string().default('development'),
