@@ -38,6 +38,7 @@
 
 % TABLE OF CONTENTS including indexes
 \usepackage{tocbibind}
+\usepackage{emptypage} % Remove headers/footers from intentionally blank pages
 
 
 % BIBLIOGRAPHY
@@ -52,6 +53,7 @@
 \usepackage{grffile} % allow files that include a dot in the name
 \graphicspath{ {img/} }
 \usepackage{wrapfig} % figures with text around them
+\usepackage[section]{placeins} % Keep floats within their section
 \usepackage[caption=false]{subfig} % allow subfigures
 \usepackage{booktabs} % professional rules on tables
 \usepackage{longtable} % tables spanning several pages
@@ -66,6 +68,7 @@
 %\usepackage{makecell}    % To force line breaks inside a table cell
 %\usepackage{rotating}    % sidewaystable
 %\usepackage{lscape}      % landscape
+\usepackage{pdflscape}   % pages in landscape for wide diagrams
 \usepackage{caption}
 \captionsetup[table]{aboveskip=5pt}
 \captionsetup[table]{belowskip=0pt}

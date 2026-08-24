@@ -1,0 +1,39 @@
+\chapter{Implementación}
+
+\section{Stack tecnológico}
+
+La implementación de Nuvlo se ha realizado con un stack JavaScript/Node orientado a desarrollo web moderno. En el cliente se usa React para construir la interfaz y Vite como herramienta de desarrollo y empaquetado~\cite{ReactDocs,ViteDocs}. En el servidor se usa Node.js con Express para exponer la API HTTP~\cite{NodeDocs,ExpressDocs}. La capa de datos se apoya en Prisma como ORM y PostgreSQL como base de datos relacional~\cite{PrismaDocs,PostgreSQLDocs}.
+
+Redis se incorpora como servicio auxiliar para datos efímeros y operaciones de apoyo, mientras que Docker Compose facilita reproducir el entorno local con los servicios necesarios~\cite{RedisDocs,DockerComposeDocs}. Esta combinación permite mantener una separación clara entre la lógica de negocio, la interfaz y la infraestructura de desarrollo.
+
+\section{Frontend}
+
+El frontend organiza la experiencia alrededor de varias vistas principales: entrada con Jira, dashboard, tablero, alertas, actividad y configuración. El dashboard muestra las métricas principales, gráficos y widgets configurables. La navegación se ha ajustado para mantener coherencia con los prototipos de la memoria y para funcionar tanto en escritorio como en móvil.
+
+Se han añadido transiciones visuales ligeras para que los cambios de vista, paneles y acciones clicables no produzcan una sensación de parpadeo. Estas animaciones son sencillas y no introducen dependencias pesadas, por lo que no afectan de forma significativa al rendimiento de la aplicación.
+
+\section{Backend e integración con Jira}
+
+El backend encapsula la comunicación con Jira Cloud. Cuando el usuario inicia sesión, la aplicación redirige a Atlassian y recibe el resultado del flujo OAuth. A partir de esa sesión, el servidor puede consultar los recursos autorizados de Jira y sincronizar la información necesaria para calcular las métricas.
+
+La integración no calcula las métricas consultando Jira en cada carga del dashboard. En su lugar, sincroniza los datos relevantes, los persiste en PostgreSQL y después la aplicación consulta su propia base de datos. Esto mejora la estabilidad de la interfaz, reduce dependencia de la red y facilita auditar qué datos se usaron para obtener cada resultado.
+
+\section{Métricas implementadas}
+
+El sistema calcula WIP, Velocity, Lead Time y Cycle Time. WIP representa el trabajo en curso según el estado de las incidencias visibles. Velocity resume el trabajo completado por periodo o sprint. Lead Time y Cycle Time se calculan a partir de fechas de creación, resolución y transiciones cuando la información está disponible.
+
+En Jira real, la calidad de estas métricas depende de cómo se haya usado el tablero y de si existen transiciones suficientes en el historial. Por este motivo, el proyecto incluye también una demo offline con datos controlados, útil para validar escenarios que en una instancia real recién creada pueden no tener todavía histórico suficiente.
+
+\section{Alertas, actividad y retención de datos}
+
+La fase de interfaz incluye reglas de alerta basadas en umbrales, notificaciones visuales y un registro de actividad. Las alertas permiten avisar al usuario cuando una métrica supera una condición definida. El registro de actividad guarda eventos de uso relevantes, como sincronizaciones, cambios de sesión, creación de reglas, activación de alertas y tareas de limpieza.
+
+La política de retención diferencia entre datos persistentes, datos operativos y datos efímeros. PostgreSQL conserva la información necesaria para análisis e histórico: proyectos importados, incidencias, transiciones, métricas calculadas, reglas de alerta y sincronizaciones. Estos datos son los que permiten reconstruir el estado mostrado en el dashboard y justificar los resultados obtenidos.
+
+Redis se reserva para información temporal: estados del flujo OAuth, valores CSRF, verificadores PKCE, cachés de corta duración y datos auxiliares que no deben mantenerse indefinidamente. Estos elementos se almacenan con tiempo de vida limitado mediante TTL, de forma que expiran automáticamente sin requerir limpieza manual~\cite{RedisDocs}.
+
+Para evitar crecimiento indefinido de la base de datos, los logs de actividad y el historial de alertas se tratan como datos retenibles. La aplicación contempla tareas de limpieza que eliminan o archivan registros antiguos según una ventana configurable. De este modo, se mantiene la trazabilidad necesaria para depuración y auditoría básica sin convertir PostgreSQL en un almacén ilimitado de eventos.
+
+\section{Integración continua}
+
+El repositorio incluye un flujo de GitHub Actions para compilar la memoria en LaTeX. La compilación se ha ajustado para entornos con menos memoria, evitando generación innecesaria de SyncTeX en CI y verificando explícitamente paquetes requeridos. De esta forma, el PDF puede generarse de manera reproducible tanto en local como en el entorno remoto.

@@ -39,7 +39,7 @@ La priorización de requisitos se realiza mediante la técnica MoSCoW. En este t
     \item \textbf{Must Have}: requisito imprescindible para que el sistema cumpla su propósito principal.
     \item \textbf{Should Have}: requisito importante, pero no estrictamente necesario para una primera versión funcional.
     \item \textbf{Could Have}: mejora deseable que aporta valor, pero que puede posponerse sin comprometer el objetivo central del sistema.
-    \item \textbf{Won't Have}: requisito descartado para el alcance actual del TFG, aunque podría considerarse en trabajos futuros.
+    \item \textbf{Won't Have}: requisito descartado para el alcance actual del proyecto, aunque podría considerarse en trabajos futuros.
 \end{itemize}
 
 \section{Requisitos funcionales}
@@ -65,6 +65,7 @@ RF-06 & Should & El sistema debería detectar y señalar incidencias con datos i
 \vspace{0.45em}
 }
 
+\clearpage
 \subsection{Configuración del análisis}
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
@@ -740,12 +741,16 @@ La Figura~\ref{fig:secuencia-cu07-configurar-reglas-alerta} muestra cómo el usu
 
 El diagrama de clases muestra la estructura estática principal del sistema y las relaciones entre los conceptos del dominio. En este caso se representa una vista de análisis previa a la implementación, por lo que las clases describen entidades y responsabilidades del sistema sin depender de una tecnología concreta.
 
-\begin{figure}[htbp]
+\begin{landscape}
+\begin{figure}[p]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.25\textwidth]{diagrams/clases-dominio-sistema.png}}
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=1.12\linewidth,height=0.86\textheight,keepaspectratio]{diagrams/clases-dominio-sistema.png}%
+    }
     \caption{Diagrama de clases del sistema}
     \label{fig:clases-dominio-sistema}
 \end{figure}
+\end{landscape}
 
 La Figura~\ref{fig:clases-dominio-sistema} se interpreta a partir de los verbos situados sobre cada relación. El triángulo del verbo indica la dirección de lectura y las cardinalidades de los extremos concretan cuántas instancias pueden participar en cada asociación. En cuanto a la notación UML, según la especificación oficial de OMG \cite{OMGUML251}, el rombo blanco representa una agregación, es decir, una relación todo-parte débil en la que la parte puede existir de forma independiente. El rombo negro representa una composición, una relación todo-parte fuerte en la que la parte depende del ciclo de vida del todo. Las clases del diagrama son las siguientes:
 

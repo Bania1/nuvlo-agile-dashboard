@@ -1,0 +1,38 @@
+\chapter*{Glosario de términos}
+\addcontentsline{toc}{chapter}{Glosario de términos}
+\markboth{Glosario de términos}{Glosario de términos}
+
+Este apartado recoge algunos términos utilizados a lo largo de la memoria. No pretende ser una definición exhaustiva de cada concepto, sino una referencia inicial para facilitar la lectura del documento.
+
+{\renewcommand{\arraystretch}{1.25}\footnotesize
+\begin{longtable}{p{3.2cm}p{9.2cm}}
+\caption{Glosario de términos principales}\label{tab:glosario-terminos}\\
+\toprule
+\textbf{Término} & \textbf{Descripción} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Término} & \textbf{Descripción} \\
+\midrule
+\endhead
+Nuvlo & Nombre de la aplicación desarrollada. Representa la idea de unir nube y flujo: nube por su conexión con Jira Cloud y flujo por el análisis del trabajo ágil mediante métricas visuales. \\
+Filosofía ágil & Enfoque de desarrollo que prioriza la entrega incremental de valor, la adaptación al cambio, la colaboración y la mejora continua. En este trabajo se toma como contexto general para interpretar los marcos Scrum y Kanban~\cite{AgileManifesto,DigitalAI2024StateOfAgile}. \\
+Scrum & Marco de trabajo ágil basado en iteraciones, roles, eventos y artefactos. Se usa como referencia para interpretar conceptos como sprint, planificación, revisión y Velocity~\cite{ScrumGuide2020}. \\
+Sprint & Iteración de trabajo de duración limitada dentro de Scrum. En Nuvlo se utiliza para agrupar incidencias y calcular métricas por periodo cuando Jira proporciona datos suficientes~\cite{ScrumGuide2020}. \\
+Kanban & Método de gestión visual del flujo de trabajo que permite analizar estados, límites de trabajo en curso y tiempos de entrega~\cite{Anderson2010Kanban}. \\
+WIP & \textit{Work in Progress}. Representa el trabajo que se encuentra en curso en un momento determinado. Es útil para detectar sobrecarga o acumulación de tareas en el flujo~\cite{Anderson2010Kanban}. \\
+Velocity & Métrica usada habitualmente en Scrum para observar el trabajo completado por sprint o periodo. En Nuvlo se calcula a partir del esfuerzo disponible o, en su defecto, del número de incidencias completadas~\cite{ScrumGuide2020}. \\
+Lead Time & Tiempo transcurrido desde la creación de una incidencia hasta su finalización. Permite analizar el tiempo total que una unidad de trabajo tarda en recorrer el sistema~\cite{Anderson2010Kanban}. \\
+Cycle Time & Tiempo transcurrido desde que una incidencia entra en trabajo activo hasta que se completa. Es útil para analizar la eficiencia del flujo una vez iniciado el trabajo~\cite{Anderson2010Kanban}. \\
+Dashboard & Vista de resumen que agrupa indicadores, gráficos y avisos para facilitar la interpretación del estado de un proyecto. En Nuvlo es la pantalla principal de análisis. \\
+Jira Cloud & Herramienta de Atlassian utilizada como fuente principal de datos de proyectos, incidencias, sprints y cambios de estado~\cite{AtlassianJira,AtlassianJiraRestV3}. \\
+API REST & Interfaz de comunicación HTTP utilizada por Nuvlo para consultar datos de Jira Cloud desde el backend~\cite{AtlassianJiraRestV3}. \\
+OAuth 2.0 3LO & Flujo de autorización utilizado para permitir que el usuario conecte su cuenta de Atlassian sin introducir credenciales propias en Nuvlo~\cite{AtlassianOAuth3LO,OWASPOAuth2}. \\
+PKCE & Extensión de OAuth que protege el intercambio del código de autorización mediante un verificador y un reto criptográfico, reduciendo riesgos de interceptación~\cite{OWASPOAuth2}. \\
+CSRF & Ataque en el que un tercero intenta forzar acciones autenticadas en nombre del usuario. Nuvlo incorpora protección CSRF para operaciones sensibles~\cite{OWASPCSRF}. \\
+PostgreSQL & Base de datos relacional utilizada para persistir usuarios, proyectos, incidencias, métricas calculadas, alertas y registros relevantes~\cite{PostgreSQLDocs}. \\
+Redis & Almacén en memoria utilizado para datos efímeros, cachés y estados temporales con tiempo de vida limitado~\cite{RedisDocs}. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}

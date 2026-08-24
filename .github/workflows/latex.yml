@@ -43,6 +43,9 @@ jobs:
         run: |
           kpsewhich tcolorbox.sty
           kpsewhich tikz.sty
+          kpsewhich placeins.sty
+          kpsewhich emptypage.sty
+          kpsewhich pdflscape.sty
 
       - name: Add swap space for LaTeX build
         run: |

@@ -1,7 +1,7 @@
 \chapter{Definición del problema}
 \label{defProblema}
 
-El presente capítulo describe el problema que motiva el desarrollo del Trabajo Fin de Grado. Su objetivo no es presentar todavía la solución propuesta, sino analizar el contexto en el que aparece la necesidad, las limitaciones de la situación actual y los condicionantes que deben tenerse en cuenta antes de definir los requisitos del sistema.
+El presente capítulo describe el problema que motiva el desarrollo del proyecto. Su objetivo no es presentar todavía la solución propuesta, sino analizar el contexto en el que aparece la necesidad, las limitaciones de la situación actual y los condicionantes que deben tenerse en cuenta antes de definir los requisitos del sistema.
 
 \section{Contexto de los equipos ágiles}
 
@@ -33,13 +33,13 @@ Por ello, una necesidad central del problema es facilitar el cálculo y la inter
 
 El mercado ya ofrece soluciones relacionadas con la gestión ágil y la analítica de equipos de desarrollo. Esta existencia confirma que el problema tiene relevancia práctica, pero también muestra que no todas las soluciones se ajustan al alcance, coste o nivel de personalización requerido por equipos pequeños o proyectos académicos.
 
-Jira proporciona funcionalidades de gestión y generación de informes, y sus planes comerciales diferencian capacidades según el tipo de suscripción. En particular, Atlassian Analytics y Atlassian Data Lake aparecen asociados al plan Enterprise, lo que muestra que la analítica avanzada e integrada forma parte de niveles orientados a organizaciones de mayor tamaño~\cite{AtlassianJiraPricing}. Esto no significa que Jira carezca de métricas, sino que puede existir margen para desarrollar una capa especializada, controlable y adaptada al alcance concreto de este TFG.
+Jira proporciona funcionalidades de gestión y generación de informes, y sus planes comerciales diferencian capacidades según el tipo de suscripción. En particular, Atlassian Analytics y Atlassian Data Lake aparecen asociados al plan Enterprise, lo que muestra que la analítica avanzada e integrada forma parte de niveles orientados a organizaciones de mayor tamaño~\cite{AtlassianJiraPricing}. Esto no significa que Jira carezca de métricas, sino que puede existir margen para desarrollar una capa especializada, controlable y adaptada al alcance concreto de este trabajo.
 
 Otras plataformas, como LinearB o Swarmia, integran datos procedentes de repositorios, sistemas de gestión de trabajo y herramientas de entrega para proporcionar métricas de ingeniería, visibilidad del flujo y análisis de cuellos de botella~\cite{LinearBMetrics,SwarmiaIntegrations}. Estas herramientas son referencias relevantes porque muestran la utilidad de combinar información de distintas fuentes. Sin embargo, su amplitud funcional y orientación empresarial exceden el objetivo académico de este proyecto.
 
 También existen herramientas más ligeras de organización visual, como Trello o Taiga, que resultan útiles para representar tableros y coordinar tareas~\cite{Trello,Taiga}. Su principal valor está en la simplicidad, aunque no siempre ofrecen la profundidad analítica necesaria para estudiar métricas de flujo con detalle histórico. Por otro lado, plataformas integrales como Azure DevOps agrupan gestión de trabajo, repositorios y procesos de entrega, pero pueden resultar más amplias de lo necesario cuando el objetivo principal es comprender un conjunto concreto de métricas Scrum/Kanban~\cite{AzureDevOps}.
 
-En consecuencia, la oportunidad del TFG no consiste en reemplazar estas soluciones, sino en abordar un problema acotado: disponer de una herramienta especializada, replicable y de bajo coste que permita analizar métricas ágiles a partir de Jira como fuente principal de datos.
+En consecuencia, la oportunidad de desarrollo no consiste en reemplazar estas soluciones, sino en abordar un problema acotado: disponer de una herramienta especializada, replicable y de bajo coste que permita analizar métricas ágiles a partir de Jira como fuente principal de datos.
 
 \section{Necesidades detectadas}
 
@@ -62,7 +62,7 @@ Estas necesidades permiten enlazar la definición del problema con el capítulo 
 
 El sistema se orienta principalmente a equipos que trabajan con enfoques ágiles y que utilizan Jira como herramienta de gestión. Dentro de este entorno pueden identificarse distintos perfiles de usuario. Un equipo de desarrollo puede utilizar las métricas para revisar la evolución de su flujo de trabajo; una persona con rol de Scrum Master o responsable de proceso puede emplearlas para preparar retrospectivas o detectar bloqueos; y un Product Owner o responsable de proyecto puede consultar la evolución del trabajo completado y la previsibilidad del equipo.
 
-También se contempla un uso académico o de equipos pequeños. En este caso, el sistema puede servir como herramienta de aprendizaje y experimentación, permitiendo comprender cómo se calculan las métricas y cómo se relacionan con el funcionamiento real de un proyecto. Este enfoque es importante porque el TFG no pretende construir una plataforma empresarial completa, sino una solución funcional y evaluable dentro de un alcance razonable.
+También se contempla un uso académico o de equipos pequeños. En este caso, el sistema puede servir como herramienta de aprendizaje y experimentación, permitiendo comprender cómo se calculan las métricas y cómo se relacionan con el funcionamiento real de un proyecto. Este enfoque es importante porque la solución no pretende construir una plataforma empresarial completa, sino un sistema funcional y evaluable dentro de un alcance razonable.
 
 \section{Restricciones y condicionantes del problema}
 
@@ -72,10 +72,10 @@ Otra restricción relevante es la seguridad. La conexión con Jira puede requeri
 
 También deben considerarse los límites y condiciones de uso de las APIs externas. Un sistema que consulte datos de Jira de forma indiscriminada podría ser ineficiente o alcanzar límites de uso. Por ello, el problema exige pensar en mecanismos de sincronización, almacenamiento temporal o actualización bajo demanda que reduzcan peticiones innecesarias.
 
-Finalmente, el alcance académico impone una restricción natural: el proyecto debe ser suficientemente completo para demostrar competencias de Ingeniería Informática, pero no puede pretender reproducir todas las funcionalidades de plataformas comerciales consolidadas. La solución deberá centrarse en un conjunto de métricas, integraciones y visualizaciones que puedan diseñarse, implementarse, validarse y documentarse de forma realista.
+Finalmente, el alcance definido impone una restricción natural: el sistema debe ser suficientemente completo para demostrar su viabilidad técnica, pero no puede pretender reproducir todas las funcionalidades de plataformas comerciales consolidadas. La solución deberá centrarse en un conjunto de métricas, integraciones y visualizaciones que puedan diseñarse, implementarse, validarse y documentarse de forma realista.
 
 \section{Alcance del problema}
 
-El problema que aborda este TFG se limita a la obtención, cálculo y visualización de métricas ágiles para equipos que gestionan su trabajo principalmente mediante Jira. Quedan dentro del alcance el análisis de datos de proyectos, tableros, sprints e incidencias; el cálculo de métricas como Velocity, WIP, Cycle Time y Lead Time; y la presentación de resultados mediante dashboards que ayuden a interpretar el estado y evolución del trabajo.
+El problema abordado se limita a la obtención, cálculo y visualización de métricas ágiles para equipos que gestionan su trabajo principalmente mediante Jira. Quedan dentro del alcance el análisis de datos de proyectos, tableros, sprints e incidencias; el cálculo de métricas como Velocity, WIP, Cycle Time y Lead Time; y la presentación de resultados mediante dashboards que ayuden a interpretar el estado y evolución del trabajo.
 
-Queda fuera del alcance inicial sustituir a Jira como herramienta de gestión, reproducir una plataforma comercial completa de ingeniería, evaluar individualmente el rendimiento de desarrolladores o construir un sistema de analítica empresarial a gran escala. Esta delimitación permite enfocar el proyecto en una necesidad concreta y abordable, manteniendo coherencia con la naturaleza de un Trabajo Fin de Grado.
+Queda fuera del alcance inicial sustituir a Jira como herramienta de gestión, reproducir una plataforma comercial completa de ingeniería, evaluar individualmente el rendimiento de desarrolladores o construir un sistema de analítica empresarial a gran escala. Esta delimitación permite enfocar la solución en una necesidad concreta y abordable, manteniendo un alcance realista y verificable.

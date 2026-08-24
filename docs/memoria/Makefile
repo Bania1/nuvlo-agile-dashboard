@@ -18,9 +18,14 @@ biblio.bib \
 000_cover.tex \
 002_resumen.tex \
 005_Agradecimientos.tex \
+010_Glosario-Terminos.tex \
 011_Introduccion.tex \
 021_Definicion-Problema.tex \
 071_Requisitos.tex \
+081_Diseno-Arquitectura.tex \
+091_Implementacion.tex \
+101_Validacion-Resultados.tex \
+111_Conclusiones.tex \
 311_AnexoA.tex \
 321_AnexoManualUsuario.tex \
 331_AnexoManualCodigo.tex \

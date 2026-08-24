@@ -6,7 +6,6 @@
 \documentclass[a4paper,12pt,twoside,final]{book}
 \usepackage{project} % Todos los parámetros del estilo están en project.sty
 \usepackage{listingstyles} % Para incluir código fuente
-\usepackage{lipsum} % Para relleno y ver estilo borrar cuando se quite el lipsum de 011_Introducción.tex
 
 % Descomentar para pruebas con la estructura debería ser 3 (valor por defecto) según las recomendaciones.
 % \setcounter{secnumdepth}{6}
@@ -30,7 +29,6 @@
 %  es para permitir meter siempre un fichero en medio y gestionar la estructura.
 %  En XXY, XX es el capítulo y la Y es una posible sección.
 \include{000_cover}
-% XXX incluir pagina de firma
 \include{001_autoria}
 \include{002_resumen}
 \include{005_Agradecimientos}
@@ -39,6 +37,7 @@
 \tableofcontents
 \listoffigures
 \listoftables
+\include{010_Glosario-Terminos}
 
 \mainmatter
 % Para editar/compilar más rápido puede ser cómodo comentar algunos capítulo ya terminados, 
@@ -50,6 +49,10 @@
 % \include{031_ElTercero}
 % \include{041_Cuarto}
 \include{071_Requisitos}
+\include{081_Diseno-Arquitectura}
+\include{091_Implementacion}
+\include{101_Validacion-Resultados}
+\include{111_Conclusiones}
 
 % Lo siguiente es para poner una bibliografía de los capítulos aquí y otra en cada apendice
 \phantomsection
@@ -58,7 +61,6 @@
 
 % Apendices, ver book class (link arriba)
 \appendix
-% \include{311_AnexoA} % Contenido de plantilla pendiente de sustituir
 \include{321_AnexoManualUsuario}
 \include{331_AnexoManualCodigo}
 \include{341_AnexoUsoIA}

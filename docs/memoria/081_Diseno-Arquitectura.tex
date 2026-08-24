@@ -1,0 +1,37 @@
+\chapter{Diseño y arquitectura del sistema}
+
+\section{Enfoque general}
+
+Nuvlo se ha diseñado como una aplicación web de apoyo al análisis de equipos ágiles que trabajan con Jira Cloud. La decisión principal de arquitectura ha sido separar claramente la interfaz, la API, la persistencia y los servicios de integración, manteniendo todo dentro de un monorepo sencillo gestionado con \textit{npm workspaces}~\cite{NpmWorkspaces}. Esta organización permite que frontend, backend, esquema de base de datos, documentación y pruebas evolucionen en el mismo repositorio, lo que facilita la trazabilidad del desarrollo y la revisión del proyecto.
+
+Se descartó dividir el sistema en varios repositorios porque habría aumentado el coste de configuración y coordinación para un proyecto individual. También se evitó mezclar frontend y backend en un único directorio sin separación interna, ya que habría dificultado explicar las responsabilidades de cada parte y mantener una estructura limpia durante la implementación.
+
+\section{Arquitectura lógica}
+
+La arquitectura sigue un esquema cliente-servidor. La aplicación web se ejecuta en el navegador y se comunica con una API propia. La API es la única parte del sistema que interactúa con Jira Cloud, PostgreSQL y Redis. De este modo, el frontend no necesita conocer credenciales ni detalles internos de sincronización.
+
+El frontend se ha implementado con React y Vite~\cite{ReactDocs,ViteDocs}. La API se ha construido con Node.js y Express~\cite{NodeDocs,ExpressDocs}. La persistencia principal se realiza con PostgreSQL, accedida mediante Prisma~\cite{PostgreSQLDocs,PrismaDocs}. Redis se utiliza como almacenamiento temporal para datos de sesión, estados de seguridad del flujo OAuth y elementos de corta duración~\cite{RedisDocs}. El entorno local se levanta mediante Docker Compose~\cite{DockerComposeDocs}.
+
+Los diagramas incluidos en la memoria representan esta separación por capas y ayudan a entender el recorrido de los datos: el usuario entra por la interfaz, la API valida la sesión, sincroniza información desde Jira cuando procede y consulta la base de datos local para construir las métricas visibles en el dashboard.
+
+\section{Modelo de datos y sincronización}
+
+El modelo de datos se orienta a conservar una copia local de la información necesaria para calcular métricas ágiles. Se almacenan proyectos, incidencias, sprints, estados y datos de transición cuando están disponibles. Esta decisión evita que cada interacción de la interfaz dependa de una llamada directa a Jira Cloud y permite recalcular métricas de forma controlada.
+
+La sincronización se realiza por ámbitos concretos, no como una descarga completa indiscriminada. El sistema solicita únicamente los campos necesarios y trabaja con paginación de la API de Jira~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}. Esta aproximación reduce el número de llamadas externas y encaja mejor con las restricciones de uso de una API remota.
+
+\section{Seguridad}
+
+El acceso final a Nuvlo se basa en OAuth 2.0 de Atlassian, concretamente en el flujo 3LO~\cite{AtlassianOAuth3LO}. El usuario no crea una cuenta local con contraseña: autoriza la aplicación con su cuenta de Atlassian y Nuvlo crea o actualiza la sesión asociada a ese usuario.
+
+Para proteger el proceso de autenticación se han incorporado medidas habituales en aplicaciones web modernas: parámetro \textit{state}, PKCE y protección CSRF~\cite{OWASPOAuth2,OWASPCSRF}. Los tokens no se exponen al navegador como credenciales persistentes de larga duración. La API actúa como capa intermedia y aplica validaciones antes de permitir operaciones protegidas.
+
+\section{Diseño de interfaz}
+
+El diseño visual parte de los prototipos realizados durante la fase de análisis y de los diagramas de vistas incluidos en la memoria. La interfaz final no replica cada prototipo de forma literal, pero conserva su planteamiento: navegación lateral, dashboard principal, vista de tablero, alertas, actividad y configuración.
+
+La estética de Nuvlo se apoya en una identidad propia basada en la idea de ``nube + flujo''. Para el dashboard se tomó como inspiración visual una plantilla pública de administración moderna de Morphin~\cite{MorphinDashboardInspiration}, sin reutilizar su código fuente. La referencia se usó únicamente para orientar decisiones de composición, tarjetas, jerarquía visual y navegación.
+
+\section{Relación con los anexos}
+
+Los capítulos principales explican las decisiones de diseño y el resultado técnico. Los anexos cumplen una función complementaria: el manual de usuario muestra cómo utilizar la aplicación, el manual de código fuente resume la organización del repositorio y los comandos principales, y el anexo de uso de IA documenta el apoyo recibido durante el desarrollo. Por tanto, puede existir cierta relación temática entre capítulos y anexos, pero no se considera redundante si cada parte mantiene un nivel de detalle distinto.
