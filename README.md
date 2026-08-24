@@ -41,6 +41,8 @@ El proyecto usa un monorepo sencillo con npm workspaces porque frontend, backend
 ```bash
 npm test          # unitarias e integracion backend reproducibles
 npm run test:e2e  # Playwright sobre la demo local de la UI
+npm run docs:screenshots:demo  # capturas offline estables para ensayos/presentacion
+npm run docs:screenshots:jira  # capturas reales para la memoria con sesion OAuth activa
 ```
 
 Las pruebas de integracion del backend usan `supertest` y mocks para no llamar a Jira real. Las pruebas E2E interceptan la API desde el navegador y validan el flujo demo: entrada local, filtros, widgets configurables y campana de alertas. Si Playwright indica que falta el navegador Chromium, ejecuta:
@@ -69,7 +71,15 @@ La web arranca en `http://localhost:5174` y la API en `http://localhost:3002`.
 
 La demo visual sigue el planteamiento de los prototipos de `docs/memoria/diagrams`: navegacion lateral con Dashboard, Tablero, Alertas, Actividad, Configuracion y proyectos importados. Algunas vistas se iran implementando progresivamente, pero la estructura ya queda alineada con la memoria.
 
+Para capturas reproducibles de la API demo puedes fijar `DEMO_FIXED_TICK=3` en `.env`.
+
 Rutas demo disponibles: `/dashboard`, `/dashboard/board`, `/dashboard/alerts`, `/dashboard/activity` y `/dashboard/settings`. Todas usan el dataset CSV offline y se actualizan cada 5 segundos para simular una sincronizacion.
+
+## Capturas y datos de demostracion
+
+- Las capturas principales de la memoria deben generarse contra Jira real con `npm run docs:screenshots:jira`. Este comando requiere haber iniciado sesion con Atlassian OAuth al menos una vez y tener el proyecto `TFG` sincronizable.
+- La demo offline se genera con `npm run docs:screenshots:demo` y se guarda en `docs/memoria/img/app-demo`. Su objetivo es servir como respaldo estable para la presentacion si Jira Cloud o la red fallan.
+- El proyecto Jira real se usa para validar integracion OAuth/API y sincronizacion. El dataset offline se usa para validar metricas historicas con tiempos realistas, porque Jira no permite reconstruir de forma fiable un changelog historico artificial desde la API de lectura de Nuvlo.
 
 > Nota: si trabajas dentro de WSL, usa Node.js 24 LTS dentro de Ubuntu antes de ejecutar los scripts de la app. El entorno Windows puede tener Node instalado, pero no siempre puede acceder al filesystem de WSL por permisos.
 

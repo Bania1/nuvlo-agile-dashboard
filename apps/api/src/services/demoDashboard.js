@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { createDemoDataset, parseDemoCsv, rowsToDemoDataset, simulateDemoDataset } from '@nuvlo/shared';
+import { env } from '../config/env.js';
 import { calculateFlowMetrics } from './metrics.js';
 
 async function loadOfflineDataset() {
@@ -49,7 +50,7 @@ function recentIssues(issues) {
 }
 
 export async function buildDemoDashboard() {
-  const tick = Math.floor(Date.now() / 5000) % 6;
+  const tick = env.DEMO_FIXED_TICK ?? Math.floor(Date.now() / 5000) % 6;
   const baseDataset = await loadOfflineDataset();
   const dataset = simulateDemoDataset(baseDataset, tick);
   const metrics = calculateFlowMetrics({

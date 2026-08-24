@@ -38,6 +38,7 @@ const envSchema = z.object({
   RETENTION_SYNC_RUN_DAYS: z.coerce.number().int().positive().default(180),
   RETENTION_ALERT_EVENT_DAYS: z.coerce.number().int().positive().default(180),
   RETENTION_METRIC_DAYS: z.coerce.number().int().positive().default(365),
+  DEMO_FIXED_TICK: z.coerce.number().int().min(0).max(5).optional(),
 });
 
 export const env = envSchema.parse(process.env);

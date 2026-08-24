@@ -48,3 +48,10 @@ export async function setSyncStatus(key, value, ttlSeconds = 3600) {
 export async function getSyncStatus(key) {
   return getJsonCache(`sync:${key}`);
 }
+
+export async function closeRedis() {
+  if (!redis) return;
+  const client = redis;
+  redis = null;
+  await client.quit().catch(() => client.disconnect());
+}
