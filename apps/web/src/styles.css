@@ -373,6 +373,63 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
   color: #6b7a74;
 }
 
+
+.flow-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-height: 230px;
+}
+
+.flow-summary-row {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #dce7df;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #f8fbf8, #eef7ef);
+}
+
+.flow-summary-row > div:first-child strong {
+  display: block;
+  color: #12221e;
+  font-size: 1rem;
+}
+
+.flow-summary-row > div:first-child span {
+  display: block;
+  margin-top: 4px;
+  color: #60736c;
+}
+
+.flow-bar-line {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 38px;
+  gap: 10px;
+  align-items: center;
+  color: #60736c;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.flow-bar-track {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dfeae2;
+}
+
+.flow-bar-fill {
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+}
+
+.flow-bar-average { background: #164f37; }
+.flow-bar-p50 { background: #65a30d; }
+.flow-bar-p85 { background: #b7791f; }
+
 .lower-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -664,6 +721,7 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
   .topbar { align-items: flex-start; flex-direction: column; }
   .topbar-actions { justify-content: flex-start; }
   .metric-grid { grid-template-columns: 1fr; }
+  .flow-summary-grid { grid-template-columns: 1fr; }
   .issue-row, .alert-row, .timeline-row, .compact-row { grid-template-columns: 1fr; }
   .kanban-grid { grid-template-columns: 1fr; }
   .sidebar {

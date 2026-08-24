@@ -135,7 +135,7 @@ async function ensureScreenshotAlerts({ userId, cloudId }) {
 
 async function capture(page, name, viewport = desktopViewport, options = {}) {
   await page.setViewportSize(viewport);
-  await page.mouse.move(20, 20);
+  await page.mouse.move(8, 8);
   await closeToastIfVisible(page);
   await wait(300);
   await page.screenshot({

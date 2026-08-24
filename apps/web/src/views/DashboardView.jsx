@@ -148,18 +148,7 @@ export function DashboardView({ data, filtersOpen }) {
 
         {visibleWidgets.flowChart ? <article className="chart-card flow-card">
           <CardHeader title="Tiempos de flujo" subtitle="Media, P50 y P85 en dias" help="Compara media y percentiles para Lead Time y Cycle Time. Si no hay changelog suficiente, los valores pueden ser 0." />
-          <ResponsiveContainer width="100%" height={230}>
-            <BarChart data={buildFlowTimeChart(summary)}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#d8e6dc" />
-              <XAxis dataKey="metric" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="average" name="Media" fill="#164f37" radius={[8, 8, 0, 0]} />
-              <Bar dataKey="p50" name="P50" fill="#65a30d" radius={[8, 8, 0, 0]} />
-              <Bar dataKey="p85" name="P85" fill="#b7791f" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <FlowTimeSummary rows={buildFlowTimeChart(summary)} />
         </article> : null}
       </section>
 
@@ -185,6 +174,39 @@ function buildFlowTimeChart(summary) {
     { metric: 'Lead Time', average: summary.leadTime.average, p50: summary.leadTime.p50, p85: summary.leadTime.p85 },
     { metric: 'Cycle Time', average: summary.cycleTime.average, p50: summary.cycleTime.p50, p85: summary.cycleTime.p85 },
   ];
+}
+
+function FlowTimeSummary({ rows }) {
+  const maxValue = Math.max(1, ...rows.flatMap((row) => [row.average, row.p50, row.p85].map(Number)));
+  return (
+    <div className="flow-summary-grid">
+      {rows.map((row) => (
+        <div className="flow-summary-row" key={row.metric}>
+          <div>
+            <strong>{row.metric}</strong>
+            <span>{row.average ? `${row.average} dias de media` : 'Sin duracion calculable'}</span>
+          </div>
+          <FlowBar label="Media" value={row.average} maxValue={maxValue} tone="average" />
+          <FlowBar label="P50" value={row.p50} maxValue={maxValue} tone="p50" />
+          <FlowBar label="P85" value={row.p85} maxValue={maxValue} tone="p85" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FlowBar({ label, value, maxValue, tone }) {
+  const numericValue = Number(value) || 0;
+  const width = `${Math.max(numericValue ? 8 : 0, Math.round((numericValue / maxValue) * 100))}%`;
+  return (
+    <div className="flow-bar-line">
+      <span>{label}</span>
+      <div className="flow-bar-track" aria-hidden="true">
+        <div className={`flow-bar-fill flow-bar-${tone}`} style={{ width }} />
+      </div>
+      <strong>{numericValue}d</strong>
+    </div>
+  );
 }
 
 function normalizeForSearch(value) {

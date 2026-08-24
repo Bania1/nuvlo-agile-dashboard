@@ -55,7 +55,7 @@ async function closeToastIfVisible(page) {
 
 async function capture(page, path, viewport = { width: 1440, height: 900 }) {
   await page.setViewportSize(viewport);
-  await page.mouse.move(20, 20);
+  await page.mouse.move(8, 8);
   await closeToastIfVisible(page);
   await preparePage(page);
   await settle(page);
