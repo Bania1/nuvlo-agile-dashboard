@@ -38,8 +38,7 @@ jobs:
             texlive-fonts-recommended \
             texlive-fonts-extra \
             texlive-lang-spanish \
-            texlive-pictures \
-            texlive-generic
+            texlive-pictures
 
       - name: Compile memory
         working-directory: docs/memoria
