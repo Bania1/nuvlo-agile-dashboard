@@ -11,8 +11,14 @@ function retryDelay(response, attempt) {
   return Math.min(8000, 500 * 2 ** attempt) + jitter;
 }
 
-export async function jiraRequest({ cloudId, accessToken, path, searchParams, method = 'GET', body }) {
-  const url = new URL(`https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3${path}`);
+async function readErrorBody(response) {
+  const text = await response.text().catch(() => '');
+  return text ? text.slice(0, 500) : '';
+}
+
+export async function jiraRequest({ cloudId, accessToken, path, searchParams, method = 'GET', body, api = 'platform' }) {
+  const apiPrefix = api === 'agile' ? '/rest/agile/1.0' : '/rest/api/3';
+  const url = new URL(`https://api.atlassian.com/ex/jira/${cloudId}${apiPrefix}${path}`);
   for (const [key, value] of Object.entries(searchParams || {})) {
     if (Array.isArray(value)) {
       for (const item of value) {
@@ -38,11 +44,17 @@ export async function jiraRequest({ cloudId, accessToken, path, searchParams, me
       continue;
     }
     if (!response.ok) {
-      const error = new Error(`Jira request failed: ${response.status}`);
+      const responseBody = await readErrorBody(response);
+      const error = new Error(`Jira request failed: ${response.status} ${api}${path}`);
       error.statusCode = response.status;
+      error.code = 'JIRA_REQUEST_FAILED';
+      error.api = api;
+      error.path = path;
+      error.responseBody = responseBody;
       error.rateLimitReason = response.headers.get('ratelimit-reason');
       throw error;
     }
+    if (response.status === 204) return null;
     return response.json();
   }
   throw new Error('Jira request exhausted retries.');

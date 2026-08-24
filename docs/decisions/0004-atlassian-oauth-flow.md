@@ -21,13 +21,19 @@ Nuvlo implementa el inicio de sesion mediante Atlassian OAuth 2.0 3LO. No existe
 - Los tokens se cifran antes de almacenarse con una `ENCRYPTION_KEY` local de 32 bytes en base64.
 - La cookie de sesion es `httpOnly`, `sameSite=lax` y `secure` en produccion.
 - Los logs de autenticacion registran metadatos no sensibles, nunca tokens.
-- Las llamadas futuras a Jira con OAuth usaran `https://api.atlassian.com/ex/jira/{cloudId}/rest/api/3/...`.
+- Las llamadas a Jira con OAuth usan `https://api.atlassian.com/ex/jira/{cloudId}/rest/api/3/...` y, para boards/sprints, `https://api.atlassian.com/ex/jira/{cloudId}/rest/agile/1.0/...`.
+
+## CSRF y PKCE
+
+CSRF es un ataque en el que un tercero intenta que el navegador del usuario envie una peticion autenticada sin que el usuario lo pretenda. En Nuvlo hay dos zonas: el callback OAuth, protegido con `state`, y los endpoints `POST` propios protegidos por cookie, que validan un token CSRF enviado en la cabecera `x-csrf-token`.
+
+PKCE es una extension de OAuth que vincula el codigo de autorizacion con un secreto temporal generado al iniciar login. Reduce el riesgo si alguien intercepta el `code` del callback. Nuvlo lo implementa con `S256`: `start` guarda `code_verifier` temporal en cookie `httpOnly` y envia `code_challenge`; `callback` usa ese verifier al intercambiar el codigo.
 
 ## Scopes iniciales
 
-`read:me read:jira-work read:jira-user offline_access`
+`read:me read:jira-work read:jira-user offline_access read:board-scope:jira-software read:sprint:jira-software read:issue-details:jira read:jql:jira read:project:jira`
 
-Estos scopes son suficientes para identificar al usuario, leer datos Jira y poder renovar acceso en fases posteriores. Si se anaden operaciones nuevas, se revisaran los scopes siguiendo minimo privilegio.
+Estos scopes permiten identificar al usuario, renovar acceso, leer proyectos/issues con JQL, importar changelog y acceder a boards/sprints de Jira Software. Si se anaden operaciones nuevas, se revisaran los scopes siguiendo minimo privilegio.
 
 ## Fuentes
 

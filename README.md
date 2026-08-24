@@ -1,269 +1,1245 @@
-# Nuvlo - Dashboard de metricas agiles para Jira Cloud
-
-Nuvlo es el proyecto final del TFG: una aplicacion web para centralizar datos de Jira Cloud y visualizar metricas agiles de Scrum/Kanban. El nombre combina **nube + flujo**: datos cloud de Jira aplicados al analisis del flujo de trabajo.
-
-Este repositorio contiene tanto la memoria LaTeX como la aplicacion final. El objetivo es mantener un historico claro en GitHub, con commits pequenos y defendibles para el TFG.
-
-## Estructura
-
-```txt
-tfg/
-├── apps/
-│   ├── web/          # React + Vite
-│   └── api/          # Node.js + Express
-├── packages/
-│   └── shared/       # Contratos y constantes compartidas
-├── prisma/           # Schema, migraciones y seed demo
-├── docs/
-│   ├── memoria/      # Memoria LaTeX del TFG
-│   └── decisions/    # Decisiones de arquitectura
-├── src/jira-backend-test/ # PoC historico de conexion Jira
-├── docker-compose.yml
-└── package.json      # npm workspaces
-```
-
-## Por que monorepo
-
-El proyecto usa un monorepo sencillo con npm workspaces porque frontend, backend, Prisma, dataset demo, documentacion y pruebas evolucionan juntos. Esto simplifica instalacion, revision academica, commits historicos y trazabilidad. No se usa Turborepo inicialmente para evitar complejidad innecesaria en un TFG individual.
-
-## Stack de la aplicacion
-
-- Frontend: React + Vite.
-- Backend: Node.js 24 LTS + Express.
-- Persistencia: PostgreSQL + Prisma.
-- Cache/soporte operativo: Redis.
-- Integracion externa: Atlassian OAuth 2.0 3LO + Jira Cloud REST API.
-- Validacion: Vitest, pruebas de integracion y Playwright para E2E.
-- Runtime local recomendado: Node.js 24 LTS y npm 11.
-
-## Desarrollo local de Nuvlo
-
-```bash
-node --version
-npm --version
-cp .env.example .env
-# Edita .env y cambia POSTGRES_PASSWORD, JWT_SECRET, ENCRYPTION_KEY y claves OAuth.
-npm install
-docker compose up -d
-npm run db:generate
-npm run demo:data
-npm run db:push
-npm run db:seed
-npm run dev
-```
-
-La web arranca en `http://localhost:5174` y la API en `http://localhost:3002`.
-
-La demo visual sigue el planteamiento de los prototipos de `docs/memoria/diagrams`: navegacion lateral con Dashboard, Tablero, Alertas, Actividad, Configuracion y proyectos importados. Algunas vistas se iran implementando progresivamente, pero la estructura ya queda alineada con la memoria.
-
-Rutas demo disponibles: `/dashboard`, `/dashboard/board`, `/dashboard/alerts`, `/dashboard/activity` y `/dashboard/settings`. Todas usan el dataset CSV offline y se actualizan cada 5 segundos para simular una sincronizacion.
-
-> Nota: si trabajas dentro de WSL, usa Node.js 24 LTS dentro de Ubuntu antes de ejecutar los scripts de la app. El entorno Windows puede tener Node instalado, pero no siempre puede acceder al filesystem de WSL por permisos.
-
-
-## Acceso a PostgreSQL y Redis
-
-Para inspeccion rapida por CLI:
-
-```bash
-docker exec -it nuvlo_postgres psql -U nuvlo -d nuvlo
-docker exec -it nuvlo_redis redis-cli
-```
-
-Comandos utiles dentro de PostgreSQL:
-
-```sql
-\dt
-SELECT email, "displayName" FROM "User";
-SELECT "siteUrl", scopes, "expiresAt" FROM "AtlassianSession";
-```
-
-Comandos utiles dentro de Redis:
-
-```txt
-PING
-KEYS *
-INFO memory
-```
-
-Tambien hay UIs opcionales mediante perfil Docker:
-
-```bash
-docker compose --profile tools up -d
-```
-
-- pgAdmin: `http://localhost:5050`. Login con `PGADMIN_DEFAULT_EMAIL` y `PGADMIN_DEFAULT_PASSWORD` del `.env`. Para registrar el servidor usa host `postgres`, puerto `5432`, base `nuvlo`, usuario `nuvlo` y la contrasena `POSTGRES_PASSWORD`.
-- RedisInsight: `http://localhost:5540`. Para conectar Redis usa host `redis` y puerto `6379`.
-
-Estas herramientas no se levantan por defecto para mantener ligero el entorno local.
-
-
-## Configurar OAuth Atlassian en local
-
-1. Crea una app OAuth 2.0 en Atlassian Developer Console.
-2. Anade como callback URL: `http://localhost:3002/api/auth/atlassian/callback`.
-3. Configura en `.env` `ATLASSIAN_CLIENT_ID`, `ATLASSIAN_CLIENT_SECRET` y `ATLASSIAN_REDIRECT_URI`.
-4. Genera secretos locales fuertes:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"
-```
-
-Usa el primer valor para `ENCRYPTION_KEY` y el segundo para `JWT_SECRET`. No los subas a Git.
-
-El flujo real empieza en `http://localhost:3002/api/auth/atlassian/start`, redirige a Atlassian y vuelve a `/dashboard` si el callback termina correctamente.
-
-Con sesion OAuth activa, `GET /api/jira/projects` lee los proyectos reales del sitio Jira autorizado y la vista `/dashboard/settings` los muestra junto al modo demo.
-Tambien se expone `GET /api/jira/projects/:projectKey/issues`, que usa `search/jql` de Jira Cloud para leer issues del proyecto autorizado y alimentar el tablero real cuando hay sesion OAuth.
-
-## Seguridad
-
-- No hay registro local ni contrasena propia.
-- El login final se hace con Atlassian OAuth.
-- Las sesiones se guardan en cookies `httpOnly`.
-- Los tokens OAuth se cifran antes de persistirse.
-- Las llamadas Jira OAuth usan `https://api.atlassian.com/ex/jira/{cloudId}/rest/api/3/...`.
-- No se deben subir `.env`, tokens, credenciales, contrasenas locales ni salidas con secretos.
-
-## Uso de IA y codigo externo
-
-La documentacion de cumplimiento, uso de IA y fuentes se mantiene localmente hasta revisarla con los tutores. El repositorio publico conserva por ahora las decisiones tecnicas generales en `docs/decisions/`, y no debe incluir tokens, `.env`, notas privadas ni material auxiliar no validado.
-
-Consulta:
-
-- `docs/decisions/0001-monorepo-workspaces.md`
-- `docs/decisions/0002-security-and-jira-api.md`
-- `docs/decisions/0003-testing-strategy.md`
-- `docs/decisions/0004-atlassian-oauth-flow.md`
-
----
-
-# Memoria del TFG - Guia rapida
-
-## Requisitos para compilar la memoria
-
-Instalar en Ubuntu / WSL:
-
-```bash
-sudo apt update
-sudo apt install -y make latexmk biber inotify-tools texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-lang-spanish
-```
-
-Esto instala lo necesario para compilar la memoria.
-
-## Compilar la memoria
-
-```bash
-cd docs/memoria
-make
-```
-
-Limpiar archivos temporales:
-
-```bash
-make clean
-```
-
-El PDF generado sera:
-
-```txt
-tf.pdf
-```
-
-## Autocompilacion al guardar
-
-Para recompilar automaticamente cuando cambies un `.tex`:
-
-```bash
-cd docs/memoria
-./auto.sh
-```
-
-Deja esa terminal abierta mientras trabajas.
-
-## Configuracion recomendada de VS Code
-
-Instalar extensiones:
-
-- LaTeX Workshop
-- WSL si usas Windows
-
-Abrir el proyecto desde WSL:
-
-```bash
-code .
-```
-
-Abrir el PDF con:
-
-```txt
-LaTeX Workshop: View LaTeX PDF
-```
-
-Atajos utiles:
-
-- `Ctrl + click` en PDF: ir al codigo.
-- `Ctrl + Alt + J`: ir del codigo al PDF.
-
----
-
-# GitHub y flujo de trabajo
-
-## Configurar GitHub en un dispositivo nuevo
-
-Crear clave SSH:
-
-```bash
-ssh-keygen -t ed25519 -C "tu_email"
-```
-
-Anadir la clave al agente:
-
-```bash
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-```
-
-Mostrar la clave publica:
-
-```bash
-cat ~/.ssh/id_ed25519.pub
-```
-
-Copiarla en GitHub:
-
-```txt
-Settings -> SSH and GPG Keys -> New SSH Key
-```
-
-Probar conexion:
-
-```bash
-ssh -T git@github.com
-```
-
-## Clonar el repositorio
-
-```bash
-git clone git@github.com:Bania1/tfg.git
-cd tfg
-```
-
-## Flujo basico de trabajo
-
-```bash
-git status
-git pull
-git add -A
-git commit -m "mensaje del cambio"
-git push
-```
-
-## Buenas practicas
-
-- Ejecutar `git pull` antes de empezar a trabajar.
-- Hacer commits pequenos y frecuentes.
-- No subir archivos de compilacion, `node_modules`, `.env` ni tokens.
-- Documentar cambios relevantes en README o `docs/decisions`.
-- Mantener fuera de Git las notas privadas de trabajo, por ejemplo `docs/compliance/` y `.local-notes/`, hasta validarlas con tutores.
+:root {
+  color: #11201d;
+  background: #eff7f1;
+  font-family: Avenir Next, Nunito, Segoe UI, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; font-size: 15px; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+button, a, select, input, [role='button'] { cursor: pointer; }
+input[type='text'], input:not([type]), textarea { cursor: text; }
+button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
+
+.landing-shell {
+  min-height: 100vh;
+  padding: clamp(24px, 3vw, 42px);
+  background:
+    radial-gradient(circle at top left, rgba(90, 161, 117, 0.30), transparent 28rem),
+    linear-gradient(135deg, #f8f4e8 0%, #dcefe3 50%, #b9d7ca 100%);
+}
+
+.hero-card {
+  max-width: 820px;
+  padding: clamp(24px, 4vw, 46px);
+  border: 1px solid rgba(17, 32, 29, 0.12);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 24px 80px rgba(33, 70, 55, 0.14);
+  backdrop-filter: blur(18px);
+}
+
+.brand-mark, .sidebar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #164f37;
+  font-weight: 800;
+}
+
+.brand-mark {
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: #d7eadb;
+}
+
+.eyebrow {
+  margin-top: 24px;
+  color: #47665d;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-card h1 {
+  max-width: 820px;
+  margin: 0;
+  font-size: clamp(2.35rem, 5.6vw, 4.35rem);
+  line-height: 0.98;
+  letter-spacing: -0.07em;
+}
+
+.lead {
+  max-width: 680px;
+  color: #3a514b;
+  font-size: 1.04rem;
+  line-height: 1.65;
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.primary-button, .secondary-button {
+  border-radius: 16px;
+  padding: 12px 18px;
+  font-weight: 800;
+}
+.primary-button { color: white; background: #164f37; }
+.secondary-button { color: #164f37; background: #e4efe7; }
+
+.dashboard-shell {
+  display: grid;
+  grid-template-columns: 238px 1fr;
+  min-height: 100vh;
+  background: #eef4ed;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 16px;
+  border-right: 1px solid #d8e5dc;
+  background: rgba(246, 250, 247, 0.88);
+  backdrop-filter: blur(14px);
+}
+
+.sidebar-brand {
+  width: 100%;
+  padding: 12px 10px 16px;
+}
+
+.nav-section-label {
+  margin: 10px 10px 8px;
+  color: #82928c;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+  padding: 10px 12px;
+  border-radius: 16px;
+  color: #5f716b;
+  font-weight: 800;
+}
+
+.nav-item.active {
+  color: white;
+  background: #164f37;
+  box-shadow: 0 12px 30px rgba(22, 79, 55, 0.22);
+}
+
+.project-list {
+  margin-top: 18px;
+}
+
+.project-link {
+  display: block;
+  margin: 6px 0;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  color: #60736c;
+  font-size: 0.92rem;
+  font-weight: 750;
+}
+
+.project-link.active {
+  border-color: #cfe0d4;
+  color: #164f37;
+  background: #edf6ef;
+}
+
+.connection-card {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  padding: 14px;
+  border-radius: 22px;
+  background: #e4efe7;
+}
+
+.connection-card span, .connection-card small {
+  display: block;
+  color: #64746e;
+}
+
+.connection-link {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  color: white;
+  background: #164f37;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+
+.workspace {
+  padding: 18px clamp(16px, 2.4vw, 28px);
+}
+
+.view-transition {
+  animation: view-enter 160ms ease-out both;
+}
+
+@keyframes view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view-transition,
+  .analysis-panel {
+    animation: none;
+  }
+  button,
+  a,
+  .nav-item,
+  .project-link,
+  .connection-link,
+  .primary-button,
+  .secondary-button,
+  .alert-row button,
+  .full-button,
+  .compact-button,
+  .secondary-action {
+    transition: none;
+  }
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.breadcrumb {
+  margin: 0 0 8px;
+  color: #6d7f78;
+  font-size: 0.9rem;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 2.7vw, 2.3rem);
+  letter-spacing: -0.04em;
+}
+
+.topbar-description {
+  margin: 6px 0 0;
+  color: #60736c;
+}
+
+.topbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.topbar-actions button, .live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d4e0d8;
+  border-radius: 15px;
+  padding: 9px 12px;
+  color: #164f37;
+  background: white;
+  font-weight: 800;
+}
+
+.live-pill {
+  color: #365245;
+  background: #d7eadb;
+}
+
+.topbar-actions .sync-button {
+  color: white;
+  background: #164f37;
+}
+
+.topbar-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+
+.auth-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border: 1px solid #f2d7a8;
+  border-radius: 18px;
+  color: #704d13;
+  background: #fff7e6;
+  font-weight: 800;
+}
+
+.auth-notice a {
+  color: white;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #164f37;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric-card, .chart-card, .table-card {
+  border: 1px solid #dce7df;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 50px rgba(48, 78, 62, 0.08);
+}
+
+.metric-card {
+  padding: 16px;
+}
+
+.metric-icon {
+  display: inline-flex;
+  padding: 9px;
+  border-radius: 14px;
+  color: #164f37;
+  background: #d7eadb;
+}
+
+.metric-card span {
+  display: block;
+  margin-top: 12px;
+  color: #60736c;
+  font-weight: 700;
+}
+
+.metric-card strong {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 5px;
+  font-size: 1.8rem;
+}
+
+.metric-card small {
+  color: #64746e;
+  font-size: 0.88rem;
+}
+
+.metric-card p {
+  margin: 8px 0 0;
+  color: #6b7a74;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.chart-card, .table-card {
+  padding: 16px;
+}
+
+.card-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.08rem;
+}
+
+.card-header p {
+  margin: 4px 0 0;
+  color: #6b7a74;
+}
+
+.lower-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.issue-list {
+  display: grid;
+  gap: 8px;
+}
+
+.issue-row, .warning-row {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 16px;
+  background: #f3f8f4;
+}
+
+.issue-row {
+  grid-template-columns: 70px 1fr auto;
+  align-items: center;
+}
+
+.issue-row small {
+  color: #60736c;
+  font-weight: 800;
+}
+
+.warning-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.warning-row svg {
+  flex: 0 0 auto;
+  color: #b7791f;
+}
+
+.warning-row p {
+  margin: 4px 0 0;
+  color: #60736c;
+}
+
+.view-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.two-columns {
+  grid-template-columns: 1.35fr 0.9fr;
+}
+
+.source-note {
+  margin: 0 0 12px;
+  color: #60736c;
+  font-weight: 800;
+}
+
+.kanban-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(210px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.kanban-column {
+  min-height: 520px;
+  padding: 14px;
+  border: 1px solid #dce7df;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 18px 50px rgba(48, 78, 62, 0.06);
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.column-header h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.column-header span {
+  display: inline-flex;
+  min-width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #164f37;
+  background: #d7eadb;
+  font-weight: 900;
+}
+
+.ticket-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.ticket-card {
+  padding: 12px;
+  border: 1px solid #dde9e1;
+  border-radius: 18px;
+  background: #fbfdfb;
+}
+
+.ticket-card div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ticket-card span {
+  color: #164f37;
+  font-weight: 900;
+}
+
+.ticket-card p {
+  margin: 10px 0;
+  color: #263d36;
+  line-height: 1.35;
+}
+
+.ticket-card small {
+  color: #6b7a74;
+  font-weight: 800;
+}
+
+.alert-list, .timeline-list {
+  display: grid;
+  gap: 10px;
+}
+
+.alert-row {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 18px;
+  background: #f3f8f4;
+}
+
+.alert-row > span {
+  padding: 7px 9px;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.priority-alta > span { color: #7f1d1d; background: #fee2e2; }
+.priority-media > span { color: #854d0e; background: #fef3c7; }
+.priority-baja > span { color: #164f37; background: #d7eadb; }
+
+.alert-row p, .timeline-row p {
+  margin: 4px 0 0;
+  color: #60736c;
+}
+
+.alert-row button, .full-button {
+  border: 0;
+  border-radius: 14px;
+  padding: 9px 12px;
+  color: white;
+  background: #164f37;
+  font-weight: 900;
+}
+
+.rule-card {
+  align-self: start;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 16px;
+  background: #f3f8f4;
+}
+
+.field-row span {
+  color: #6b7a74;
+  font-weight: 800;
+}
+
+.compact-list {
+  display: grid;
+  gap: 8px;
+}
+
+.compact-row {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 16px;
+  background: #f3f8f4;
+}
+
+.compact-row strong {
+  color: #164f37;
+}
+
+.compact-row span {
+  color: #263d36;
+}
+
+.full-button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.compact-button, .secondary-action {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-weight: 900;
+}
+
+.secondary-action {
+  color: #164f37;
+  background: #e4efe7;
+}
+
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: 150px 140px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 18px;
+  background: #f3f8f4;
+}
+
+.timeline-row span {
+  color: #6b7a74;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.loading {
+  padding: 32px;
+}
+
+@media (max-width: 1250px) {
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dashboard-grid, .lower-grid, .two-columns {
+    grid-template-columns: 1fr;
+  }
+  .kanban-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1050px) {
+  .dashboard-shell { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static;
+    height: auto;
+  }
+  .connection-card { position: static; margin-top: 16px; }
+  .project-list { margin-bottom: 10px; }
+}
+
+@media (max-width: 720px) {
+  .topbar { align-items: flex-start; flex-direction: column; }
+  .topbar-actions { justify-content: flex-start; }
+  .metric-grid { grid-template-columns: 1fr; }
+  .issue-row, .alert-row, .timeline-row, .compact-row { grid-template-columns: 1fr; }
+  .kanban-grid { grid-template-columns: 1fr; }
+}
+
+.analysis-panel {
+  display: grid;
+  grid-template-columns: minmax(210px, 1.2fr) repeat(3, minmax(160px, 1fr));
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid #d8e5dc;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 14px 40px rgba(32, 63, 48, 0.06);
+}
+
+.analysis-panel span,
+.analysis-panel label {
+  color: #60736c;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.analysis-panel strong {
+  display: block;
+  margin-top: 5px;
+  color: #12221e;
+  font-size: 1rem;
+}
+
+.analysis-panel label {
+  display: grid;
+  gap: 6px;
+}
+
+.analysis-panel select,
+.analysis-panel input {
+  width: 100%;
+  border: 1px solid #cfe0d4;
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: #12221e;
+  background: #f8fbf8;
+  font-weight: 750;
+  outline: none;
+}
+
+.analysis-panel select:focus,
+.analysis-panel input:focus {
+  border-color: #164f37;
+  box-shadow: 0 0 0 3px rgba(22, 79, 55, 0.10);
+}
+
+@media (max-width: 980px) {
+  .analysis-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .analysis-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+.topbar-actions .active-filter-button {
+  border-color: #164f37;
+  color: white;
+  background: #2f6c4c;
+}
+
+
+button,
+a,
+.nav-item,
+.project-link,
+.connection-link,
+.primary-button,
+.secondary-button,
+.alert-row button,
+.full-button,
+.compact-button,
+.secondary-action,
+.analysis-panel select,
+.analysis-panel input,
+.widget-toggle-grid label,
+.notification-button,
+.alert-toast button {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+button:not(:disabled):hover,
+a:hover,
+.nav-item:hover,
+.project-link:hover,
+.connection-link:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.alert-row button:hover,
+.full-button:hover,
+.compact-button:hover,
+.secondary-action:hover,
+.notification-button:hover,
+.alert-toast button:hover {
+  transform: translateY(-1px);
+}
+
+button:not(:disabled):active,
+a:active,
+.nav-item:active,
+.project-link:active,
+.connection-link:active,
+.primary-button:active,
+.secondary-button:active,
+.alert-row button:active,
+.full-button:active,
+.compact-button:active,
+.secondary-action:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.nav-item:hover,
+.project-link:hover,
+.secondary-button:hover,
+.secondary-action:hover,
+.compact-button:hover {
+  background: #dcece1;
+  color: #164f37;
+}
+
+.primary-button:hover,
+.connection-link:hover,
+.alert-row button:hover,
+.full-button:hover,
+.topbar-actions .sync-button:hover,
+.topbar-actions .active-filter-button:hover {
+  box-shadow: 0 12px 28px rgba(22, 79, 55, 0.22);
+}
+
+.topbar-actions button:not(:disabled):hover {
+  border-color: #9fb9a9;
+  background: #f6fbf7;
+}
+
+.analysis-panel {
+  animation: filter-panel-enter 190ms cubic-bezier(.2, .8, .2, 1) both;
+  transform-origin: top right;
+}
+
+@keyframes filter-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .view-transition,
+  .analysis-panel {
+    animation: none;
+  }
+
+  button,
+  a,
+  .nav-item,
+  .project-link,
+  .connection-link,
+  .primary-button,
+  .secondary-button,
+  .alert-row button,
+  .full-button,
+  .compact-button,
+  .secondary-action,
+  .analysis-panel select,
+  .analysis-panel input,
+  .widget-toggle-grid label,
+  .notification-button,
+  .alert-toast button {
+    transition: none;
+  }
+}
+
+.flow-card {
+  grid-column: 1 / -1;
+}
+
+
+.alert-form {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.alert-form label {
+  display: grid;
+  gap: 6px;
+  color: #60736c;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.alert-form select,
+.alert-form input {
+  width: 100%;
+  border: 1px solid #cfe0d4;
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: #12221e;
+  background: #f8fbf8;
+  font-weight: 750;
+  outline: none;
+}
+
+.form-feedback,
+.empty-state p {
+  color: #60736c;
+}
+
+.empty-state {
+  padding: 14px;
+  border-radius: 18px;
+  background: #f3f8f4;
+}
+
+
+.alert-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.status-pill {
+  align-items: center;
+  background: #eef6f0;
+  border: 1px solid #d7e5dc;
+  border-radius: 999px;
+  color: #60736c;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 850;
+  padding: 8px 10px;
+}
+
+.status-pill.is-active {
+  background: #e2f1e7;
+  color: #164f37;
+}
+
+.danger-action {
+  background: #fff7f2 !important;
+  border-color: #f2d2c4 !important;
+  color: #8d3f24 !important;
+}
+
+.danger-action:hover {
+  box-shadow: 0 12px 28px rgba(141, 63, 36, 0.12) !important;
+}
+
+
+.nav-item {
+  position: relative;
+}
+
+.nav-item span {
+  flex: 1;
+}
+
+.nav-badge,
+.alert-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  color: white;
+  background: #dc2626;
+  font-size: 0.7rem;
+  font-weight: 950;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.85);
+}
+
+.notification-wrap {
+  position: relative;
+}
+
+.topbar-actions .notification-button {
+  position: relative;
+  padding-inline: 11px;
+}
+
+.notification-button.has-alerts {
+  border-color: #fecaca;
+  color: #7f1d1d;
+  background: #fff7f7;
+}
+
+.alert-badge {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+}
+
+.notification-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 20;
+  width: min(340px, 86vw);
+  padding: 12px;
+  border: 1px solid #d8e5dc;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 22px 70px rgba(18, 34, 30, 0.18);
+  animation: filter-panel-enter 180ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.notification-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.notification-head span {
+  min-width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: #dc2626;
+  font-weight: 950;
+}
+
+.notification-item {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  background: #f3f8f4;
+}
+
+.notification-item small {
+  color: #7f1d1d;
+  font-weight: 900;
+}
+
+.notification-item p,
+.notification-empty {
+  margin: 0;
+  color: #60736c;
+}
+
+.notification-link {
+  display: block;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  color: white;
+  background: #164f37;
+  text-align: center;
+  font-weight: 900;
+}
+
+.alert-toast {
+  position: fixed;
+  top: 22px;
+  right: 24px;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  width: min(390px, calc(100vw - 32px));
+  padding: 14px;
+  border: 1px solid #f2c9c9;
+  border-radius: 22px;
+  color: #12221e;
+  background: rgba(255, 250, 250, 0.96);
+  box-shadow: 0 24px 80px rgba(127, 29, 29, 0.18);
+  animation: toast-enter 220ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.alert-toast span {
+  color: #7f1d1d;
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.alert-toast strong {
+  display: block;
+  margin-top: 3px;
+}
+
+.alert-toast p {
+  margin: 5px 0 0;
+  color: #60736c;
+}
+
+.alert-toast button {
+  align-self: start;
+  border: 0;
+  border-radius: 12px;
+  padding: 8px 10px;
+  color: #7f1d1d;
+  background: #fee2e2;
+  font-weight: 900;
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.metric-card-top,
+.card-header-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card-header-tools {
+  color: #164f37;
+}
+
+.help-hint {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: #60736c;
+  cursor: help;
+}
+
+.help-tooltip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 15;
+  width: min(260px, 72vw);
+  padding: 10px 12px;
+  border: 1px solid #d8e5dc;
+  border-radius: 14px;
+  color: #263d36;
+  background: white;
+  box-shadow: 0 16px 45px rgba(32, 63, 48, 0.14);
+  font-size: 0.84rem;
+  font-weight: 750;
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.help-hint:hover .help-tooltip,
+.help-hint:focus .help-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.context-help {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid #d8e5dc;
+  border-radius: 18px;
+  color: #4f665e;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.context-help strong {
+  color: #164f37;
+}
+
+.widget-config {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 9px;
+  padding-top: 4px;
+}
+
+.widget-config > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.widget-toggle-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.widget-toggle-grid label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #d8e5dc;
+  border-radius: 999px;
+  padding: 8px 10px;
+  background: #f8fbf8;
+  text-transform: none;
+}
+
+.widget-toggle-grid input {
+  width: auto;
+}
+
+
+.log-filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.log-filters label {
+  display: grid;
+  gap: 6px;
+  color: #60736c;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.log-filters select,
+.log-filters input {
+  width: 100%;
+  border: 1px solid #cfe0d4;
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: #12221e;
+  background: #f8fbf8;
+  font-weight: 750;
+  outline: none;
+}
+
+.alert-history {
+  display: block;
+  margin-top: 6px;
+  color: #7b8a83;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .log-filters {
+    grid-template-columns: 1fr;
+  }
+}

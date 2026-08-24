@@ -3,6 +3,18 @@ import { resolve } from 'node:path';
 import { loadEnvFile } from 'node:process';
 import { z } from 'zod';
 
+const defaultAtlassianScopes = [
+  'read:me',
+  'read:jira-work',
+  'read:jira-user',
+  'offline_access',
+  'read:board-scope:jira-software',
+  'read:sprint:jira-software',
+  'read:issue-details:jira',
+  'read:jql:jira',
+  'read:project:jira',
+].join(' ');
+
 for (const envPath of [resolve(process.cwd(), '.env'), resolve(process.cwd(), '../..', '.env')]) {
   if (existsSync(envPath)) {
     loadEnvFile(envPath);
@@ -21,7 +33,7 @@ const envSchema = z.object({
   ATLASSIAN_CLIENT_ID: z.string().optional(),
   ATLASSIAN_CLIENT_SECRET: z.string().optional(),
   ATLASSIAN_REDIRECT_URI: z.string().url().optional(),
-  ATLASSIAN_SCOPES: z.string().default('read:me read:jira-work read:jira-user offline_access'),
+  ATLASSIAN_SCOPES: z.string().default(defaultAtlassianScopes),
 });
 
 export const env = envSchema.parse(process.env);

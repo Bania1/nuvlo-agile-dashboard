@@ -6,13 +6,20 @@ La app final usa Atlassian OAuth 2.0 3LO, no API token manual, para cumplir la m
 
 ## Practicas aplicadas
 
-- Uso de `state` en OAuth para mitigar CSRF.
+- Uso de `state` en OAuth para mitigar CSRF en el callback de autenticacion.
 - Sesion propia con cookie `httpOnly`.
 - Tokens OAuth cifrados antes de guardarse.
-- Scopes minimos: perfil y lectura Jira.
+- Scopes minimos para el MVP: perfil, lectura Jira, JQL, detalle de issues, boards/sprints y `offline_access` para refresh token rotatorio.
 - Logs sin secretos.
 - CORS restringido por entorno.
 - Rate limit propio en API.
+- Cache temporal en Redis para lecturas repetidas y estado de sincronizacion.
+
+## Mejoras de seguridad planificadas
+
+- PKCE anadido al flujo OAuth 3LO sin cambiar la experiencia de usuario: `start` genera `code_verifier`/`code_challenge` y `callback` usa el verifier al intercambiar el codigo.
+- Proteccion CSRF anadida para endpoints `POST` propios que usan cookie de sesion, especialmente logout y sincronizacion Jira.
+- Extraer servicios compartidos de autenticacion y validacion para reducir duplicacion antes de ampliar endpoints.
 
 ## Restricciones de Jira API
 

@@ -6,6 +6,10 @@ const tokenUrl = 'https://auth.atlassian.com/oauth/token';
 const profileUrl = 'https://api.atlassian.com/me';
 const resourcesUrl = 'https://api.atlassian.com/oauth/token/accessible-resources';
 
+function base64UrlSha256(value) {
+  return crypto.createHash('sha256').update(value).digest('base64url');
+}
+
 function requireOAuthConfig() {
   const missing = [];
   if (!env.ATLASSIAN_CLIENT_ID) missing.push('ATLASSIAN_CLIENT_ID');
@@ -21,6 +25,7 @@ function requireOAuthConfig() {
 export function createAuthorizationRequest() {
   requireOAuthConfig();
   const state = crypto.randomBytes(24).toString('base64url');
+  const codeVerifier = crypto.randomBytes(64).toString('base64url');
   const params = new URLSearchParams({
     audience: 'api.atlassian.com',
     client_id: env.ATLASSIAN_CLIENT_ID,
@@ -29,11 +34,13 @@ export function createAuthorizationRequest() {
     state,
     response_type: 'code',
     prompt: 'consent',
+    code_challenge: base64UrlSha256(codeVerifier),
+    code_challenge_method: 'S256',
   });
-  return { state, url: `${authorizeUrl}?${params.toString()}` };
+  return { state, codeVerifier, url: `${authorizeUrl}?${params.toString()}` };
 }
 
-export async function exchangeAuthorizationCode(code) {
+export async function exchangeAuthorizationCode(code, codeVerifier) {
   requireOAuthConfig();
   const response = await fetch(tokenUrl, {
     method: 'POST',
@@ -44,6 +51,7 @@ export async function exchangeAuthorizationCode(code) {
       client_secret: env.ATLASSIAN_CLIENT_SECRET,
       code,
       redirect_uri: env.ATLASSIAN_REDIRECT_URI,
+      ...(codeVerifier ? { code_verifier: codeVerifier } : {}),
     }),
   });
   if (!response.ok) throw new Error(`Atlassian token exchange failed: ${response.status}`);
@@ -63,5 +71,27 @@ export async function fetchAccessibleResources(accessToken) {
     headers: { Authorization: `Bearer ${accessToken}`, Accept: 'application/json' },
   });
   if (!response.ok) throw new Error(`Atlassian resources failed: ${response.status}`);
+  return response.json();
+}
+
+
+export async function refreshAccessToken(refreshToken) {
+  requireOAuthConfig();
+  const response = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      grant_type: 'refresh_token',
+      client_id: env.ATLASSIAN_CLIENT_ID,
+      client_secret: env.ATLASSIAN_CLIENT_SECRET,
+      refresh_token: refreshToken,
+    }),
+  });
+  if (!response.ok) {
+    const error = new Error(`Atlassian token refresh failed: ${response.status}`);
+    error.statusCode = response.status;
+    error.code = 'ATLASSIAN_REFRESH_FAILED';
+    throw error;
+  }
   return response.json();
 }

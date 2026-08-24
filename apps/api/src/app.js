@@ -5,11 +5,17 @@ import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import { env } from './config/env.js';
 import { authRequired, clearSessionCookie, setSessionCookie, signSession } from './security/session.js';
+import { clearCsrfCookie, csrfRequired, setCsrfCookie } from './security/csrf.js';
 import { createAuthorizationRequest, exchangeAuthorizationCode, fetchAccessibleResources, fetchAtlassianProfile } from './services/atlassianOAuth.js';
-import { getAuthenticatedUser, getLatestAtlassianSession, persistAtlassianLogin } from './services/authRepository.js';
+import { getAuthenticatedUser, getLatestAtlassianSession, persistAtlassianLogin, refreshAtlassianSession } from './services/authRepository.js';
 import { buildDemoDashboard } from './services/demoDashboard.js';
 import { jiraRequest } from './services/jiraClient.js';
 import { decryptSecret } from './utils/crypto.js';
+import { getJsonCache, getSyncStatus, setJsonCache } from './cache/redis.js';
+import { getPersistedProjectIssues, syncJiraProject } from './services/jiraSync.js';
+import { buildProjectDashboard } from './services/projectDashboard.js';
+import { getActivityLogs } from './services/activityRepository.js';
+import { createProjectAlertRule, deleteProjectAlertRule, listProjectAlerts, updateProjectAlertRule } from './services/alertRepository.js';
 
 export function createApp() {
   const app = express();
@@ -27,15 +33,13 @@ export function createApp() {
       error.code = 'ATLASSIAN_SESSION_NOT_FOUND';
       throw error;
     }
-    if (atlassianSession.expiresAt && atlassianSession.expiresAt <= new Date()) {
-      const error = new Error('Reconnect Jira to refresh access.');
-      error.statusCode = 401;
-      error.code = 'ATLASSIAN_TOKEN_EXPIRED';
-      throw error;
+    let activeSession = atlassianSession;
+    if (activeSession.expiresAt && activeSession.expiresAt <= new Date()) {
+      activeSession = await refreshAtlassianSession(activeSession);
     }
     return {
-      atlassianSession,
-      accessToken: decryptSecret(atlassianSession.encryptedAccessToken),
+      atlassianSession: activeSession,
+      accessToken: decryptSecret(activeSession.encryptedAccessToken),
     };
   }
 
@@ -45,8 +49,15 @@ export function createApp() {
 
   app.get('/api/auth/atlassian/start', (req, res, next) => {
     try {
-      const { state, url } = createAuthorizationRequest();
+      const { state, codeVerifier, url } = createAuthorizationRequest();
       res.cookie('nuvlo_oauth_state', state, {
+        httpOnly: true,
+        secure: env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 10 * 60 * 1000,
+        path: '/',
+      });
+      res.cookie('nuvlo_pkce_verifier', codeVerifier, {
         httpOnly: true,
         secure: env.NODE_ENV === 'production',
         sameSite: 'lax',
@@ -65,23 +76,33 @@ export function createApp() {
         return res.status(400).json({ error: 'INVALID_OAUTH_STATE' });
       }
       if (!req.query.code) return res.status(400).json({ error: 'MISSING_AUTHORIZATION_CODE' });
-      const tokenSet = await exchangeAuthorizationCode(req.query.code);
+      const codeVerifier = req.cookies?.nuvlo_pkce_verifier;
+      if (!codeVerifier) return res.status(400).json({ error: 'MISSING_PKCE_VERIFIER' });
+      const tokenSet = await exchangeAuthorizationCode(req.query.code, codeVerifier);
       const [profile, resources] = await Promise.all([
         fetchAtlassianProfile(tokenSet.access_token),
         fetchAccessibleResources(tokenSet.access_token),
       ]);
       const { user } = await persistAtlassianLogin({ profile, tokenSet, resources });
       res.clearCookie('nuvlo_oauth_state', { path: '/' });
+      res.clearCookie('nuvlo_pkce_verifier', { path: '/' });
       setSessionCookie(res, signSession(user));
+      setCsrfCookie(res);
       res.redirect(`${env.WEB_ORIGIN}/dashboard`);
     } catch (error) {
       next(error);
     }
   });
 
-  app.post('/api/auth/logout', (_req, res) => {
+  app.post('/api/auth/logout', authRequired, csrfRequired, (_req, res) => {
     clearSessionCookie(res);
+    clearCsrfCookie(res);
     res.json({ ok: true });
+  });
+
+  app.get('/api/auth/csrf', authRequired, (_req, res) => {
+    const csrfToken = setCsrfCookie(res);
+    res.json({ csrfToken });
   });
 
   app.get('/api/auth/me', authRequired, async (req, res, next) => {
@@ -104,9 +125,22 @@ export function createApp() {
     }
   });
 
+  app.get('/api/activity', authRequired, async (req, res, next) => {
+    try {
+      const events = await getActivityLogs({ userId: req.session.sub, limit: req.query.limit });
+      return res.json({ source: 'postgres', events });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
   app.get('/api/jira/projects', authRequired, async (req, res, next) => {
     try {
       const { atlassianSession, accessToken } = await getActiveAtlassianAccess(req.session.sub);
+      const cacheKey = `jira:projects:${req.session.sub}:${atlassianSession.cloudId}`;
+      const cached = await getJsonCache(cacheKey);
+      if (cached) return res.json({ ...cached, cache: 'hit' });
+
       const payload = await jiraRequest({
         cloudId: atlassianSession.cloudId,
         accessToken,
@@ -114,12 +148,18 @@ export function createApp() {
         searchParams: { maxResults: 50, orderBy: 'name' },
       });
 
-      return res.json({
+      const responsePayload = {
         source: 'jira-cloud',
+        cache: 'miss',
         site: {
           cloudId: atlassianSession.cloudId,
           name: atlassianSession.siteName,
           url: atlassianSession.siteUrl,
+        },
+        session: {
+          accessTokenExpiresAt: atlassianSession.expiresAt?.toISOString() || null,
+          cacheTtlSeconds: 60,
+          syncStatusTtlSeconds: 3600,
         },
         projects: (payload.values || []).map((project) => ({
           id: project.id,
@@ -129,7 +169,9 @@ export function createApp() {
           simplified: project.simplified,
           avatarUrl: project.avatarUrls?.['48x48'] || project.avatarUrls?.['32x32'] || null,
         })),
-      });
+      };
+      await setJsonCache(cacheKey, responsePayload, 60);
+      return res.json(responsePayload);
     } catch (error) {
       next(error);
     }
@@ -143,6 +185,21 @@ export function createApp() {
       }
 
       const { atlassianSession, accessToken } = await getActiveAtlassianAccess(req.session.sub);
+      const persisted = await getPersistedProjectIssues({ cloudId: atlassianSession.cloudId, projectKey });
+      if (persisted?.issues?.length) {
+        const status = await getSyncStatus(`${req.session.sub}:${projectKey}`);
+        return res.json({
+          source: 'postgres',
+          projectKey,
+          syncStatus: status,
+          issues: persisted.issues,
+        });
+      }
+
+      const cacheKey = `jira:issues:${req.session.sub}:${atlassianSession.cloudId}:${projectKey}`;
+      const cached = await getJsonCache(cacheKey);
+      if (cached) return res.json({ ...cached, cache: 'hit' });
+
       const payload = await jiraRequest({
         cloudId: atlassianSession.cloudId,
         accessToken,
@@ -154,8 +211,9 @@ export function createApp() {
         },
       });
 
-      return res.json({
+      const responsePayload = {
         source: 'jira-cloud',
+        cache: 'miss',
         projectKey,
         nextPageToken: payload.nextPageToken || null,
         issues: (payload.issues || []).map((issue) => ({
@@ -170,9 +228,119 @@ export function createApp() {
           createdAt: issue.fields?.created || null,
           updatedAt: issue.fields?.updated || null,
         })),
+      };
+      await setJsonCache(cacheKey, responsePayload, 60);
+      return res.json(responsePayload);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get('/api/jira/projects/:projectKey/alerts', authRequired, async (req, res, next) => {
+    try {
+      const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
+      const alerts = await listProjectAlerts({
+        userId: req.session.sub,
+        cloudId: atlassianSession.cloudId,
+        projectKey: req.params.projectKey,
+      });
+      return res.json(alerts);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.post('/api/jira/projects/:projectKey/alerts', authRequired, csrfRequired, async (req, res, next) => {
+    try {
+      const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
+      const rule = await createProjectAlertRule({
+        userId: req.session.sub,
+        cloudId: atlassianSession.cloudId,
+        projectKey: req.params.projectKey,
+        payload: req.body,
+      });
+      return res.status(201).json({ source: 'postgres', rule });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.patch('/api/jira/projects/:projectKey/alerts/:ruleId', authRequired, csrfRequired, async (req, res, next) => {
+    try {
+      const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
+      const rule = await updateProjectAlertRule({
+        userId: req.session.sub,
+        cloudId: atlassianSession.cloudId,
+        projectKey: req.params.projectKey,
+        ruleId: req.params.ruleId,
+        payload: req.body,
+      });
+      return res.json({ source: 'postgres', rule });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.delete('/api/jira/projects/:projectKey/alerts/:ruleId', authRequired, csrfRequired, async (req, res, next) => {
+    try {
+      const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
+      const result = await deleteProjectAlertRule({
+        userId: req.session.sub,
+        cloudId: atlassianSession.cloudId,
+        projectKey: req.params.projectKey,
+        ruleId: req.params.ruleId,
+      });
+      return res.json({ source: 'postgres', rule: result });
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.post('/api/jira/projects/:projectKey/sync', authRequired, csrfRequired, async (req, res, next) => {
+    try {
+      const requestedMaxIssues = Number(req.body?.maxIssues || 100);
+      const result = await syncJiraProject({
+        userId: req.session.sub,
+        projectKey: req.params.projectKey,
+        maxIssues: Math.min(Math.max(requestedMaxIssues || 100, 1), 250),
+      });
+      return res.status(201).json({
+        source: 'jira-cloud',
+        status: 'COMPLETED',
+        syncRunId: result.syncRunId,
+        project: { id: result.project.id, key: result.project.key, name: result.project.name },
+        imported: result.imported,
       });
     } catch (error) {
       next(error);
+    }
+  });
+
+  app.get('/api/jira/projects/:projectKey/sync/status', authRequired, async (req, res, next) => {
+    try {
+      const projectKey = String(req.params.projectKey || '').toUpperCase();
+      const status = await getSyncStatus(`${req.session.sub}:${projectKey}`);
+      return res.json({ projectKey, status: status || { status: 'IDLE', projectKey } });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get('/api/jira/projects/:projectKey/dashboard', authRequired, async (req, res, next) => {
+    try {
+      const projectKey = String(req.params.projectKey || '').toUpperCase();
+      if (!/^[A-Z][A-Z0-9_]{1,20}$/.test(projectKey)) {
+        return res.status(400).json({ error: 'INVALID_PROJECT_KEY' });
+      }
+
+      const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
+      const dashboard = await buildProjectDashboard({ cloudId: atlassianSession.cloudId, projectKey });
+      if (!dashboard) {
+        return res.status(404).json({ error: 'PROJECT_DASHBOARD_NOT_SYNCED', message: 'Project has no synced issues yet.' });
+      }
+      return res.json(dashboard);
+    } catch (error) {
+      return next(error);
     }
   });
 

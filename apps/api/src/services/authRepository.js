@@ -1,5 +1,6 @@
 import { prisma } from '../db/prisma.js';
-import { encryptSecret } from '../utils/crypto.js';
+import { decryptSecret, encryptSecret } from '../utils/crypto.js';
+import { refreshAccessToken } from './atlassianOAuth.js';
 
 function tokenExpiryDate(expiresIn) {
   if (!expiresIn) return null;
@@ -107,4 +108,37 @@ export async function getLatestAtlassianSession(userId) {
     where: { userId },
     orderBy: { updatedAt: 'desc' },
   });
+}
+
+
+export async function refreshAtlassianSession(atlassianSession) {
+  if (!atlassianSession.encryptedRefreshToken) {
+    const error = new Error('Atlassian refresh token is not available.');
+    error.statusCode = 401;
+    error.code = 'ATLASSIAN_REFRESH_TOKEN_MISSING';
+    throw error;
+  }
+
+  const tokenSet = await refreshAccessToken(decryptSecret(atlassianSession.encryptedRefreshToken));
+  const updated = await prisma.atlassianSession.update({
+    where: { id: atlassianSession.id },
+    data: {
+      encryptedAccessToken: encryptSecret(tokenSet.access_token),
+      encryptedRefreshToken: tokenSet.refresh_token
+        ? encryptSecret(tokenSet.refresh_token)
+        : atlassianSession.encryptedRefreshToken,
+      expiresAt: tokenExpiryDate(tokenSet.expires_in),
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      userId: atlassianSession.userId,
+      eventType: 'AUTH',
+      message: 'Token Atlassian renovado mediante refresh token rotatorio.',
+      metadata: { cloudId: atlassianSession.cloudId },
+    },
+  });
+
+  return updated;
 }
