@@ -211,6 +211,38 @@ RI-10 & Should & El sistema debería gestionar información sobre alertas activa
 }
 
 \clearpage
+\section{Matriz requisito-prueba}
+
+Para validar el alcance de la versión implementada se define una matriz de relación entre requisitos y evidencias de prueba. La matriz no sustituye a las pruebas automatizadas ni a la revisión funcional, pero permite comprobar de forma resumida qué requisitos quedan cubiertos por el MVP, cuáles se consideran parciales y cuáles se dejan como trabajo futuro.
+
+{\renewcommand{\arraystretch}{1.22}\scriptsize
+\begin{longtable}{p{2.2cm}p{2.2cm}p{5.9cm}p{3.1cm}}
+\caption{Matriz de validación requisito-prueba}\label{tab:matriz-requisito-prueba}\\
+\toprule
+\textbf{Requisitos} & \textbf{Estado} & \textbf{Evidencia principal} & \textbf{Tipo de prueba} \\
+\midrule
+RF-01, RF-03, RF-05, RI-01--RI-06 & Cumplido & Sincronización real del proyecto Jira \texttt{TFG}, persistencia en PostgreSQL y registro de \texttt{SyncRun}. Capturas en Figuras~\ref{fig:manual-dashboard-jira} y~\ref{fig:manual-tablero-jira}. & Integración Jira y revisión funcional \\
+RF-02, RF-20 & Parcial & Filtros rápidos por estado, tipo y búsqueda textual en dashboard. La selección avanzada por tablero, sprint, etiquetas y rango temporal queda como mejora posterior. & E2E y revisión UI \\
+RF-04 & Parcial & Existe sincronización bajo demanda y reutilización de datos persistidos; la planificación automática periódica no forma parte del MVP. & Revisión funcional \\
+RF-06 & Parcial & El dashboard muestra avisos de calidad de datos y limitaciones de changelog/sprints; la detección exhaustiva de inconsistencias queda como mejora. & Revisión funcional \\
+RF-07, RF-08, RI-08 & Parcial & El backend almacena ámbitos de análisis y percentiles; la configuración completa desde UI queda pendiente de ampliación. & Revisión técnica \\
+RF-09, RF-11--RF-15, RI-09 & Cumplido & Cálculo de WIP, Velocity, Lead Time, Cycle Time, media y percentiles con dataset offline y datos sincronizados. & Unitarias y E2E \\
+RF-10, RF-16, RF-17, RF-18, RF-23 & Futuro & Requisitos de mejora no imprescindibles para el MVP: Deployment Frequency, métricas Scrum/Kanban adicionales, eventos manuales y modo presentación específico. & No aplicado al MVP \\
+RF-19, RF-21, RF-22, RNF-01 & Cumplido & Dashboard responsive, widgets configurables, ayudas contextuales y capturas de escritorio/móvil. & E2E, revisión responsive y capturas \\
+RF-24--RF-26, RI-10 & Cumplido & Reglas de alerta persistidas, badge de notificación, aviso emergente e historial de eventos. Figura~\ref{fig:manual-alertas-jira}. & Integración y revisión funcional \\
+RF-27, RF-28, RNF-04 & Cumplido & Vista de actividad con logs de autenticación, sincronización, alertas y retención. Figura~\ref{fig:manual-actividad-jira}. & Integración y revisión funcional \\
+RF-29--RF-31, RNF-05 & Cumplido & OAuth 2.0 3LO con Atlassian, cookies \texttt{httpOnly}, CSRF, PKCE y cifrado de tokens OAuth en PostgreSQL. & Revisión de código e integración \\
+RNF-02, RNF-03, RNF-06, RNF-07, RNF-09, RNF-10, RNF-11 & Cumplido & Persistencia normalizada, Redis con TTL, política de retención, estructura monorepo, documentación ADR y pruebas automatizadas. & Unitarias, integración y revisión técnica \\
+RNF-08 & Parcial & La arquitectura permite evolución incremental, pero no se han ejecutado pruebas de carga completas. & Revisión técnica \\
+RI-07 & Cumplido & Dataset offline generado desde CSV/script y capturas demo reproducibles en \texttt{img/app-demo}. & E2E y capturas demo \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+Los requisitos marcados como parciales o futuros no impiden la existencia de un MVP funcional, pero delimitan claramente el trabajo restante y evitan presentar como completadas funcionalidades que todavía requieren desarrollo adicional.
+
+\clearpage
 \section{Casos de uso}
 
 A partir de los requisitos funcionales se identifican los principales casos de uso del sistema. Esta primera relación sirve como base para elaborar posteriormente el diagrama de casos de uso y para describir de forma detallada el comportamiento esperado del sistema desde el punto de vista del usuario.
