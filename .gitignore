@@ -44,3 +44,10 @@ test-results/
 # Local/private TFG support notes
 docs/compliance/
 .local-notes/
+
+# Generated/vendor content anywhere in the repo
+**/node_modules/
+**/*.bkp
+# Local-only documentation support
+docs/decisions/
+docs/memoria/code/
