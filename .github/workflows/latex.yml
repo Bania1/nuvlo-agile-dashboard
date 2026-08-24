@@ -33,11 +33,18 @@ jobs:
             texlive-latex-base \
             texlive-latex-recommended \
             texlive-latex-extra \
+            texlive-plain-generic \
             texlive-bibtex-extra \
             texlive-fonts-recommended \
             texlive-fonts-extra \
             texlive-lang-spanish \
             texlive-pictures
+
+      - name: Verify LaTeX packages
+        run: |
+          kpsewhich dirtree.sty
+          kpsewhich tcolorbox.sty
+          kpsewhich tikz.sty
 
       - name: Add swap space for LaTeX build
         run: |
