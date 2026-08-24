@@ -20,6 +20,7 @@ jobs:
     name: Compile TFG memory
     runs-on: ubuntu-latest
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
     steps:
@@ -39,7 +40,8 @@ jobs:
             texlive-bibtex-extra \
             texlive-fonts-recommended \
             texlive-fonts-extra \
-            texlive-lang-spanish
+            texlive-lang-spanish \
+            texlive-pictures
 
       - name: Compile memory
         working-directory: docs/memoria
