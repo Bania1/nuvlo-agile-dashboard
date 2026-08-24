@@ -33,7 +33,6 @@ jobs:
             texlive-latex-base \
             texlive-latex-recommended \
             texlive-latex-extra \
-            texlive-plain-generic \
             texlive-bibtex-extra \
             texlive-fonts-recommended \
             texlive-fonts-extra \
@@ -42,7 +41,6 @@ jobs:
 
       - name: Verify LaTeX packages
         run: |
-          kpsewhich dirtree.sty
           kpsewhich tcolorbox.sty
           kpsewhich tikz.sty
 

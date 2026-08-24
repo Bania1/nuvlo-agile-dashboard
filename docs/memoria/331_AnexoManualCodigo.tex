@@ -17,35 +17,32 @@ No se incluye una impresión completa del código fuente para evitar duplicar co
 
 El proyecto usa un monorepo sencillo con \texttt{npm workspaces}, mecanismo proporcionado por npm para gestionar varios paquetes locales desde un único repositorio~\cite{NpmWorkspaces}. Esta organización permite evolucionar conjuntamente frontend, backend, paquetes compartidos, documentación, Prisma y scripts.
 
-{\footnotesize
-\setlength{\DTbaselineskip}{10pt}
-\dirtree{%
-.1 tfg.
-.2 apps.
-.3 web.
-.4 src.
-.5 components.
-.5 views.
-.5 lib.
-.4 e2e.
-.3 api.
-.4 src.
-.5 services.
-.5 security.
-.5 cache.
-.5 config.
-.5 db.
-.2 packages.
-.3 shared.
-.2 prisma.
-.3 schema.prisma.
-.2 scripts.
-.2 docs.
-.3 memoria.
-.2 docker-compose.yml.
-.2 package.json.
-}
-}
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize]
+tfg/
+|-- apps/
+|   |-- web/
+|   |   |-- src/
+|   |   |   |-- components/
+|   |   |   |-- views/
+|   |   |   `-- lib/
+|   |   `-- e2e/
+|   `-- api/
+|       `-- src/
+|           |-- services/
+|           |-- security/
+|           |-- cache/
+|           |-- config/
+|           `-- db/
+|-- packages/
+|   `-- shared/
+|-- prisma/
+|   `-- schema.prisma
+|-- scripts/
+|-- docs/
+|   `-- memoria/
+|-- docker-compose.yml
+`-- package.json
+\end{lstlisting}
 
 \section{Frontend}
 
