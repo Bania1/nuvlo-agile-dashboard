@@ -23,7 +23,8 @@ biblio.bib \
 071_Requisitos.tex \
 311_AnexoA.tex \
 321_AnexoManualUsuario.tex \
-331_AnexoManualCodigo.tex
+331_AnexoManualCodigo.tex \
+341_AnexoUsoIA.tex
 
 IMAGENES = \
 #    img/prelacionesLE.pdf \
