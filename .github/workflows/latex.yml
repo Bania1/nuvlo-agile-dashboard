@@ -39,7 +39,7 @@ jobs:
             texlive-fonts-extra \
             texlive-lang-spanish \
             texlive-pictures \
-            texlive-generic-extra
+            texlive-generic
 
       - name: Compile memory
         working-directory: docs/memoria
