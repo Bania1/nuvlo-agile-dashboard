@@ -6,7 +6,7 @@
 #  -Figuras: transfig, netpbm, dia, graphviz, inkscape (for SVG to PDF conversion)
 #
 # © Antonio Arauzo-Azofra 2009-2025
-.PHONY = all clean
+.PHONY: all ci clean
 SHELL = /bin/bash
 
 # Nombre sin extension del principal
@@ -31,23 +31,34 @@ IMAGENES = \
 
 all :	$(BASENAME).pdf
 
+# Build optimizado para CI: evita SyncTeX y solo genera el PDF en la ultima pasada.
+ci :
+	$(MAKE) $(BASENAME).pdf SYNC=0 FIRST_LATEX_MODE=-draftmode SECOND_LATEX_MODE=-draftmode COPY_SYNCTEX=0
+
 # --- Generacion del articulo principal ---
 OUTDIR = build
+PDFLATEX ?= pdflatex
+BIBER ?= biber
+SYNC ?= 1
+COPY_SYNCTEX ?= 1
+FIRST_LATEX_MODE ?=
+SECOND_LATEX_MODE ?=
+PDFLATEX_FLAGS ?= -synctex=$(SYNC) -interaction=nonstopmode -halt-on-error -file-line-error -output-directory=$(OUTDIR)
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
 
 $(BASENAME).pdf : $(BASENAME).tex $(FUENTES) $(IMAGENES) | $(OUTDIR)
 	@echo "----- LATEX 1 (create aux for bibliography) -----"
-	pdflatex -synctex=1 -interaction=nonstopmode -file-line-error -output-directory=$(OUTDIR) $<
+	$(PDFLATEX) $(FIRST_LATEX_MODE) $(PDFLATEX_FLAGS) $<
 	@echo "----- BIBER -----"
-	biber --input-directory $(OUTDIR) --output-directory $(OUTDIR) $(BASENAME)
+	$(BIBER) --input-directory $(OUTDIR) --output-directory $(OUTDIR) $(BASENAME)
 	@echo "----- LATEX 2 (get bibliography cites) -----"
-	pdflatex -synctex=1 -interaction=nonstopmode -file-line-error -output-directory=$(OUTDIR) $<
-	@echo "----- LATEX 3 (rerun to get cross-references right) -----"
-	pdflatex -synctex=1 -interaction=nonstopmode -file-line-error -output-directory=$(OUTDIR) $<
+	$(PDFLATEX) $(SECOND_LATEX_MODE) $(PDFLATEX_FLAGS) $<
+	@echo "----- LATEX 3 (create final PDF and cross-references) -----"
+	$(PDFLATEX) $(PDFLATEX_FLAGS) $<
 	@cp $(OUTDIR)/$(BASENAME).pdf .
-	@cp $(OUTDIR)/$(BASENAME).synctex.gz .
+	@if [ "$(COPY_SYNCTEX)" = "1" ] && [ -f "$(OUTDIR)/$(BASENAME).synctex.gz" ]; then cp $(OUTDIR)/$(BASENAME).synctex.gz .; fi
 
 # --- Conversiones de imágenes y figuras ---
 %.pdf : %.odg

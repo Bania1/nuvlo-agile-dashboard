@@ -1,33 +1,55 @@
 \chapter{Uso de herramientas de inteligencia artificial}\label{uso-ia}
-Durante la elaboración de este Trabajo de Fin de Grado se han utilizado herramientas de inteligencia artificial generativa como apoyo auxiliar en tareas de redacción, revisión, organización y documentación. Su uso se ha limitado a facilitar el proceso de trabajo, sin sustituir el criterio técnico del autor ni la validación final de los contenidos incluidos en la memoria.
+Durante la elaboración de este Trabajo de Fin de Grado se han utilizado herramientas de inteligencia artificial generativa como apoyo auxiliar. Su uso se ha orientado a mejorar el proceso de desarrollo y documentación, pero sin sustituir el criterio técnico del autor ni la revisión final de los contenidos incorporados a la memoria y al código fuente.
 
 \section{Objetivo del uso}
 
-El uso de estas herramientas ha tenido como objetivo mejorar la claridad de la documentación, contrastar la coherencia entre apartados y acelerar tareas mecánicas asociadas a la preparación de la memoria. En particular, se han empleado como apoyo para estructurar explicaciones, revisar formulaciones, detectar posibles incoherencias y generar borradores iniciales que posteriormente han sido corregidos y adaptados.
+El objetivo principal ha sido utilizar la IA como una herramienta de apoyo durante el trabajo diario: ordenar ideas, revisar textos, contrastar decisiones técnicas, detectar posibles incoherencias y acelerar tareas repetitivas. En ningún caso se ha utilizado como fuente primaria de información académica o técnica. Las explicaciones, requisitos, decisiones de diseño y resultados finales han sido revisados y adaptados antes de formar parte del proyecto.
 
 \section{Tareas realizadas con apoyo de IA}
 
 Las herramientas de inteligencia artificial se han utilizado principalmente en las siguientes tareas:
 
 \begin{itemize}
-    \item Revisión y mejora de fragmentos de texto de la memoria.
-    \item Apoyo en la organización de secciones y anexos del documento.
-    \item Comprobación de coherencia entre requisitos, casos de uso, diagramas y explicaciones.
-    \item Generación de propuestas iniciales de diagramas y material auxiliar, revisadas y modificadas posteriormente por el autor.
-    \item Apoyo en tareas de compilación, exportación y mantenimiento de la documentación del proyecto.
+    \item Revisión y mejora de fragmentos de texto de la memoria, procurando que la redacción fuese clara y coherente.
+    \item Organización de secciones, anexos, manual de usuario, manual técnico y matriz de validación de requisitos.
+    \item Comprobación de coherencia entre requisitos, casos de uso, diagramas, capturas y funcionamiento real de la aplicación.
+    \item Apoyo en la planificación incremental del desarrollo, especialmente para dividir el trabajo en fases y commits manejables.
+    \item Revisión de errores durante la ejecución local, instalación de dependencias, configuración de Docker, PostgreSQL, Redis y entorno de desarrollo.
+    \item Apoyo en la implementación y revisión de partes del código, incluyendo autenticación OAuth con Atlassian, sincronización con Jira Cloud, cálculo de métricas, alertas, logs, pruebas y generación de capturas.
+    \item Preparación de scripts auxiliares para demo offline, generación de datos controlados y validación de capturas reproducibles.
 \end{itemize}
 
-\section{Uso de integraciones con herramientas del proyecto}
+\section{Uso durante la implementación}
 
-Además del apoyo en la redacción y documentación, se han utilizado integraciones de la herramienta de IA con servicios externos vinculados al proyecto. En particular, se emplearon conectores con GitHub para consultar el estado del repositorio, revisar cambios y ayudar en tareas de control de versiones. También se utilizaron integraciones con Atlassian/Jira mediante conectores y, en su caso, servidores MCP (\textit{Model Context Protocol}), para comprobar el estado del proyecto gestionado en Jira y contrastar información relacionada con el seguimiento de tareas.
+La IA también se ha utilizado como asistente de programación para proponer cambios, revisar fragmentos de código y ayudar a localizar errores. Las propuestas generadas se han contrastado con el comportamiento esperado de la aplicación y con las pruebas disponibles antes de incorporarse al repositorio.
 
-Estas capacidades permitieron que la herramienta accediera a contexto real del proyecto bajo supervisión del autor. Por ejemplo, se usó como apoyo para verificar el estado del repositorio, revisar la sincronización con GitHub y comprobar información del proyecto en Jira. Asimismo, durante las pruebas iniciales de conexión con la API de Jira, la herramienta ayudó a generar material auxiliar, como scripts de prueba para validar el acceso al servicio.
+En particular, se empleó apoyo de IA en las siguientes áreas de la implementación:
 
-El uso de estas integraciones se realizó siempre con finalidad de consulta, verificación y apoyo técnico. Aunque la herramienta disponía de acceso a determinados servicios conectados, las decisiones sobre qué información utilizar, qué cambios incorporar y cómo reflejarlos en la memoria fueron tomadas y revisadas por el autor.
+\begin{itemize}
+    \item Estructuración del monorepo con aplicaciones separadas para frontend y backend.
+    \item Desarrollo de la interfaz web de Nuvlo y adaptación visual a las vistas previstas en los prototipos.
+    \item Configuración de autenticación con Atlassian mediante OAuth 2.0 3LO, incluyendo estado de sesión, CSRF, PKCE y uso de cookies \texttt{httpOnly}, tomando como referencia documentación oficial y recomendaciones de seguridad web~\cite{AtlassianOAuth3LO,OWASPOAuth2,OWASPCSRF}.
+    \item Integración con Jira Cloud API para sincronizar proyectos, incidencias, sprints y changelog~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}.
+    \item Persistencia en PostgreSQL y uso de Redis para datos temporales y cachés con tiempo de vida limitado~\cite{PostgreSQLDocs,RedisDocs}.
+    \item Implementación de métricas ágiles como WIP, Velocity, Lead Time, Cycle Time, percentiles y Throughput.
+    \item Creación de alertas por umbral, notificaciones visuales, historial de alertas y registro de actividad.
+    \item Elaboración de pruebas unitarias, de integración y E2E para validar partes críticas del sistema~\cite{VitestGuide,PlaywrightDocs}.
+\end{itemize}
 
-\section{Supervisión y responsabilidad del autor}
+\section{Uso de integraciones y herramientas conectadas}
 
-Todos los contenidos incorporados al documento han sido revisados, corregidos y validados por el autor. Las decisiones sobre el alcance del sistema, la selección de requisitos, la interpretación de los diagramas, la redacción final y la estructura de la memoria corresponden al autor del trabajo.
+Durante el desarrollo se utilizaron integraciones de la herramienta de IA con servicios relacionados con el proyecto. Entre ellas destacan el acceso al repositorio Git para revisar el estado de cambios, preparar commits y comprobar el historial, así como el uso de conectores con Atlassian/Jira para contrastar información del proyecto y validar el funcionamiento de la integración.
 
-La inteligencia artificial no se ha utilizado como fuente primaria de información académica o técnica. Cuando se han incluido definiciones, criterios de notación o referencias externas, se han utilizado fuentes documentales específicas citadas en la memoria. Por tanto, el uso de IA debe entenderse como una herramienta de apoyo al proceso de elaboración, no como sustituto de la documentación formal ni del trabajo propio realizado.
+También se emplearon capacidades de trabajo sobre el entorno local para ejecutar comandos, revisar logs, comprobar servicios en Docker, validar pruebas y generar capturas de pantalla destinadas a la documentación. Este uso permitió detectar errores de configuración, como conflictos de puertos, versiones de Node.js, problemas de autenticación OAuth o ficheros que no debían formar parte del repositorio remoto.
 
+\section{Fuentes externas y código reutilizado}
+
+Cuando se ha necesitado información técnica externa, se han consultado fuentes documentales específicas, como la documentación oficial de Atlassian para OAuth 2.0 3LO y Jira REST API~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3}, la documentación de las herramientas utilizadas en el stack y las referencias de las librerías empleadas~\cite{ReactDocs,ViteDocs,NodeDocs,ExpressDocs,PrismaDocs,DockerComposeDocs}. Estas fuentes se han usado para comprender APIs, parámetros de configuración, buenas prácticas y restricciones técnicas.
+
+No se han incorporado ficheros completos de código fuente externo como parte propia del proyecto. La aplicación utiliza dependencias de código abierto instaladas mediante los gestores habituales del ecosistema JavaScript, como React, Vite, Express, Prisma, Vitest, Playwright y otras librerías auxiliares. En el diseño visual del dashboard se consultó como inspiración una plantilla moderna de administración de Morphin~\cite{MorphinDashboardInspiration}; esta referencia se usó para orientar criterios generales de composición, tarjetas, navegación lateral y aspecto de dashboard, sin copiar su código fuente ni reproducirla literalmente.
+
+\section{Supervisión y responsabilidad}
+
+Todo el contenido finalmente incorporado al trabajo ha sido revisado, corregido y adaptado antes de su inclusión. Las decisiones sobre alcance, requisitos, diseño, arquitectura, selección de tecnologías, redacción final y validación del sistema corresponden al autor del trabajo.
+
+Por tanto, el uso de IA debe entenderse como apoyo al proceso de elaboración: ayuda a ordenar, revisar, probar y documentar, pero no reemplaza la toma de decisiones, la comprensión técnica ni la responsabilidad sobre el resultado final.

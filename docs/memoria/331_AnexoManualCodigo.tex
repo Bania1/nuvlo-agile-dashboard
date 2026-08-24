@@ -3,7 +3,7 @@
 
 \section{Introducción}
 
-Este anexo resume la organización del código fuente de Nuvlo. El proyecto se ha implementado como una aplicación web en arquitectura cliente-servidor, con frontend en React, backend en Node.js/Express, persistencia en PostgreSQL mediante Prisma y uso de Redis como caché temporal y soporte operativo.
+Este anexo resume la organización del código fuente de Nuvlo. El proyecto se ha implementado como una aplicación web en arquitectura cliente-servidor, con frontend en React, backend en Node.js/Express, persistencia en PostgreSQL mediante Prisma y uso de Redis como caché temporal y soporte operativo~\cite{ReactDocs,NodeDocs,ExpressDocs,PrismaDocs,PostgreSQLDocs,RedisDocs}.
 
 El código fuente completo se mantiene en el repositorio GitHub del proyecto:
 
@@ -11,11 +11,11 @@ El código fuente completo se mantiene en el repositorio GitHub del proyecto:
 \url{https://github.com/Bania1/tfg}
 \end{center}
 
-De acuerdo con las indicaciones de la plantilla, no se incluye aquí una impresión completa del código, ya que el tribunal puede consultarlo en el repositorio. Este anexo se centra en explicar su estructura, instalación, ejecución, pruebas y principales decisiones técnicas.
+No se incluye una impresión completa del código fuente para evitar duplicar contenido extenso dentro de la memoria. El repositorio contiene la versión completa y actualizada del proyecto, mientras que este anexo resume la estructura, la instalación, la ejecución, las pruebas y las decisiones técnicas necesarias para comprenderlo.
 
 \section{Estructura del repositorio}
 
-El proyecto usa un monorepo sencillo con \texttt{npm workspaces}. Esta organización permite evolucionar conjuntamente frontend, backend, paquetes compartidos, documentación, Prisma y scripts.
+El proyecto usa un monorepo sencillo con \texttt{npm workspaces}, mecanismo proporcionado por npm para gestionar varios paquetes locales desde un único repositorio~\cite{NpmWorkspaces}. Esta organización permite evolucionar conjuntamente frontend, backend, paquetes compartidos, documentación, Prisma y scripts.
 
 {\footnotesize
 \setlength{\DTbaselineskip}{10pt}
@@ -42,7 +42,6 @@ El proyecto usa un monorepo sencillo con \texttt{npm workspaces}. Esta organizac
 .2 scripts.
 .2 docs.
 .3 memoria.
-.3 decisions.
 .2 docker-compose.yml.
 .2 package.json.
 }
@@ -50,7 +49,7 @@ El proyecto usa un monorepo sencillo con \texttt{npm workspaces}. Esta organizac
 
 \section{Frontend}
 
-El frontend se encuentra en \texttt{apps/web}. Está desarrollado con React y Vite. Las vistas principales se organizan en \texttt{src/views}:
+El frontend se encuentra en \texttt{apps/web}. Está desarrollado con React y Vite~\cite{ReactDocs,ViteDocs}. Las vistas principales se organizan en \texttt{src/views}:
 
 \begin{itemize}
     \item \texttt{Landing.jsx}: pantalla inicial con conexión a Jira y acceso a demo local.
@@ -65,14 +64,14 @@ Los componentes reutilizables se encuentran en \texttt{src/components} y la comu
 
 \section{Backend}
 
-El backend se encuentra en \texttt{apps/api}. Está desarrollado con Node.js y Express. Sus responsabilidades principales son:
+El backend se encuentra en \texttt{apps/api}. Está desarrollado con Node.js y Express~\cite{NodeDocs,ExpressDocs}. Sus responsabilidades principales son:
 
 \begin{itemize}
-    \item Gestionar el flujo OAuth 2.0 3LO con Atlassian.
+    \item Gestionar el flujo OAuth 2.0 3LO con Atlassian~\cite{AtlassianOAuth3LO,OWASPOAuth2}.
     \item Proteger la sesión mediante cookie \texttt{httpOnly}.
-    \item Aplicar protección CSRF en operaciones mutables.
+    \item Aplicar protección CSRF en operaciones mutables, siguiendo el patrón de token/header recomendado para aplicaciones web modernas~\cite{OWASPCSRF}.
     \item Renovar tokens de Atlassian mediante refresh token rotatorio.
-    \item Sincronizar proyectos, issues, sprints y changelog desde Jira Cloud.
+    \item Sincronizar proyectos, issues, sprints y changelog desde Jira Cloud~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}.
     \item Persistir datos en PostgreSQL mediante Prisma.
     \item Calcular métricas y evaluar alertas.
     \item Registrar eventos de actividad y errores relevantes.
@@ -82,9 +81,9 @@ Los servicios principales se encuentran en \texttt{apps/api/src/services}. Entre
 
 \section{Base de datos y Redis}
 
-El modelo de datos se define en \texttt{prisma/schema.prisma}. PostgreSQL almacena información durable: usuarios, sesiones cifradas de Atlassian, proyectos, tableros, sprints, incidencias, transiciones, métricas, alertas, ejecuciones de sincronización y logs de actividad.
+El modelo de datos se define en \texttt{prisma/schema.prisma}. PostgreSQL almacena información durable~\cite{PrismaDocs,PostgreSQLDocs}: usuarios, sesiones cifradas de Atlassian, proyectos, tableros, sprints, incidencias, transiciones, métricas, alertas, ejecuciones de sincronización y logs de actividad.
 
-Redis se utiliza como componente temporal. En la implementación actual almacena cachés de corta duración para datos de Jira y estados de sincronización. Estos datos tienen TTL y no se consideran fuente principal de verdad. La fuente durable del sistema es PostgreSQL.
+Redis se utiliza como componente temporal~\cite{RedisDocs}. En la implementación actual almacena cachés de corta duración para datos de Jira y estados de sincronización. Estos datos tienen TTL y no se consideran fuente principal de verdad. La fuente durable del sistema es PostgreSQL.
 
 \section{Variables de entorno}
 
@@ -102,7 +101,7 @@ La configuración local parte de \texttt{.env.example}. El fichero real \texttt{
 
 \section{Instalación y ejecución}
 
-Los comandos básicos de desarrollo son:
+Los comandos básicos de desarrollo son los siguientes; el arranque de los servicios locales se apoya en Docker Compose~\cite{DockerComposeDocs}:
 
 \begin{lstlisting}[language=bash]
 cp .env.example .env
@@ -127,7 +126,7 @@ npm run test:e2e
 npm run build
 \end{lstlisting}
 
-Las pruebas unitarias validan cálculo de métricas, reglas de alerta, CSRF y política de retención. Las pruebas de integración comprueban endpoints del backend con mocks. Las pruebas E2E con Playwright validan el flujo principal de la UI en modo demo, incluyendo entrada, filtros, widgets y alertas.
+Las pruebas unitarias validan cálculo de métricas, reglas de alerta, CSRF y política de retención mediante Vitest~\cite{VitestGuide}. Las pruebas de integración comprueban endpoints del backend con mocks. Las pruebas E2E con Playwright validan el flujo principal de la UI en modo demo, incluyendo entrada, filtros, widgets y alertas~\cite{PlaywrightDocs}.
 
 \section{Capturas de documentación}
 
@@ -142,13 +141,13 @@ El primer comando requiere una sesión OAuth previa y sincroniza el proyecto Jir
 
 \section{Código de terceros y fuentes externas}
 
-No se han copiado ficheros completos de código fuente externos en la implementación. Se han usado librerías de código abierto instaladas mediante npm, como React, Vite, Express, Prisma, Playwright, Vitest, Recharts y Lucide React, respetando sus licencias y uso habitual como dependencias.
+No se han copiado ficheros completos de código fuente externos en la implementación. Se han usado librerías de código abierto instaladas mediante npm, como React, Vite, Express, Prisma, Playwright, Vitest, Recharts y Lucide React, respetando sus licencias y uso habitual como dependencias~\cite{ReactDocs,ViteDocs,ExpressDocs,PrismaDocs,PlaywrightDocs,VitestGuide,RechartsDocs}. Para la dirección visual del dashboard se tomó como inspiración una plantilla de administración moderna publicada por Morphin~\cite{MorphinDashboardInspiration}, sin reutilizar su código fuente.
 
-La integración con Jira Cloud se ha implementado consultando la documentación oficial de Atlassian sobre OAuth 2.0 3LO y Jira REST API. Las decisiones técnicas relacionadas con arquitectura, seguridad, pruebas y separación entre Jira real y demo offline se documentan en \texttt{docs/decisions}.
+La integración con Jira Cloud se ha implementado consultando la documentación oficial de Atlassian sobre OAuth 2.0 3LO y Jira REST API~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3,AtlassianJiraIssuesApi}. Esa documentación se ha usado como referencia técnica para entender el flujo de autorización, los permisos, los endpoints disponibles y las restricciones de uso de la API, no como fuente de código copiado directamente.
 
 \section{Mantenimiento}
 
-El mantenimiento del proyecto se apoya en commits pequeños, pruebas automatizadas y documentación incremental. Las decisiones arquitectónicas se registran como ADR en \texttt{docs/decisions}. La documentación privada de apoyo sobre cumplimiento, fuentes y uso de IA se mantiene localmente hasta ser revisada con los tutores.
+El mantenimiento del proyecto se apoya en commits pequeños, pruebas automatizadas y documentación incremental. Las decisiones técnicas relevantes quedan reflejadas en la propia memoria, en el README y en el historial de commits, de forma que pueda seguirse la evolución del sistema sin depender de notas locales de trabajo.
 
 \phantomsection
 \addcontentsline{toc}{section}{Referencias}

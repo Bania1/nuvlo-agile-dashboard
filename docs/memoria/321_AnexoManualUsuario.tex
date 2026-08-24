@@ -3,18 +3,18 @@
 
 \section{Introducción}
 
-Este anexo describe el uso básico de Nuvlo desde el punto de vista de un usuario final. Nuvlo es una aplicación web para consultar métricas ágiles calculadas a partir de datos de Jira Cloud. La aplicación no sustituye a Jira como herramienta de gestión de proyectos, sino que actúa como una capa de análisis para visualizar indicadores como WIP, Velocity, Lead Time, Cycle Time, alertas y registros de actividad.
+Este anexo describe el uso básico de Nuvlo desde el punto de vista de un usuario final. Nuvlo es una aplicación web para consultar métricas ágiles calculadas a partir de datos de Jira Cloud, tomando como referencia la gestión de trabajo de Jira y la información disponible mediante su API REST~\cite{AtlassianJira,AtlassianJiraRestV3}. La aplicación no sustituye a Jira como herramienta de gestión de proyectos, sino que actúa como una capa de análisis para visualizar indicadores como WIP, Velocity, Lead Time, Cycle Time, alertas y registros de actividad.
 
 El sistema ofrece dos modos de trabajo:
 
 \begin{itemize}
-    \item \textbf{Modo Jira}: utiliza autenticación OAuth con Atlassian y sincroniza datos reales desde Jira Cloud.
-    \item \textbf{Modo demo offline}: utiliza un conjunto de datos local controlado para poder enseñar y validar la aplicación aunque Jira Cloud o la conexión de red no estén disponibles.
+    \item \textbf{Modo Jira}: utiliza autenticación OAuth con Atlassian y sincroniza datos reales desde Jira Cloud~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3}.
+    \item \textbf{Modo demo offline}: utiliza un conjunto de datos local controlado para probar la aplicación aunque Jira Cloud o la conexión de red no estén disponibles.
 \end{itemize}
 
 \section{Acceso a la aplicación}
 
-Al abrir la aplicación, el usuario encuentra una pantalla de entrada con el botón \textit{Conectar con Jira}. Este botón inicia el flujo oficial de autenticación de Atlassian. El usuario no crea una cuenta específica en Nuvlo, ya que la cuenta válida es la cuenta de Atlassian/Jira.
+Al abrir la aplicación, el usuario encuentra una pantalla de entrada con el botón \textit{Conectar con Jira}. Este botón inicia el flujo oficial de autenticación de Atlassian~\cite{AtlassianOAuth3LO}. El usuario no crea una cuenta específica en Nuvlo, ya que la cuenta válida es la cuenta de Atlassian/Jira.
 
 \begin{figure}[htbp]
     \centering
@@ -39,17 +39,17 @@ Tras iniciar sesión o acceder al modo demo, Nuvlo muestra el dashboard principa
 Las tarjetas superiores muestran:
 
 \begin{itemize}
-    \item \textbf{Lead Time}: tiempo desde la creación de una incidencia hasta su finalización.
+    \item \textbf{Lead Time}: tiempo desde la creación de una incidencia hasta su finalización, métrica habitual para analizar el flujo de entrega~\cite{Anderson2010Kanban}.
     \item \textbf{Cycle Time}: tiempo desde que una incidencia entra en trabajo activo hasta que se finaliza.
     \item \textbf{WIP}: trabajo en curso visible según los filtros aplicados.
-    \item \textbf{Velocity}: trabajo completado, usando puntos de historia cuando Jira los proporciona o número de incidencias como alternativa.
+    \item \textbf{Velocity}: trabajo completado, usando puntos de historia cuando Jira los proporciona o número de incidencias como alternativa, en línea con la planificación iterativa descrita en Scrum~\cite{ScrumGuide2020}.
 \end{itemize}
 
 En proyectos reales creados para demostración, algunas métricas temporales pueden aparecer con valores muy bajos o nulos si las transiciones de Jira se han producido en un intervalo corto. Para validar cálculos temporales históricos se utiliza el dataset offline controlado.
 
 \section{Filtros y widgets}
 
-El botón \textit{Filtros} abre un panel de filtrado rápido. Desde este panel el usuario puede limitar las incidencias visibles por estado, tipo o búsqueda textual. También puede ocultar o mostrar widgets del dashboard para adaptar la vista a una revisión concreta o a una presentación.
+El botón \textit{Filtros} abre un panel de filtrado rápido. Desde este panel el usuario puede limitar las incidencias visibles por estado, tipo o búsqueda textual. También puede ocultar o mostrar widgets del dashboard para adaptar la vista al tipo de análisis que se quiera realizar.
 
 \begin{figure}[htbp]
     \centering
@@ -60,7 +60,7 @@ El botón \textit{Filtros} abre un panel de filtrado rápido. Desde este panel e
 
 \section{Sincronización con Jira}
 
-Cuando hay una sesión OAuth activa, el botón \textit{Sincronizar Jira} actualiza los datos del proyecto seleccionado. La aplicación solicita los datos necesarios a Jira Cloud, los almacena en PostgreSQL y recalcula el dashboard desde la base de datos local. Este diseño reduce llamadas repetidas a Jira y permite consultar la información aunque la API externa no se llame en cada interacción de la interfaz.
+Cuando hay una sesión OAuth activa, el botón \textit{Sincronizar Jira} actualiza los datos del proyecto seleccionado. La aplicación solicita los datos necesarios a Jira Cloud, incluidos datos de incidencias y cambios de estado cuando están disponibles~\cite{AtlassianJiraIssuesApi}, los almacena en PostgreSQL y recalcula el dashboard desde la base de datos local. Este diseño reduce llamadas repetidas a Jira y permite consultar la información aunque la API externa no se llame en cada interacción de la interfaz.
 
 \section{Vista de tablero}
 
@@ -121,7 +121,7 @@ La interfaz se adapta a pantallas pequeñas. En móvil, la navegación lateral p
 
 \section{Demo offline}
 
-La demo offline se utiliza como respaldo para la presentación y como conjunto de validación controlado. Sus capturas se encuentran en \texttt{img/app-demo}. A diferencia de Jira real, este dataset sí contiene valores temporales preparados para comprobar que los cálculos de Lead Time, Cycle Time, percentiles, WIP y Velocity se visualizan correctamente.
+La demo offline se utiliza como respaldo operativo y como conjunto de validación controlado. Sus capturas se encuentran en \texttt{img/app-demo}. A diferencia de Jira real, este dataset sí contiene valores temporales preparados para comprobar que los cálculos de Lead Time, Cycle Time, percentiles, WIP y Velocity se visualizan correctamente.
 
 \phantomsection
 \addcontentsline{toc}{section}{Referencias}
