@@ -13,11 +13,14 @@
     "dev:web": "npm run dev --workspace=@nuvlo/web",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
+    "test:e2e": "npm run test:e2e --workspace=@nuvlo/web",
     "lint": "npm run lint --workspaces --if-present",
     "db:generate": "npx prisma generate --schema prisma/schema.prisma",
     "db:migrate": "npx prisma migrate dev --schema prisma/schema.prisma",
     "db:push": "npx prisma db push --schema prisma/schema.prisma",
     "db:seed": "node prisma/seed-demo.js",
+    "db:cleanup": "node scripts/cleanup-database.mjs",
+    "db:cleanup:dry": "node scripts/cleanup-database.mjs --dry-run",
     "demo:data": "node scripts/generate-demo-csv.mjs"
   },
   "devDependencies": {

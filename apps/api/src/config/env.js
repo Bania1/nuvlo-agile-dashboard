@@ -34,6 +34,10 @@ const envSchema = z.object({
   ATLASSIAN_CLIENT_SECRET: z.string().optional(),
   ATLASSIAN_REDIRECT_URI: z.string().url().optional(),
   ATLASSIAN_SCOPES: z.string().default(defaultAtlassianScopes),
+  RETENTION_ACTIVITY_LOG_DAYS: z.coerce.number().int().positive().default(90),
+  RETENTION_SYNC_RUN_DAYS: z.coerce.number().int().positive().default(180),
+  RETENTION_ALERT_EVENT_DAYS: z.coerce.number().int().positive().default(180),
+  RETENTION_METRIC_DAYS: z.coerce.number().int().positive().default(365),
 });
 
 export const env = envSchema.parse(process.env);
