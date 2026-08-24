@@ -19,9 +19,6 @@ jobs:
   build:
     name: Compile TFG memory
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
     steps:
       - name: Checkout repository
@@ -41,7 +38,8 @@ jobs:
             texlive-fonts-recommended \
             texlive-fonts-extra \
             texlive-lang-spanish \
-            texlive-pictures
+            texlive-pictures \
+            texlive-generic-extra
 
       - name: Compile memory
         working-directory: docs/memoria
@@ -51,5 +49,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfg-memory-pdf
-          path: docs/memoria/tf.pdf
+          path: docs/memoria/build/tf.pdf
           if-no-files-found: error
