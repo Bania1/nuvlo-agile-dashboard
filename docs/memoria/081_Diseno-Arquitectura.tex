@@ -2,21 +2,123 @@
 
 \section{Enfoque general}
 
-Nuvlo se ha diseñado como una aplicación web de apoyo al análisis de equipos ágiles que trabajan con Jira Cloud. La decisión principal de arquitectura ha sido separar claramente la interfaz, la API, la persistencia y los servicios de integración, manteniendo todo dentro de un monorepo sencillo gestionado con \textit{npm workspaces}~\cite{NpmWorkspaces}. Esta organización permite que frontend, backend, esquema de base de datos, documentación y pruebas evolucionen en el mismo repositorio, lo que facilita la trazabilidad del desarrollo y la revisión del proyecto.
+Nuvlo se ha diseñado como una aplicación web de apoyo al análisis de equipos ágiles que trabajan con Jira Cloud. La decisión principal de arquitectura ha sido separar claramente la interfaz, la API, la persistencia y los servicios de integración, manteniendo todo dentro de un \textit{monorepo} sencillo gestionado con \textit{npm workspaces}~\cite{NpmWorkspaces}. Esta organización permite que \textit{frontend}, \textit{backend}, esquema de base de datos, documentación y pruebas evolucionen en el mismo repositorio, lo que facilita la trazabilidad del desarrollo y la revisión del proyecto.
 
-Se descartó dividir el sistema en varios repositorios porque habría aumentado el coste de configuración y coordinación para un proyecto individual. También se evitó mezclar frontend y backend en un único directorio sin separación interna, ya que habría dificultado explicar las responsabilidades de cada parte y mantener una estructura limpia durante la implementación.
+Se descartó dividir el sistema en varios repositorios porque habría aumentado el coste de configuración y coordinación para un proyecto individual. También se evitó mezclar \textit{frontend} y \textit{backend} en un único directorio sin separación interna, ya que habría dificultado explicar las responsabilidades de cada parte y mantener una estructura limpia durante la implementación.
 
 \section{Arquitectura lógica}
 
-La arquitectura sigue un esquema cliente-servidor. La aplicación web se ejecuta en el navegador y se comunica con una API propia. La API es la única parte del sistema que interactúa con Jira Cloud, PostgreSQL y Redis. De este modo, el frontend no necesita conocer credenciales ni detalles internos de sincronización.
+La arquitectura sigue un esquema cliente-servidor. La aplicación web se ejecuta en el navegador y se comunica con una API propia. La API es la única parte del sistema que interactúa con Jira Cloud, PostgreSQL y Redis. De este modo, el \textit{frontend} no necesita conocer credenciales ni detalles internos de sincronización.
 
-El frontend se ha implementado con React y Vite~\cite{ReactDocs,ViteDocs}. La API se ha construido con Node.js y Express~\cite{NodeDocs,ExpressDocs}. La persistencia principal se realiza con PostgreSQL, accedida mediante Prisma~\cite{PostgreSQLDocs,PrismaDocs}. Redis se utiliza como almacenamiento temporal para datos de sesión, estados de seguridad del flujo OAuth y elementos de corta duración~\cite{RedisDocs}. El entorno local se levanta mediante Docker Compose~\cite{DockerComposeDocs}.
+El \textit{frontend} se ha implementado con React y Vite~\cite{ReactDocs,ViteDocs}. La API se ha construido con Node.js y Express~\cite{NodeDocs,ExpressDocs}. La persistencia principal se realiza con PostgreSQL, accedida mediante Prisma~\cite{PostgreSQLDocs,PrismaDocs}. Redis se utiliza como almacenamiento temporal para datos de sesión, estados de seguridad del flujo OAuth y elementos de corta duración~\cite{RedisDocs}. El entorno local se levanta mediante Docker Compose~\cite{DockerComposeDocs}.
 
-Los diagramas incluidos en la memoria representan esta separación por capas y ayudan a entender el recorrido de los datos: el usuario entra por la interfaz, la API valida la sesión, sincroniza información desde Jira cuando procede y consulta la base de datos local para construir las métricas visibles en el dashboard.
+Los diagramas incluidos en la memoria representan esta separación por capas y ayudan a entender el recorrido de los datos: el usuario entra por la interfaz, la API valida la sesión, sincroniza información desde Jira cuando procede y consulta la base de datos local para construir las métricas visibles en el \textit{dashboard}.
+
+\section{Diagrama de componentes/arquitectura lógica}
+
+El diagrama de componentes permite representar la organización modular del sistema y las dependencias entre sus partes. Según la especificación oficial de UML de OMG, un componente encapsula una parte sustituible del sistema y expone o requiere interfaces para colaborar con otros elementos~\cite{OMGUML251}. En este trabajo se utiliza esta notación para mostrar una vista lógica de la arquitectura, independiente de decisiones concretas de despliegue.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.25\textwidth]{diagrams/componentes-arquitectura-sistema.png}}
+    \caption{Diagrama de componentes y arquitectura lógica del sistema}
+    \label{fig:componentes-arquitectura-sistema}
+\end{figure}
+
+La Figura~\ref{fig:componentes-arquitectura-sistema} organiza el sistema en cuatro bloques principales: cliente web, servidor de aplicación, servicios externos y persistencia. Las flechas discontinuas representan dependencias entre componentes, es decir, relaciones de uso necesarias para completar las funcionalidades previstas.
+
+\begin{itemize}
+    \item \textbf{Cliente web}: agrupa la \texttt{Interfaz web}, el \texttt{Dashboard y vistas} y los componentes de \texttt{Filtros y configuración}. Este bloque permite al usuario autenticado consultar métricas, modificar criterios de análisis y acceder a las vistas principales del sistema.
+    \item \textbf{Servidor de aplicación}: contiene la \texttt{API REST}, que centraliza las peticiones del cliente, y los componentes internos encargados del control de sesión, la sincronización con Jira, el cálculo de métricas y la gestión de alertas y \textit{logs}.
+    \item \textbf{Servicios externos}: representan las dependencias con Atlassian. \texttt{Atlassian OAuth} se utiliza para la autenticación del usuario y \texttt{Jira Cloud API} proporciona los datos de proyectos, tableros, \textit{sprints} e incidencias.
+    \item \textbf{Persistencia}: incluye los \texttt{Repositorios}, que aíslan el acceso a datos, y la \texttt{Base de datos del sistema}, donde se almacenan datos sincronizados, configuraciones, métricas calculadas, alertas y \textit{logs}.
+\end{itemize}
+
+Las relaciones principales muestran que el usuario accede al cliente web, el cliente consume la \texttt{API REST} mediante peticiones HTTP y el \textit{backend} coordina las operaciones internas. El \texttt{Control de sesión} depende de \texttt{Atlassian OAuth}; la \texttt{Sincronización Jira} consulta \texttt{Jira Cloud API}; el \texttt{Cálculo de métricas} trabaja sobre los datos sincronizados; y el componente de \texttt{Alertas y logs} registra eventos y evalúa umbrales a partir de las métricas disponibles. Finalmente, los repositorios concentran la lectura y escritura sobre la base de datos para mantener separada la lógica de negocio del almacenamiento.
+
+
+
+
+
+\clearpage
+
+\section{Diagramas de secuencia}
+
+Los diagramas de secuencia complementan la descripción textual de los casos de uso mostrando el orden temporal de los mensajes intercambiados entre el usuario, la aplicación y los servicios externos. En esta memoria se incluyen únicamente los casos de uso más representativos, ya que son los que concentran la interacción con Atlassian, Jira Cloud API y la lógica principal del sistema.
+
+\subsection{CU-01: Autenticarse mediante Atlassian}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-01, centrado en el inicio de sesión del usuario mediante el proveedor de autenticación de Atlassian.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu01-autenticarse-atlassian.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-01}
+    \label{fig:secuencia-cu01-autenticarse-atlassian}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu01-autenticarse-atlassian} representa el proceso de autenticación mediante Atlassian. El usuario inicia sesión desde la aplicación, el sistema redirige la operación hacia Atlassian OAuth y, si la autenticación es válida, se crea una sesión autenticada. También se contempla el caso alternativo en el que el usuario cancela el proceso o Atlassian devuelve un error.
+
+\subsection{CU-03: Actualizar datos de Jira}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-03, correspondiente a la actualización de la información procedente de Jira y al tratamiento posterior de los datos obtenidos.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu03-actualizar-datos-jira.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-03}
+    \label{fig:secuencia-cu03-actualizar-datos-jira}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu03-actualizar-datos-jira} resume la actualización de datos desde Jira. El usuario autenticado solicita la actualización, el sistema comprueba si los datos almacenados siguen siendo válidos y, en caso contrario, consulta Jira Cloud API. A continuación, persiste la información obtenida, recalcula las métricas afectadas y comunica el resultado, contemplando también situaciones de error o datos incompletos.
+
+\newpage
+
+\subsection{CU-05: Consultar \textit{dashboard} principal}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-05, centrado en la visualización del \textit{dashboard} principal para un ámbito de análisis y unos filtros determinados.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu05-consultar-dashboard-principal.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-05}
+    \label{fig:secuencia-cu05-consultar-dashboard-principal}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu05-consultar-dashboard-principal} muestra cómo el usuario autenticado accede al \textit{dashboard}, el \textit{frontend} solicita los datos al \textit{backend} y el sistema valida el ámbito y los filtros antes de recuperar las métricas disponibles. El diagrama contempla la respuesta normal con los datos necesarios para construir los \textit{widgets}, el caso alternativo en el que no existen datos o los filtros no devuelven resultados, y la actualización del \textit{dashboard} cuando el usuario modifica los filtros o el rango temporal.
+
+\subsection{CU-06: Analizar métricas de flujo}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-06, centrado en la consulta de métricas de flujo y rendimiento a partir de los datos sincronizados y los criterios de cálculo configurados.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu06-analizar-metricas-flujo.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-06}
+    \label{fig:secuencia-cu06-analizar-metricas-flujo}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu06-analizar-metricas-flujo} muestra cómo el usuario autenticado accede a la vista de análisis, el sistema valida el ámbito seleccionado y recupera los datos y criterios necesarios para calcular las métricas disponibles. El diagrama contempla el flujo normal de selección y cálculo de métricas, el caso alternativo en el que no existen datos suficientes, el registro de errores de cálculo y la actualización de resultados cuando el usuario modifica filtros o el periodo de análisis.
+
+\newpage
+
+\subsection{CU-07: Configurar reglas de alerta}
+
+Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU-07, centrado en la creación de reglas de alerta a partir de métricas disponibles y condiciones simples definidas por el usuario.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.08\textwidth]{diagrams/secuencia-cu07-configurar-reglas-alerta.png}}
+    \caption{Diagrama de secuencia del caso de uso CU-07}
+    \label{fig:secuencia-cu07-configurar-reglas-alerta}
+\end{figure}
+
+La Figura~\ref{fig:secuencia-cu07-configurar-reglas-alerta} muestra cómo el usuario autenticado accede a la configuración de alertas, selecciona una métrica y define una condición o umbral. El sistema valida la regla propuesta, comprueba que sea compatible con la métrica seleccionada y la almacena para que pueda evaluarse posteriormente cuando se actualicen las métricas. También se contempla el caso alternativo en el que la regla no es válida o no puede aplicarse a la métrica elegida.
+\clearpage
 
 \section{Modelo de datos y sincronización}
 
-El modelo de datos se orienta a conservar una copia local de la información necesaria para calcular métricas ágiles. Se almacenan proyectos, incidencias, sprints, estados y datos de transición cuando están disponibles. Esta decisión evita que cada interacción de la interfaz dependa de una llamada directa a Jira Cloud y permite recalcular métricas de forma controlada.
+El modelo de datos se orienta a conservar una copia local de la información necesaria para calcular métricas ágiles. Se almacenan proyectos, incidencias, \textit{sprints}, estados y datos de transición cuando están disponibles. Esta decisión evita que cada interacción de la interfaz dependa de una llamada directa a Jira Cloud y permite recalcular métricas de forma controlada.
 
 La sincronización se realiza por ámbitos concretos, no como una descarga completa indiscriminada. El sistema solicita únicamente los campos necesarios y trabaja con paginación de la API de Jira~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}. Esta aproximación reduce el número de llamadas externas y encaja mejor con las restricciones de uso de una API remota.
 
@@ -24,13 +126,53 @@ La sincronización se realiza por ámbitos concretos, no como una descarga compl
 
 El acceso final a Nuvlo se basa en OAuth 2.0 de Atlassian, concretamente en el flujo 3LO~\cite{AtlassianOAuth3LO}. El usuario no crea una cuenta local con contraseña: autoriza la aplicación con su cuenta de Atlassian y Nuvlo crea o actualiza la sesión asociada a ese usuario.
 
-Para proteger el proceso de autenticación se han incorporado medidas habituales en aplicaciones web modernas: parámetro \textit{state}, PKCE y protección CSRF~\cite{OWASPOAuth2,OWASPCSRF}. Los tokens no se exponen al navegador como credenciales persistentes de larga duración. La API actúa como capa intermedia y aplica validaciones antes de permitir operaciones protegidas.
+Para proteger el proceso de autenticación se han incorporado medidas habituales en aplicaciones web modernas: parámetro \textit{state}, PKCE y protección CSRF~\cite{OWASPOAuth2,OWASPCSRF}. Los \textit{tokens} no se exponen al navegador como credenciales persistentes de larga duración. La API actúa como capa intermedia y aplica validaciones antes de permitir operaciones protegidas.
 
 \section{Diseño de interfaz}
 
-El diseño visual parte de los prototipos realizados durante la fase de análisis y de los diagramas de vistas incluidos en la memoria. La interfaz final no replica cada prototipo de forma literal, pero conserva su planteamiento: navegación lateral, dashboard principal, vista de tablero, alertas, actividad y configuración.
+El diseño visual parte de los prototipos realizados durante la fase de análisis y de los diagramas de vistas incluidos en la memoria. La interfaz final no replica cada prototipo de forma literal, pero conserva su planteamiento: navegación lateral, \textit{dashboard} principal, vista de tablero, alertas, actividad y configuración.
 
-La estética de Nuvlo se apoya en una identidad propia basada en la idea de ``nube + flujo''. Para el dashboard se tomó como inspiración visual una plantilla pública de administración moderna de Morphin~\cite{MorphinDashboardInspiration}, sin reutilizar su código fuente. La referencia se usó únicamente para orientar decisiones de composición, tarjetas, jerarquía visual y navegación.
+La estética de Nuvlo se apoya en una identidad propia basada en la idea de ``nube + flujo''. Para el \textit{dashboard} se tomó como inspiración visual una plantilla pública de administración moderna de Morphin~\cite{MorphinDashboardInspiration}, sin reutilizar su código fuente. La referencia se usó únicamente para orientar decisiones de composición, tarjetas, jerarquía visual y navegación.
+
+\section{Prototipo de vistas de la aplicación}
+
+El prototipo de vistas recoge una aproximación visual inicial de la interfaz del sistema. Su objetivo no es cerrar el diseño gráfico definitivo, sino comprobar que las funcionalidades principales descritas en los casos de uso tienen una representación coherente en pantalla: consulta de métricas, revisión del tablero, autenticación, trazabilidad de actividad, gestión de alertas y configuración de la cuenta. Para evitar que el mockup completo pierda legibilidad al insertarse en una única figura, se divide en varios bloques funcionales.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.18\textwidth]{diagrams/vistas-panel-tablero.png}}
+    \caption{Prototipo de las vistas de panel de métricas y tablero Kanban}
+    \label{fig:vistas-panel-tablero}
+\end{figure}
+
+La Figura~\ref{fig:vistas-panel-tablero} muestra las dos vistas principales de consulta. El panel de métricas concentra los indicadores de flujo y actividad del proyecto, mientras que el tablero Kanban permite revisar el estado de las incidencias sincronizadas desde Jira.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-login-registro.png}}
+    \caption{Prototipo de las vistas de inicio de sesión y registro de actividad}
+    \label{fig:vistas-login-registro}
+\end{figure}
+
+La Figura~\ref{fig:vistas-login-registro} agrupa la entrada al sistema mediante Jira y la vista de registro de actividad. Esta última facilita la trazabilidad de sincronizaciones, actualizaciones y eventos relevantes del sistema.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-alertas-prototipo.png}}
+    \caption{Prototipo de la vista de gestión de alertas}
+    \label{fig:vistas-alertas-prototipo}
+\end{figure}
+
+La Figura~\ref{fig:vistas-alertas-prototipo} completa el flujo de alertas previsto en el sistema. La vista permite revisar avisos activos, filtrar por proyecto, estado o métrica, consultar su prioridad y configurar reglas basadas en umbrales para las métricas principales.
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-configuracion.png}}
+    \caption{Prototipo de la vista de configuración de la cuenta}
+    \label{fig:vistas-configuracion}
+\end{figure}
+
+La Figura~\ref{fig:vistas-configuracion} presenta la vista de configuración, desde la que el usuario puede revisar información de perfil, gestionar integraciones y acceder a acciones de sesión o cuenta. Esta vista se relaciona con los requisitos de autenticación, configuración del entorno de análisis y gestión básica del acceso al sistema.
 
 \section{Relación con los anexos}
 

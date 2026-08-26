@@ -7,49 +7,41 @@
 % \minitoc
 % \pagebreak
 
-En la industria actual del desarrollo de software, la gestión de proyectos se apoya con frecuencia en enfoques ágiles, implementados habitualmente mediante marcos de trabajo como Scrum y Kanban. En este contexto, las métricas se convierten en una herramienta fundamental para que los equipos puedan medir su rendimiento, evaluar la eficiencia de su flujo de trabajo y diagnosticar la salud general del proceso de desarrollo. Indicadores como la velocidad de entrega (Velocity), el tiempo de ciclo (Cycle Time), el tiempo de entrega (Lead Time) y el trabajo en curso (WIP) permiten tomar decisiones basadas en evidencia y avanzar hacia la mejora continua.
+En la industria actual del desarrollo de software, la gestión de proyectos se apoya con frecuencia en enfoques ágiles, implementados habitualmente mediante marcos de trabajo como Scrum y Kanban. En este contexto, las métricas se convierten en una herramienta fundamental para que los equipos puedan medir su rendimiento, evaluar la eficiencia de su flujo de trabajo y diagnosticar la salud general del proceso de desarrollo. Indicadores como la velocidad de entrega (\textit{Velocity}), el tiempo de ciclo (\textit{Cycle Time}), el tiempo de entrega (\textit{Lead Time}) y el trabajo en curso (\textit{WIP}) permiten tomar decisiones basadas en evidencia y avanzar hacia la mejora continua.
 
 Sin embargo, a pesar de la importancia de estas métricas, muchos equipos encuentran dificultades para obtener una visión unificada y útil de las mismas. La información relativa al trabajo suele estar fragmentada en distintas herramientas (por ejemplo, Jira para la gestión de tareas, GitHub para el código o plataformas de despliegue), y las soluciones comerciales que prometen integrar y visualizar estos datos a menudo tienen costes elevados o están orientadas a grandes organizaciones. Esta falta de visibilidad lleva a que, en la práctica, muchas decisiones se tomen más por intuición que por datos objetivos, lo cual limita la capacidad de mejorar el proceso de forma sistemática.
 
-Este Trabajo Fin de Grado surge como respuesta a esta problemática, con el objetivo de desarrollar un sistema web de visualización de métricas para equipos ágiles que trabajan con Scrum y Kanban. La herramienta permitirá centralizar, analizar y mostrar indicadores clave a partir de los datos almacenados en Jira, fuente principal del sistema, de modo que los equipos puedan contar con dashboards intuitivos y personalizados que faciliten la toma de decisiones basada en datos y la evaluación transparente del rendimiento del proyecto.
+Este Trabajo Fin de Grado surge como respuesta a esta problemática, con el objetivo de desarrollar un sistema web de visualización de métricas para equipos ágiles que trabajan con Scrum y Kanban. La herramienta permitirá centralizar, analizar y mostrar indicadores clave a partir de los datos almacenados en Jira, fuente principal del sistema, de modo que los equipos puedan contar con \textit{dashboards} intuitivos y personalizados que faciliten la toma de decisiones basada en datos y la evaluación transparente del rendimiento del proyecto.
 
 
 \section{Motivación}
 
 La motivación principal de este proyecto es democratizar el acceso a la analítica ágil de calidad, ofreciendo una solución de bajo coste, personalizable y replicable, que pueda ser utilizada tanto por equipos profesionales como por estudiantes o grupos de trabajo con recursos limitados.
 
-Actualmente, herramientas como Jira permiten gestionar el trabajo de forma eficiente, pero sus capacidades analíticas avanzadas suelen estar disponibles solo en planes de pago o requieren la integración con soluciones externas de terceros. Además, estas soluciones tienden a ofrecer dashboards genéricos, con poca flexibilidad para adaptarse a las necesidades específicas de cada equipo. Esto genera una barrera importante para equipos pequeños o medianos, que no pueden asumir el coste de licencias premium pero que, al mismo tiempo, necesitan visibilidad sobre sus métricas para mejorar su forma de trabajar.
+Actualmente, herramientas como Jira permiten gestionar el trabajo de forma eficiente, pero sus capacidades analíticas avanzadas suelen estar disponibles solo en planes de pago o requieren la integración con soluciones externas de terceros. Además, estas soluciones tienden a ofrecer \textit{dashboards} genéricos, con poca flexibilidad para adaptarse a las necesidades específicas de cada equipo. Esto genera una barrera importante para equipos pequeños o medianos, que no pueden asumir el coste de licencias premium pero que, al mismo tiempo, necesitan visibilidad sobre sus métricas para mejorar su forma de trabajar.
 
 El presente TFG busca cubrir ese hueco mediante una plataforma que:
 \begin{itemize}
     \item Centralice los datos procedentes de Jira, evitando la dispersión de la información.
-    \item Calcule automáticamente métricas clave como Velocity, Cycle Time, Lead Time y WIP.
-    \item Ofrezca dashboards intuitivos y personalizables, adaptados a las necesidades de cada equipo.
+    \item Calcule automáticamente métricas clave como \textit{Velocity}, \textit{Cycle Time}, \textit{Lead Time} y \textit{WIP}.
+    \item Ofrezca \textit{dashboards} intuitivos y personalizables, adaptados a las necesidades de cada equipo.
     \item Sea técnica y económicamente replicable, utilizando tecnologías modernas y de amplio uso en la industria.
 \end{itemize}
 
 De esta forma, se pretende devolver a los equipos el control sobre sus procesos de mejora continua, basándose en evidencia y no solo en intuición.
 
-\section{Objetivos generales}
-
-El objetivo principal de este Trabajo Fin de Grado es construir un dashboard web funcional que permita a los equipos ágiles visualizar, analizar y gestionar sus métricas clave de Scrum y Kanban mediante paneles intuitivos y personalizables.
-
-Para alcanzar este objetivo general, se plantean los siguientes subobjetivos:
-
-\begin{itemize}
-    \item Implementar un módulo de captura de datos que se integre con Jira Cloud API para automatizar la obtención de información relevante de proyectos, tableros, sprints e incidencias.
-    \item Diseñar e implementar dashboards personalizables que permitan a cada equipo seleccionar y visualizar sus métricas ágiles más relevantes mediante una interfaz responsive.
-    \item Desarrollar un sistema de alertas que notifique al equipo cuando se detecten anomalías o tendencias preocupantes en las métricas.
-    \item Validar la usabilidad de la plataforma mediante pruebas con equipos ágiles o simulaciones, con el objetivo de alcanzar un nivel de satisfacción del usuario elevado.
-    \item Implementar las medidas de seguridad y privacidad necesarias, incluyendo autenticación robusta a través de Jira/Atlassian y protección de información sensible.
-\end{itemize}
 
 \section{Estructura de la memoria}
 
 Esta memoria se organiza en varios capítulos y anexos que recogen de forma progresiva el análisis, diseño, desarrollo y validación del sistema:
 \begin{enumerate}
-\item La presente introducción, donde se contextualiza el proyecto y se resumen su motivación y objetivos principales.
+\item La presente introducción, donde se contextualiza el proyecto y se resume la motivación principal.
 \item La definición del problema, dedicada a describir la situación actual de los equipos ágiles y las limitaciones que justifican el desarrollo del sistema.
+\item El capítulo de objetivos, donde se concreta el objetivo general y los objetivos específicos del trabajo.
+\item El capítulo de antecedentes, donde se analizan herramientas existentes y se comparan sus limitaciones con el enfoque propuesto.
+\item El capítulo de planificación temporal, donde se distribuye el trabajo por fases, semanas y bloques de esfuerzo.
+\item El capítulo de restricciones y estudio de alternativas, donde se justifican las principales decisiones tecnológicas, de arquitectura, seguridad y validación.
+\item El capítulo de recursos utilizados, donde se recogen los medios humanos, software, hardware y servicios externos empleados.
 \item El capítulo de requisitos, donde se especifican las funcionalidades, restricciones y necesidades de información que debe cubrir la solución.
 \item Los capítulos técnicos de diseño, implementación y validación, que se completarán conforme avance el desarrollo del sistema.
 \item Los anexos, que incluirán el manual de usuario, el manual de código y cualquier material complementario necesario para comprender, desplegar o mantener la aplicación.

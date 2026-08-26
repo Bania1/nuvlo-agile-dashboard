@@ -115,7 +115,7 @@
             <mxPoint x="550" y="380" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m01_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;1. Accede a configuración de alertas&lt;/font&gt;" vertex="1">
+        <mxCell id="m01_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Accede a configuración de alertas&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="360" x="180" y="334" as="geometry" />
         </mxCell>
         <mxCell id="m02" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -124,7 +124,7 @@
             <mxPoint x="950" y="435" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m02_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;2. Solicita métricas disponibles&lt;/font&gt;" vertex="1">
+        <mxCell id="m02_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Solicita métricas disponibles&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="350" x="585" y="389" as="geometry" />
         </mxCell>
         <mxCell id="m03" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -133,7 +133,7 @@
             <mxPoint x="1768" y="505" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m03_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;3. Recupera métricas configurables&lt;/font&gt;" vertex="1">
+        <mxCell id="m03_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Recupera métricas configurables&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="390" x="1185" y="459" as="geometry" />
         </mxCell>
         <mxCell id="m04" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -142,7 +142,7 @@
             <mxPoint x="970" y="585" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m04_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;4. Devuelve métricas disponibles&lt;/font&gt;" vertex="1">
+        <mxCell id="m04_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Devuelve métricas disponibles&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="390" x="1185" y="539" as="geometry" />
         </mxCell>
         <mxCell id="m05" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -151,7 +151,7 @@
             <mxPoint x="570" y="650" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m05_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;5. Envía formulario de regla&lt;/font&gt;" vertex="1">
+        <mxCell id="m05_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Envía formulario de regla&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="330" x="595" y="604" as="geometry" />
         </mxCell>
         <mxCell id="m06" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -160,7 +160,7 @@
             <mxPoint x="160" y="705" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m06_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;6. Muestra métricas configurables&lt;/font&gt;" vertex="1">
+        <mxCell id="m06_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Muestra métricas configurables&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="365" x="175" y="659" as="geometry" />
         </mxCell>
         <mxCell id="m07" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -169,7 +169,7 @@
             <mxPoint x="550" y="760" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m07_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;7. Introduce métrica y condición&lt;/font&gt;" vertex="1">
+        <mxCell id="m07_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Introduce métrica y condición&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="350" x="185" y="714" as="geometry" />
         </mxCell>
         <mxCell id="m08" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -178,7 +178,7 @@
             <mxPoint x="950" y="806" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m08_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;8. Envía regla propuesta&lt;/font&gt;" vertex="1">
+        <mxCell id="m08_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Envía regla propuesta&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="310" x="610" y="760" as="geometry" />
         </mxCell>
         <mxCell id="m09" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -187,7 +187,7 @@
             <mxPoint x="1358" y="925" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m09_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;9. Valida regla de alerta&lt;/font&gt;" vertex="1">
+        <mxCell id="m09_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Valida regla de alerta&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="330" x="1000" y="879" as="geometry" />
         </mxCell>
         <mxCell id="m10" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -196,7 +196,7 @@
             <mxPoint x="1768" y="1000" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m10_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;10a. Comprueba métrica seleccionada&lt;/font&gt;" vertex="1">
+        <mxCell id="m10_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Comprueba métrica seleccionada&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="350" x="1400" y="954" as="geometry" />
         </mxCell>
         <mxCell id="m11" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -205,7 +205,7 @@
             <mxPoint x="1382" y="1080" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m11_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;11a. Devuelve metadatos de métrica&lt;/font&gt;" vertex="1">
+        <mxCell id="m11_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Devuelve metadatos de métrica&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="360" x="1400" y="1034" as="geometry" />
         </mxCell>
         <mxCell id="m12" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -214,7 +214,7 @@
             <mxPoint x="2178" y="1160" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m12_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;12a. Guarda regla de alerta&lt;/font&gt;" vertex="1">
+        <mxCell id="m12_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Guarda regla de alerta&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="350" x="1600" y="1114" as="geometry" />
         </mxCell>
         <mxCell id="m13" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -223,7 +223,7 @@
             <mxPoint x="1382" y="1240" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m13_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;13a. Confirma regla almacenada&lt;/font&gt;" vertex="1">
+        <mxCell id="m13_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Confirma regla almacenada&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="360" x="1600" y="1194" as="geometry" />
         </mxCell>
         <mxCell id="m14" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -232,7 +232,7 @@
             <mxPoint x="970" y="1300" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m14_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;14a. Confirma creación de regla&lt;/font&gt;" vertex="1">
+        <mxCell id="m14_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Confirma creación de regla&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="350" x="990" y="1254" as="geometry" />
         </mxCell>
         <mxCell id="m15" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -241,7 +241,7 @@
             <mxPoint x="570" y="1415" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m15_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;15a. Devuelve confirmación&lt;/font&gt;" vertex="1">
+        <mxCell id="m15_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Devuelve confirmación&lt;/font&gt;" vertex="1">
           <mxGeometry height="31" width="320" x="605" y="1380" as="geometry" />
         </mxCell>
         <mxCell id="m16" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -250,7 +250,7 @@
             <mxPoint x="160" y="1445" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m16_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;16a. Muestra regla configurada&lt;/font&gt;" vertex="1">
+        <mxCell id="m16_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Muestra regla configurada&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="340" x="185" y="1399" as="geometry" />
         </mxCell>
         <mxCell id="m17" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -259,7 +259,7 @@
             <mxPoint x="970" y="1495" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m17_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;10b. Informa error de validación&lt;/font&gt;" vertex="1">
+        <mxCell id="m17_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Informa error de validación&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="360" x="990" y="1449" as="geometry" />
         </mxCell>
         <mxCell id="m18" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -268,7 +268,7 @@
             <mxPoint x="570" y="1550" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m18_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;11b. Envía errores de formulario&lt;/font&gt;" vertex="1">
+        <mxCell id="m18_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Envía errores de formulario&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="350" x="595" y="1504" as="geometry" />
         </mxCell>
         <mxCell id="m19" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -277,7 +277,7 @@
             <mxPoint x="160" y="1605" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m19_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;12b. Solicita corregir la regla&lt;/font&gt;" vertex="1">
+        <mxCell id="m19_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Solicita corregir la regla&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="350" x="185" y="1559" as="geometry" />
         </mxCell>
         <mxCell id="m20" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -286,7 +286,7 @@
             <mxPoint x="1358" y="1805" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m20_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;17. Inicia evaluación tras actualización&lt;/font&gt;" vertex="1">
+        <mxCell id="m20_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Inicia evaluación tras actualización&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="360" x="988" y="1755" as="geometry" />
         </mxCell>
         <mxCell id="m21" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -295,7 +295,7 @@
             <mxPoint x="2178" y="1875" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m21_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;18. Obtiene reglas activas&lt;/font&gt;" vertex="1">
+        <mxCell id="m21_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Obtiene reglas activas&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="330" x="1605" y="1829" as="geometry" />
         </mxCell>
         <mxCell id="m22" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -304,7 +304,7 @@
             <mxPoint x="1382" y="1955" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m22_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;19. Devuelve reglas configuradas&lt;/font&gt;" vertex="1">
+        <mxCell id="m22_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Devuelve reglas configuradas&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="360" x="1600" y="1909" as="geometry" />
         </mxCell>
         <mxCell id="m23" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -313,7 +313,7 @@
             <mxPoint x="1768" y="2040" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m23_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;20. Recupera valores recientes&lt;/font&gt;" vertex="1">
+        <mxCell id="m23_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Recupera valores recientes&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="330" x="1410" y="1994" as="geometry" />
         </mxCell>
         <mxCell id="m24" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -322,7 +322,7 @@
             <mxPoint x="1382" y="2120" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m24_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;21. Devuelve métricas actualizadas&lt;/font&gt;" vertex="1">
+        <mxCell id="m24_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Devuelve métricas actualizadas&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="360" x="1400" y="2074" as="geometry" />
         </mxCell>
         <mxCell id="m25" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;" value="">
@@ -331,7 +331,7 @@
             <mxPoint x="2178" y="2210" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m25_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;22. Registra activación si procede&lt;/font&gt;" vertex="1">
+        <mxCell id="m25_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Registra activación si procede&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="370" x="1600" y="2164" as="geometry" />
         </mxCell>
         <mxCell id="m26" edge="1" parent="1" style="endArrow=block;endFill=1;html=1;rounded=0;strokeColor=#000000;strokeWidth=2;dashed=1;" value="">
@@ -340,7 +340,7 @@
             <mxPoint x="970" y="2300" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="m26_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;23. Finaliza evaluación de reglas&lt;/font&gt;" vertex="1">
+        <mxCell id="m26_label" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="&lt;font style=&quot;font-size: 21px;&quot;&gt;Finaliza evaluación de reglas&lt;/font&gt;" vertex="1">
           <mxGeometry height="42" width="360" x="990" y="2254" as="geometry" />
         </mxCell>
         <mxCell id="frag_validation_g1" parent="1" style="text;html=1;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Helvetica;fontColor=#000000;spacing=4;" value="[regla válida]" vertex="1">

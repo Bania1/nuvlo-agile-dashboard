@@ -11,6 +11,7 @@ function readCookie(name) {
     ?.slice(prefix.length) || null;
 }
 
+// Las mutaciones piden/leen CSRF aqui para que los componentes no gestionen seguridad HTTP.
 async function getCsrfToken() {
   const cookieToken = readCookie('nuvlo_csrf');
   if (cookieToken) return cookieToken;

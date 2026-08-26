@@ -1,14 +1,13 @@
 import { prisma } from '../db/prisma.js';
-import { getLatestAtlassianSession, refreshAtlassianSession } from './authRepository.js';
+import { getActiveAtlassianAccess } from './authRepository.js';
 import { jiraRequest } from './jiraClient.js';
-import { decryptSecret } from '../utils/crypto.js';
 import { setSyncStatus } from '../cache/redis.js';
 import { logError, logInfo } from '../utils/logger.js';
 
 const baseIssueFields = ['summary', 'issuetype', 'status', 'priority', 'assignee', 'created', 'updated', 'labels'];
 const fieldCache = new Map();
 
-
+// Los campos custom de Jira cambian por instancia; se detectan por nombre/id y se cachean por cloudId.
 function normalizeText(value) {
   return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
@@ -135,26 +134,6 @@ function assertProjectKey(projectKey) {
   return key;
 }
 
-async function getActiveAtlassianAccess(userId) {
-  const atlassianSession = await getLatestAtlassianSession(userId);
-  if (!atlassianSession) {
-    const error = new Error('Atlassian session not found.');
-    error.statusCode = 404;
-    error.code = 'ATLASSIAN_SESSION_NOT_FOUND';
-    throw error;
-  }
-  let activeSession = atlassianSession;
-  if (activeSession.expiresAt && activeSession.expiresAt <= new Date()) {
-    activeSession = await refreshAtlassianSession(activeSession);
-  }
-  return {
-    atlassianSession: activeSession,
-    accessToken: decryptSecret(activeSession.encryptedAccessToken),
-  };
-}
-
-
-
 function mapBoard(board) {
   return {
     jiraId: Number(board.id),
@@ -212,6 +191,7 @@ async function fetchBoardSprints({ cloudId, accessToken, boardId }) {
   return sprints.map(mapSprint);
 }
 
+// La API Agile puede no estar disponible para todos los proyectos; si falla, se sigue con issues.
 async function fetchProjectBoardsAndSprintsSafely({ cloudId, accessToken, projectKey }) {
   try {
     const boards = await fetchProjectBoards({ cloudId, accessToken, projectKey });
@@ -242,6 +222,7 @@ function mapSprintFromIssueField(value) {
   };
 }
 
+// Fallback: algunas instancias exponen Sprint como campo custom dentro de cada issue.
 function collectSprintsFromIssues(rawIssues, sprintFieldId) {
   const byBoard = new Map();
   for (const issue of rawIssues) {
@@ -311,6 +292,7 @@ async function fetchProject({ cloudId, accessToken, projectKey }) {
   };
 }
 
+// Jira Cloud usa paginacion por nextPageToken en /search/jql.
 async function fetchProjectIssues({ cloudId, accessToken, projectKey, maxIssues = 100, storyPointsFieldId, sprintFieldId }) {
   const issues = [];
   let nextPageToken;
@@ -334,6 +316,7 @@ async function fetchProjectIssues({ cloudId, accessToken, projectKey, maxIssues 
   return issues;
 }
 
+// Punto principal de importacion: guarda proyecto, boards, sprints, issues y transiciones en una transaccion.
 export async function syncJiraProject({ userId, projectKey, maxIssues = 100 }) {
   const key = assertProjectKey(projectKey);
   const statusKey = `${userId}:${key}`;

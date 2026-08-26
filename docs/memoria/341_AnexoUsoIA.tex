@@ -16,8 +16,8 @@ Las herramientas de inteligencia artificial se han utilizado principalmente en l
     \item Comprobación de coherencia entre requisitos, casos de uso, diagramas, capturas y funcionamiento real de la aplicación.
     \item Apoyo en la planificación incremental del desarrollo, especialmente para dividir el trabajo en fases y commits manejables.
     \item Revisión de errores durante la ejecución local, instalación de dependencias, configuración de Docker, PostgreSQL, Redis y entorno de desarrollo.
-    \item Apoyo en la implementación y revisión de partes del código, incluyendo autenticación OAuth con Atlassian, sincronización con Jira Cloud, cálculo de métricas, alertas, logs, pruebas y generación de capturas.
-    \item Preparación de scripts auxiliares para demo offline, generación de datos controlados y validación de capturas reproducibles.
+    \item Apoyo en la implementación y revisión de partes del código, incluyendo autenticación OAuth con Atlassian, sincronización con Jira Cloud, cálculo de métricas, alertas, \textit{logs}, pruebas y generación de capturas.
+    \item Preparación de \textit{scripts} auxiliares para demo \textit{offline}, generación de datos controlados y validación de capturas reproducibles.
 \end{itemize}
 
 \section{Uso durante la implementación}
@@ -27,12 +27,12 @@ La IA también se ha utilizado como asistente de programación para proponer cam
 En particular, se empleó apoyo de IA en las siguientes áreas de la implementación:
 
 \begin{itemize}
-    \item Estructuración del monorepo con aplicaciones separadas para frontend y backend.
+    \item Estructuración del \textit{monorepo} con aplicaciones separadas para \textit{frontend} y \textit{backend}.
     \item Desarrollo de la interfaz web de Nuvlo y adaptación visual a las vistas previstas en los prototipos.
-    \item Configuración de autenticación con Atlassian mediante OAuth 2.0 3LO, incluyendo estado de sesión, CSRF, PKCE y uso de cookies \texttt{httpOnly}, tomando como referencia documentación oficial y recomendaciones de seguridad web~\cite{AtlassianOAuth3LO,OWASPOAuth2,OWASPCSRF}.
-    \item Integración con Jira Cloud API para sincronizar proyectos, incidencias, sprints y changelog~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}.
+    \item Configuración de autenticación con Atlassian mediante OAuth 2.0 3LO, incluyendo estado de sesión, CSRF, PKCE y uso de \textit{cookies} \texttt{httpOnly}, tomando como referencia documentación oficial y recomendaciones de seguridad web~\cite{AtlassianOAuth3LO,OWASPOAuth2,OWASPCSRF}.
+    \item Integración con Jira Cloud API para sincronizar proyectos, incidencias, \textit{sprints} y \textit{changelog}~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}.
     \item Persistencia en PostgreSQL y uso de Redis para datos temporales y cachés con tiempo de vida limitado~\cite{PostgreSQLDocs,RedisDocs}.
-    \item Implementación de métricas ágiles como WIP, Velocity, Lead Time, Cycle Time, percentiles y Throughput.
+    \item Implementación de métricas ágiles como \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, percentiles y \textit{Throughput}.
     \item Creación de alertas por umbral, notificaciones visuales, historial de alertas y registro de actividad.
     \item Elaboración de pruebas unitarias, de integración y E2E para validar partes críticas del sistema~\cite{VitestGuide,PlaywrightDocs}.
 \end{itemize}
@@ -41,7 +41,7 @@ En particular, se empleó apoyo de IA en las siguientes áreas de la implementac
 
 Durante el desarrollo se utilizaron integraciones de la herramienta de IA con servicios relacionados con el proyecto. Entre ellas destacan el acceso al repositorio Git para revisar el estado de cambios, preparar commits y comprobar el historial, así como el uso de conectores con Atlassian/Jira para contrastar información del proyecto y validar el funcionamiento de la integración.
 
-También se emplearon capacidades de trabajo sobre el entorno local para ejecutar comandos, revisar logs, comprobar servicios en Docker, validar pruebas y generar capturas de pantalla destinadas a la documentación. Este uso permitió detectar errores de configuración, como conflictos de puertos, versiones de Node.js, problemas de autenticación OAuth o ficheros que no debían formar parte del repositorio remoto.
+También se emplearon capacidades de trabajo sobre el entorno local para ejecutar comandos, revisar \textit{logs}, comprobar servicios en Docker, validar pruebas y generar capturas de pantalla destinadas a la documentación. Este uso permitió detectar errores de configuración, como conflictos de puertos, versiones de Node.js, problemas de autenticación OAuth o ficheros que no debían formar parte del repositorio remoto.
 
 \section{Ejemplos de prompts utilizados}
 
@@ -50,7 +50,7 @@ A continuación se recogen ejemplos representativos de instrucciones utilizadas 
 \begin{itemize}
     \item ``Actúa como revisor académico. Lee este apartado de la memoria y señala únicamente problemas de claridad, estructura o redundancia, sin reescribirlo completo.''
     \item ``Compara estas vistas de la aplicación con los diagramas de prototipo y dime qué elementos de navegación, alertas o configuración conviene mantener para conservar coherencia visual.''
-    \item ``Propón una estructura de manual de usuario para una aplicación web que se conecta con Jira, separando pasos de acceso, sincronización, dashboard, alertas y actividad.''
+    \item ``Propón una estructura de manual de usuario para una aplicación web que se conecta con Jira, separando pasos de acceso, sincronización, \textit{dashboard}, alertas y actividad.''
     \item ``Revisa esta explicación sobre PostgreSQL y Redis. Indica si se entiende la diferencia entre datos persistentes, caché temporal y política de retención.''
     \item ``Dame una lista de comprobación para validar visualmente una memoria LaTeX: títulos huérfanos, figuras demasiado pequeñas, referencias, índice y capturas.''
     \item ``A partir de estos requisitos, sugiere cómo resumir una matriz requisito-prueba sin repetir toda la tabla en el capítulo de validación.''
@@ -64,7 +64,7 @@ Estos prompts se formularon delimitando el rol esperado, el objetivo de la revis
 
 Cuando se ha necesitado información técnica externa, se han consultado fuentes documentales específicas, como la documentación oficial de Atlassian para OAuth 2.0 3LO y Jira REST API~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3}, la documentación de las herramientas utilizadas en el stack y las referencias de las librerías empleadas~\cite{ReactDocs,ViteDocs,NodeDocs,ExpressDocs,PrismaDocs,DockerComposeDocs}. Estas fuentes se han usado para comprender APIs, parámetros de configuración, buenas prácticas y restricciones técnicas.
 
-No se han incorporado ficheros completos de código fuente externo como parte propia del proyecto. La aplicación utiliza dependencias de código abierto instaladas mediante los gestores habituales del ecosistema JavaScript, como React, Vite, Express, Prisma, Vitest, Playwright y otras librerías auxiliares. En el diseño visual del dashboard se consultó como inspiración una plantilla moderna de administración de Morphin~\cite{MorphinDashboardInspiration}; esta referencia se usó para orientar criterios generales de composición, tarjetas, navegación lateral y aspecto de dashboard, sin copiar su código fuente ni reproducirla literalmente.
+No se han incorporado ficheros completos de código fuente externo como parte propia del proyecto. La aplicación utiliza dependencias de código abierto instaladas mediante los gestores habituales del ecosistema JavaScript, como React, Vite, Express, Prisma, Vitest, Playwright y otras librerías auxiliares. En el diseño visual del \textit{dashboard} se consultó como inspiración una plantilla moderna de administración de Morphin~\cite{MorphinDashboardInspiration}; esta referencia se usó para orientar criterios generales de composición, tarjetas, navegación lateral y aspecto de \textit{dashboard}, sin copiar su código fuente ni reproducirla literalmente.
 
 \section{Supervisión y responsabilidad}
 

@@ -36,6 +36,18 @@ El proyecto usa un monorepo sencillo con npm workspaces porque frontend, backend
 - Validacion: Vitest, pruebas de integracion y Playwright para E2E.
 - Runtime local recomendado: Node.js 24 LTS y npm 11.
 
+## Lectura del codigo
+
+El codigo se mantiene con comentarios cortos solo en los puntos donde hay una decision tecnica relevante. Para entender el flujo principal:
+
+- `apps/api/src/app.js` define los endpoints HTTP y separa autenticacion, lectura Jira, sincronizacion, alertas y demo offline.
+- `apps/api/src/services/authRepository.js` centraliza la sesion Atlassian: renovacion de tokens, descifrado de access token y seleccion del sitio Jira.
+- `apps/api/src/services/jiraSync.js` contiene la importacion real desde Jira hacia PostgreSQL; por eso documenta deteccion de campos custom, paginacion `nextPageToken`, fallback de sprints y transiciones.
+- `apps/web/src/App.jsx` mantiene el estado raiz de la UI: demo offline, datos Jira, sincronizacion, alertas y navegacion interna.
+- `apps/web/src/views/DashboardView.jsx` aplica filtros y widgets visibles en cliente, sin volver a llamar a Jira.
+
+La regla de estilo es evitar comentarios obvios y comentar solo aquello que ayuda a defender el diseno: seguridad OAuth/CSRF, cache Redis, persistencia PostgreSQL, calculo propio de metricas y demo offline.
+
 ## Pruebas
 
 ```bash

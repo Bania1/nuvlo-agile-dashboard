@@ -13,6 +13,7 @@ function pickJiraResource(resources) {
   ) || resources[0];
 }
 
+// Crea o actualiza el usuario local a partir de Atlassian; Nuvlo no guarda passwords propios.
 export async function persistAtlassianLogin({ profile, tokenSet, resources }) {
   const resource = pickJiraResource(resources);
   if (!resource?.id) {
@@ -110,7 +111,26 @@ export async function getLatestAtlassianSession(userId) {
   });
 }
 
+export async function getActiveAtlassianAccess(userId) {
+  const atlassianSession = await getLatestAtlassianSession(userId);
+  if (!atlassianSession) {
+    const error = new Error('Atlassian session not found.');
+    error.statusCode = 404;
+    error.code = 'ATLASSIAN_SESSION_NOT_FOUND';
+    throw error;
+  }
 
+  const activeSession = atlassianSession.expiresAt && atlassianSession.expiresAt <= new Date()
+    ? await refreshAtlassianSession(atlassianSession)
+    : atlassianSession;
+
+  return {
+    atlassianSession: activeSession,
+    accessToken: decryptSecret(activeSession.encryptedAccessToken),
+  };
+}
+
+// Atlassian usa refresh tokens rotatorios: si llega uno nuevo, reemplaza al anterior cifrado.
 export async function refreshAtlassianSession(atlassianSession) {
   if (!atlassianSession.encryptedRefreshToken) {
     const error = new Error('Atlassian refresh token is not available.');

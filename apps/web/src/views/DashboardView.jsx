@@ -3,6 +3,7 @@ import { AlertTriangle, BarChart3, Gauge, ListChecks, Timer } from 'lucide-react
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CardHeader, HelpHint, MetricCard } from '../components/Cards.jsx';
 
+// Preferencias locales: permiten adaptar el dashboard durante demo sin alterar datos persistidos.
 const defaultWidgets = {
   leadTime: true,
   cycleTime: true,
@@ -32,6 +33,7 @@ export function DashboardView({ data, filtersOpen }) {
   const [analysisFilters, setAnalysisFilters] = useState({ status: 'all', type: 'all', query: '' });
   const [visibleWidgets, setVisibleWidgets] = useState(() => readWidgetPreferences());
   const issueRows = data.issues?.length ? data.issues : data.recentIssues;
+  // Los filtros son client-side: no llaman a Jira y recalculan solo la vista visible.
   const filteredIssues = issueRows.filter((issue) => {
     const statusMatches = analysisFilters.status === 'all' || issue.status === analysisFilters.status;
     const typeMatches = analysisFilters.type === 'all' || issue.type === analysisFilters.type;

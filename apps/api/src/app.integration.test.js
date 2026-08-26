@@ -3,9 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
   getAuthenticatedUser: vi.fn(),
-  getLatestAtlassianSession: vi.fn(),
-  refreshAtlassianSession: vi.fn(),
-  decryptSecret: vi.fn(),
+  getActiveAtlassianAccess: vi.fn(),
   getJsonCache: vi.fn(),
   getSyncStatus: vi.fn(),
   setJsonCache: vi.fn(),
@@ -21,15 +19,11 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock('./services/authRepository.js', () => ({
+  getActiveAtlassianAccess: mocks.getActiveAtlassianAccess,
   getAuthenticatedUser: mocks.getAuthenticatedUser,
-  getLatestAtlassianSession: mocks.getLatestAtlassianSession,
   persistAtlassianLogin: vi.fn(),
-  refreshAtlassianSession: mocks.refreshAtlassianSession,
 }));
 
-vi.mock('./utils/crypto.js', () => ({
-  decryptSecret: mocks.decryptSecret,
-}));
 
 vi.mock('./cache/redis.js', () => ({
   getJsonCache: mocks.getJsonCache,
@@ -98,9 +92,7 @@ describe('Nuvlo API integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.getAuthenticatedUser.mockResolvedValue(user);
-    mocks.getLatestAtlassianSession.mockResolvedValue(atlassianSession);
-    mocks.refreshAtlassianSession.mockResolvedValue(atlassianSession);
-    mocks.decryptSecret.mockReturnValue('access-token');
+    mocks.getActiveAtlassianAccess.mockResolvedValue({ atlassianSession, accessToken: 'access-token' });
     mocks.getJsonCache.mockResolvedValue(null);
     mocks.setJsonCache.mockResolvedValue(undefined);
     mocks.getPersistedProjectIssues.mockResolvedValue(null);

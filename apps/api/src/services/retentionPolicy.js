@@ -49,6 +49,7 @@ function cleanupPlan({ policy, now }) {
   };
 }
 
+// Politica de retencion: dryRun cuenta registros; modo real elimina datos historicos caducados.
 export async function cleanupDatabaseRetention({
   client = prisma,
   policy = buildRetentionPolicy(),

@@ -14,14 +14,16 @@ Antes de interpretar la matriz requisito-prueba conviene distinguir los tipos de
     \item \textbf{Pruebas unitarias}: verifican funciones aisladas, especialmente cálculos de métricas, percentiles, validaciones de datos y reglas de alerta. Se ejecutan con Vitest~\cite{VitestGuide}.
     \item \textbf{Pruebas de integración}: comprueban que varias piezas funcionan juntas, por ejemplo API, repositorios, PostgreSQL, Redis y servicios de sincronización.
     \item \textbf{Pruebas con Jira real}: validan el flujo OAuth, la lectura de proyectos, la sincronización de incidencias y el almacenamiento local de datos procedentes de Jira Cloud.
-    \item \textbf{Pruebas con dataset offline}: usan datos controlados para comprobar cálculos que requieren histórico suficiente, como Lead Time, Cycle Time, percentiles o Velocity.
-    \item \textbf{Pruebas end-to-end}: recorren la aplicación desde el navegador, incluyendo navegación, filtros, widgets, alertas, logs y modo demo. Se plantean con Playwright~\cite{PlaywrightDocs}.
-    \item \textbf{Revisión visual y responsive}: comprueba capturas en escritorio y móvil para validar legibilidad, navegación y coherencia con las vistas previstas.
+    \item \textbf{Pruebas con \textit{dataset} \textit{offline}}: usan datos controlados para comprobar cálculos que requieren histórico suficiente, como \textit{Lead Time}, \textit{Cycle Time}, percentiles o \textit{Velocity}.
+    \item \textbf{Pruebas end-to-end}: recorren la aplicación desde el navegador, incluyendo navegación, filtros, \textit{widgets}, alertas, \textit{logs} y modo demo. Se plantean con Playwright~\cite{PlaywrightDocs}.
+    \item \textbf{Revisión visual y \textit{responsive}}: comprueba capturas en escritorio y móvil para validar legibilidad, navegación y coherencia con las vistas previstas.
 \end{itemize}
 
 \section{Pruebas automatizadas}
 
 Las pruebas unitarias se centran en cálculos de métricas, percentiles, validaciones y reglas de alerta. Para ello se utiliza Vitest~\cite{VitestGuide}. Las pruebas de integración comprueban el comportamiento de la API, la persistencia y los servicios que dependen de PostgreSQL o Redis. En los casos relacionados con Jira se utilizan datos controlados o respuestas simuladas para evitar depender siempre de una conexión externa.
+
+En el repositorio, estas comprobaciones se ejecutan mediante el comando \texttt{npm test}, que lanza las pruebas definidas en los paquetes del \textit{monorepo}. Además, se utiliza \texttt{npm run build} para comprobar que la aplicación puede compilarse correctamente y \texttt{npm run test:e2e} para ejecutar las pruebas de extremo a extremo disponibles.
 
 Las pruebas end-to-end se plantean con Playwright~\cite{PlaywrightDocs}. Su objetivo es recorrer los flujos principales desde el punto de vista del usuario: entrada en modo demo, navegación por vistas, uso de filtros, sincronización, consulta de alertas y revisión del registro de actividad.
 
@@ -41,11 +43,11 @@ La matriz completa de validación se muestra en la Tabla~\ref{tab:matriz-requisi
 \midrule
 \endhead
 Integración Jira y autenticación & Cumplido & Flujo OAuth 2.0 3LO, sesión protegida, sincronización de proyecto real y persistencia en PostgreSQL. \\
-Dashboard y visualización & Cumplido & Dashboard responsive, filtros rápidos, widgets configurables, ayudas contextuales y capturas de escritorio/móvil. \\
-Métricas principales & Cumplido & Cálculo de WIP, Velocity, Lead Time, Cycle Time, media y percentiles con dataset offline y datos sincronizados. \\
+\textit{Dashboard} y visualización & Cumplido & \textit{Dashboard} \textit{responsive}, filtros rápidos, \textit{widgets} configurables, ayudas contextuales y capturas de escritorio/móvil. \\
+Métricas principales & Cumplido & Cálculo de \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, media y percentiles con \textit{dataset} \textit{offline} y datos sincronizados. \\
 Alertas y actividad & Cumplido & Reglas de umbral, contador visual de alertas, notificación emergente, historial de alertas y registro de actividad. \\
-Retención, seguridad y mantenimiento & Cumplido & Cookies \texttt{httpOnly}, CSRF, PKCE, cifrado de tokens, Redis con TTL y limpieza de logs/alertas antiguos. \\
-Configuración avanzada y métricas futuras & Parcial/Futuro & Configuración básica disponible; quedan como ampliación la configuración avanzada completa, Deployment Frequency y más métricas de flujo. \\
+Retención, seguridad y mantenimiento & Cumplido & Cookies \texttt{httpOnly}, CSRF, PKCE, cifrado de \textit{tokens}, Redis con TTL y limpieza de \textit{logs}/alertas antiguos. \\
+Configuración avanzada y métricas futuras & Parcial/Futuro & Configuración básica disponible; quedan como ampliación requisitos no imprescindibles clasificados como \textit{Should Have} o \textit{Could Have}, entre ellos la configuración avanzada completa, \textit{Deployment Frequency} y más métricas de flujo. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
@@ -56,14 +58,14 @@ Configuración avanzada y métricas futuras & Parcial/Futuro & Configuración b�
 
 La aplicación se ha probado con un proyecto real de Jira creado para demostración. Este escenario permite validar el flujo OAuth, la obtención de proyectos accesibles, la sincronización de incidencias y la persistencia en la base de datos local. Las capturas del manual de usuario muestran la aplicación funcionando con datos procedentes de Jira.
 
-La validación con Jira real también sirve para detectar limitaciones prácticas. Por ejemplo, si las incidencias se crean y cierran en un intervalo muy corto, Lead Time y Cycle Time pueden aparecer como cero o valores poco representativos. Esto no implica que el cálculo esté ausente, sino que el histórico disponible no contiene todavía información temporal suficiente para un análisis realista.
+La validación con Jira real también sirve para detectar limitaciones prácticas. Por ejemplo, si las incidencias se crean y cierran en un intervalo muy corto, \textit{Lead Time} y \textit{Cycle Time} pueden aparecer como cero o valores poco representativos. Esto no implica que el cálculo esté ausente, sino que el histórico disponible no contiene todavía información temporal suficiente para un análisis realista.
 
-\section{Validación con demo offline}
+\section{Validación con demo \textit{offline}}
 
-La demo offline cubre el caso contrario: proporciona datos preparados para que todas las métricas tengan valores visibles y coherentes. Este modo es útil para presentaciones, pruebas sin conexión y comprobaciones de regresión visual. Al no depender de la API de Jira, permite demostrar el comportamiento esperado de la interfaz incluso si la autenticación externa falla o no hay red disponible.
+La demo \textit{offline} cubre el caso contrario: proporciona datos preparados para que todas las métricas tengan valores visibles y coherentes. Este modo es útil para presentaciones, pruebas sin conexión y comprobaciones de regresión visual. Al no depender de la API de Jira, permite demostrar el comportamiento esperado de la interfaz incluso si la autenticación externa falla o no hay red disponible.
 
 \section{Resultados obtenidos}
 
-El resultado actual es un MVP funcional de Nuvlo. La aplicación permite iniciar sesión con Atlassian, sincronizar información de Jira, consultar métricas ágiles, aplicar filtros, configurar widgets, crear alertas y revisar actividad. Además, dispone de una demo offline que actúa como respaldo para validación y presentación.
+El resultado actual es un MVP funcional de Nuvlo. La aplicación permite iniciar sesión con Atlassian, sincronizar información de Jira, consultar métricas ágiles, aplicar filtros, configurar \textit{widgets}, crear alertas y revisar actividad. Además, dispone de una demo \textit{offline} que actúa como respaldo para validación y presentación. Según la matriz requisito-prueba, no quedan requisitos \textit{Must Have} pendientes; los elementos parciales o futuros corresponden a mejoras clasificadas con menor prioridad.
 
 El sistema todavía no pretende cubrir todos los escenarios de una herramienta comercial. Algunas mejoras, como métricas avanzadas, despliegue productivo, integración con repositorios de código o análisis predictivo, quedan fuera del alcance principal y se recogen como líneas de trabajo futuro.

@@ -71,6 +71,7 @@ async function getProjectAndScope({ userId, cloudId, projectKey }) {
   return { project, scope };
 }
 
+// Solo crea o resuelve eventos cuando cambia el estado; evita llenar el historial en cada refresco.
 async function persistEvaluation({ rule, evaluation }) {
   const activeEvent = await prisma.alertEvent.findFirst({
     where: { ruleId: rule.id, status: 'ACTIVE', resolvedAt: null },

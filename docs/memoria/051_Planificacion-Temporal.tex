@@ -1,0 +1,91 @@
+\chapter{Planificación temporal}
+\label{planificacionTemporal}
+
+Este capítulo recoge la planificación temporal del proyecto. La distribución parte de la propuesta inicial, que estimaba una dedicación total de 300 horas, y se adapta a la evolución real del desarrollo: la integración principal se centra en Jira Cloud, la autenticación se realiza mediante Atlassian OAuth 2.0 3LO y se incorpora una demo \textit{offline} para validación y presentación.
+
+La planificación se plantea de forma incremental. Cada bloque produce un resultado verificable, de modo que el sistema pueda probarse progresivamente en lugar de concentrar la validación al final. Esta forma de trabajo encaja con el propio objetivo del sistema: construir, medir, revisar y ajustar.
+
+\section{Criterios de planificación}
+
+Para organizar el trabajo se han seguido los siguientes criterios:
+
+\begin{itemize}
+    \item Priorizar primero el análisis del problema, los objetivos y los antecedentes para evitar desarrollar una solución sin justificar su necesidad.
+    \item Construir una base técnica mínima antes de implementar funcionalidades avanzadas: repositorio, entorno, base de datos, API y cliente web.
+    \item Resolver pronto la autenticación con Atlassian, ya que condiciona la integración con Jira Cloud y el acceso a datos reales.
+    \item Separar la sincronización de datos del cálculo de métricas, permitiendo que la aplicación consulte PostgreSQL en lugar de depender continuamente de la API externa.
+    \item Mantener una demo \textit{offline} con datos controlados para poder validar métricas y capturas aunque Jira no esté disponible.
+    \item Documentar y probar de forma continua, evitando que la memoria, el manual de usuario y el manual técnico queden como tareas aisladas al final.
+\end{itemize}
+
+\section{Fases de trabajo}
+
+La Tabla~\ref{tab:planificacion-fases} resume las fases principales, su duración estimada y los entregables asociados. Las semanas indicadas representan una planificación orientativa y admiten solapamiento entre actividades relacionadas, especialmente entre implementación, pruebas y documentación.
+
+\begin{table}[p]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{p{1.2cm}p{3.2cm}p{2.4cm}p{1.8cm}X}
+\toprule
+\textbf{Fase} & \textbf{Actividad} & \textbf{Periodo} & \textbf{Horas} & \textbf{Entregable principal} \\
+\midrule
+1 & Análisis del problema y antecedentes & Semanas 1--2 & 30 & Contexto del problema, objetivos, antecedentes y primera comparación de alternativas. \\
+2 & Definición de requisitos y alcance & Semanas 2--3 & 30 & Requisitos funcionales, no funcionales, información necesaria y casos de uso. \\
+3 & Diseño de arquitectura y entorno & Semanas 3--4 & 35 & Estructura del repositorio, entorno local, base de datos, Docker y decisiones técnicas iniciales. \\
+4 & Autenticación e integración con Jira & Semanas 4--6 & 45 & Flujo OAuth con Atlassian, gestión de sesión, \textit{scopes}, seguridad básica y acceso a proyectos Jira. \\
+5 & Persistencia y sincronización & Semanas 6--8 & 45 & Modelo de datos, sincronización de proyectos, incidencias, \textit{sprints}, transiciones y caché temporal. \\
+6 & Cálculo de métricas y demo controlada & Semanas 8--10 & 40 & Cálculo de \textit{Velocity}, \textit{WIP}, \textit{Lead Time}, \textit{Cycle Time}, percentiles y \textit{dataset} \textit{offline}. \\
+7 & Interfaz, alertas y actividad & Semanas 10--12 & 45 & \textit{Dashboard} \textit{responsive}, filtros, \textit{widgets} configurables, tablero, alertas, notificaciones y \textit{logs}. \\
+8 & Pruebas, validación y capturas & Semanas 12--13 & 20 & Pruebas unitarias, integración, E2E, revisión visual, capturas y matriz requisito-prueba. \\
+9 & Documentación y preparación final & Semanas 13--14 & 10 & Memoria revisada, manual de usuario, manual técnico, anexos y preparación de la demo final. \\
+\midrule
+\multicolumn{3}{r}{\textbf{Total estimado}} & \textbf{300} & \\
+\bottomrule
+\end{tabularx}
+\caption{Planificación temporal del proyecto}
+\label{tab:planificacion-fases}
+\end{table}
+
+\section{Distribución por bloques de trabajo}
+
+Además de la planificación por fases, resulta útil agrupar el esfuerzo por tipo de actividad. La Tabla~\ref{tab:planificacion-bloques} muestra esta distribución. Esta vista permite observar que el proyecto no se limita a la programación, sino que incluye análisis, diseño, pruebas, documentación y preparación de una demo reproducible.
+
+\begin{table}[htbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{p{4.4cm}p{2.2cm}X}
+\toprule
+\textbf{Bloque de trabajo} & \textbf{Horas} & \textbf{Contenido} \\
+\midrule
+Análisis, antecedentes y requisitos & 60 & Estudio del problema, objetivos, herramientas existentes, requisitos y casos de uso. \\
+Diseño técnico y arquitectura & 45 & Arquitectura cliente-servidor, modelo de datos, diagramas, decisiones de tecnología y seguridad. \\
+Implementación \textit{backend} e integración & 75 & API, OAuth Atlassian, sincronización Jira, persistencia, Redis, métricas, alertas y retención. \\
+Implementación \textit{frontend} & 45 & Vistas principales, navegación, \textit{dashboard}, filtros, \textit{widgets}, diseño \textit{responsive} y experiencia de usuario. \\
+Pruebas y validación & 35 & Pruebas unitarias, integración, E2E, demo \textit{offline}, validación manual con Jira y capturas. \\
+Documentación y preparación final & 40 & Memoria, anexos, manual de usuario, manual de código, referencias, revisión y entrega final. \\
+\midrule
+\textbf{Total} & \textbf{300} & \\
+\bottomrule
+\end{tabularx}
+\caption{Distribución estimada del esfuerzo por bloques de trabajo}
+\label{tab:planificacion-bloques}
+\end{table}
+
+\section{Ajustes respecto a la propuesta inicial}
+
+La propuesta inicial planteaba una planificación amplia que incluía autenticación local, roles, integración con Jira y GitHub, reportes automáticos y validación con varios equipos. Durante el desarrollo, el alcance se ha ajustado para priorizar una versión completa, coherente y verificable alrededor de Jira Cloud como fuente principal.
+
+Los principales ajustes son los siguientes:
+
+\begin{itemize}
+    \item La autenticación local con registro de usuario se sustituye por Atlassian OAuth, ya que el requisito real es que el usuario conecte su cuenta de Jira.
+    \item La integración con GitHub se deja como ampliación futura para no mezclar métricas ágiles de Jira con métricas de entrega software antes de completar el núcleo del sistema.
+    \item Los reportes automáticos se posponen y se priorizan \textit{dashboard}, filtros, alertas, \textit{logs} e historial de actividad.
+    \item La validación con usuarios externos se complementa con pruebas automatizadas, proyecto Jira real de demostración y \textit{dataset} \textit{offline} controlado.
+    \item La documentación se mantiene como actividad transversal, actualizando memoria y anexos conforme se consolidan decisiones de diseño e implementación.
+\end{itemize}
+
+Estos ajustes permiten mantener el límite de esfuerzo previsto y concentrar la validación en funcionalidades que pueden demostrarse de forma estable: autenticación con Atlassian, sincronización desde Jira, persistencia local, cálculo de métricas, visualización, alertas, actividad y demo \textit{offline}.

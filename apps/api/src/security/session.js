@@ -31,6 +31,7 @@ export function clearSessionCookie(res) {
   res.clearCookie(cookieName, { path: '/' });
 }
 
+// Sesion deslizante: cada peticion valida el JWT y renueva la cookie httpOnly por otra hora.
 export function authRequired(req, res, next) {
   const token = req.cookies?.[cookieName];
   if (!token) return res.status(401).json({ error: 'AUTH_REQUIRED' });

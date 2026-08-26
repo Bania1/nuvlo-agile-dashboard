@@ -4,6 +4,7 @@ import { createDemoDataset, parseDemoCsv, rowsToDemoDataset, simulateDemoDataset
 import { env } from '../config/env.js';
 import { calculateFlowMetrics } from './metrics.js';
 
+// La demo offline intenta leer CSV reproducible; si no existe, genera un dataset determinista.
 async function loadOfflineDataset() {
   try {
     const csv = await readFile(resolve('data/demo/nuvlo-demo-issues.csv'), 'utf8');

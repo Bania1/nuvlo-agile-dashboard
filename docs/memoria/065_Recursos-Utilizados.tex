@@ -1,0 +1,108 @@
+\chapter{Recursos utilizados}
+\label{recursosUtilizados}
+
+Este capítulo resume los recursos humanos, software y hardware empleados para el análisis, diseño, implementación, validación y documentación de Nuvlo. La finalidad es dejar constancia del entorno real utilizado y facilitar que el proyecto pueda reproducirse o mantenerse posteriormente.
+
+\section{Recursos humanos}
+
+Los recursos humanos implicados en el proyecto se organizan en torno al desarrollo, la dirección académica y la supervisión del trabajo.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{p{0.28\textwidth} X}
+\toprule
+\textbf{Recurso} & \textbf{Participación} \\
+\midrule
+Autor del proyecto & Responsable del análisis, diseño, implementación, pruebas, documentación y preparación de la memoria. \\
+\midrule
+Tutores del Trabajo Fin de Grado & Orientación académica, revisión del enfoque del proyecto, seguimiento de la memoria y supervisión general del trabajo. \\
+\bottomrule
+\end{tabularx}
+\caption{Recursos humanos utilizados.}
+\label{tab:recursosHumanos}
+\end{table}
+
+\section{Recursos software}
+
+La Tabla~\ref{tab:recursosSoftware} recoge las herramientas software principales utilizadas durante el desarrollo. Se incluyen tanto tecnologías de implementación como herramientas de documentación, control de versiones y validación.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{p{0.28\textwidth} p{0.24\textwidth} X}
+\toprule
+\textbf{Recurso} & \textbf{Tipo} & \textbf{Uso principal} \\
+\midrule
+JavaScript / Node.js & Lenguaje y entorno de ejecución & Implementación del servidor, scripts de desarrollo y lógica de aplicación~\cite{NodeDocs}. \\
+\midrule
+React & Biblioteca de interfaz & Construcción del cliente web mediante componentes reutilizables~\cite{ReactDocs}. \\
+\midrule
+Vite & Herramienta de desarrollo & Servidor de desarrollo y empaquetado del \textit{frontend}~\cite{ViteDocs}. \\
+\midrule
+Express & Framework web & Definición de rutas HTTP, \textit{middlewares} y API del \textit{backend}~\cite{ExpressDocs}. \\
+\midrule
+Prisma & ORM & Definición del modelo de datos, migraciones y acceso a PostgreSQL~\cite{PrismaDocs}. \\
+\midrule
+PostgreSQL & Base de datos relacional & Persistencia de usuarios, proyectos, incidencias, métricas, alertas, actividad y datos sincronizados~\cite{PostgreSQLDocs}. \\
+\midrule
+Redis & Almacén temporal & Gestión de datos efímeros, caché de corta duración, estado OAuth, CSRF y PKCE~\cite{RedisDocs}. \\
+\midrule
+Docker Compose & Orquestación local & Ejecución reproducible de servicios auxiliares como PostgreSQL y Redis~\cite{DockerComposeDocs}. \\
+\midrule
+Git y GitHub & Control de versiones & Historial de cambios, repositorio remoto y flujo de integración continua. \\
+\midrule
+GitHub Actions & Integración continua & Compilación automatizada de la memoria LaTeX y validación básica del repositorio. \\
+\midrule
+Vitest & Pruebas automatizadas & Pruebas unitarias e integración de lógica de métricas, API y servicios~\cite{VitestGuide}. \\
+\midrule
+Playwright & Pruebas E2E & Validación de flujos principales de la interfaz en navegador~\cite{PlaywrightDocs}. \\
+\midrule
+LaTeX & Documentación académica & Elaboración y compilación de la memoria del proyecto. \\
+\midrule
+Draw.io / diagrams.net & Diagramación & Creación de diagramas de casos de uso, secuencia, arquitectura, base de datos y vistas. \\
+\midrule
+Visual Studio Code & Entorno de desarrollo & Edición del código fuente, documentación y ejecución de terminales integradas. \\
+\bottomrule
+\end{tabularx}
+\caption{Recursos software utilizados.}
+\label{tab:recursosSoftware}
+\end{table}
+
+\section{Recursos hardware}
+
+El desarrollo se ha realizado en un equipo personal con sistema Windows y entorno Linux mediante WSL. Esta configuración permite trabajar con herramientas habituales de desarrollo web y, al mismo tiempo, mantener compatibilidad con comandos y entornos Linux utilizados en servidores y sistemas de integración continua.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{p{0.30\textwidth} X}
+\toprule
+\textbf{Recurso} & \textbf{Uso principal} \\
+\midrule
+Ordenador portátil personal & Desarrollo de la aplicación, ejecución local del \textit{frontend}, \textit{backend}, base de datos, Redis, pruebas y compilación de la memoria. \\
+\midrule
+Windows 11 con WSL & Entorno de trabajo mixto para utilizar herramientas de escritorio y entorno Linux de desarrollo. \\
+\midrule
+Docker Desktop & Ejecución local de contenedores y conexión con WSL. \\
+\midrule
+Navegador web & Pruebas funcionales, revisión visual de la interfaz y validación del flujo OAuth con Atlassian. \\
+\midrule
+GitHub Actions & Ejecución remota de tareas de integración continua sobre infraestructura de GitHub. \\
+\bottomrule
+\end{tabularx}
+\caption{Recursos hardware y entorno de ejecución utilizados.}
+\label{tab:recursosHardware}
+\end{table}
+
+\section{Servicios externos}
+
+Además del entorno local, el proyecto utiliza servicios externos necesarios para la integración y validación de la aplicación.
+
+\begin{itemize}
+    \item \textbf{Jira Cloud}: fuente principal de datos para proyectos, incidencias, tableros, \textit{sprints} y transiciones.
+    \item \textbf{Atlassian Developer Console}: configuración de la aplicación OAuth 2.0 3LO y permisos de acceso.
+    \item \textbf{GitHub}: alojamiento del repositorio, control remoto del código y ejecución de flujos de integración continua.
+\end{itemize}
+
+Estos servicios condicionan parte de la arquitectura del sistema, especialmente la autenticación, la sincronización de datos y la necesidad de mantener una demo \textit{offline} que permita comprobar la aplicación aunque una API externa no esté disponible.

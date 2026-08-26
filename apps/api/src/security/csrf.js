@@ -25,6 +25,7 @@ export function clearCsrfCookie(res) {
   res.clearCookie(csrfCookieName, { path: '/' });
 }
 
+// Double-submit cookie: el frontend debe reenviar el token de cookie en la cabecera x-csrf-token.
 export function csrfRequired(req, res, next) {
   const cookieToken = req.cookies?.[csrfCookieName];
   const headerToken = req.get(csrfHeaderName);

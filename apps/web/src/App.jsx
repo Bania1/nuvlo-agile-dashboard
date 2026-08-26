@@ -15,6 +15,7 @@ export function App() {
 }
 
 function DashboardApp() {
+  // Estado raiz: mantiene juntas demo offline, sesion Jira, sincronizacion y navegacion interna.
   const [data, setData] = useState(null);
   const [jiraProjects, setJiraProjects] = useState(null);
   const [jiraIssues, setJiraIssues] = useState(null);
@@ -100,6 +101,7 @@ function DashboardApp() {
   const activeProjectKey = jiraProjects?.projects?.[0]?.key;
   const activeDashboard = projectDashboard || data;
 
+  // Si no hay proyecto Jira conectado, la UI conserva una experiencia demostrable con avisos simulados.
   const fallbackAlertSummary = useMemo(() => {
     if (!data) return null;
     const alerts = [
@@ -175,6 +177,7 @@ function DashboardApp() {
     setProjectDashboard(dashboardPayload);
   }
 
+  // La sincronizacion real escribe en PostgreSQL; despues se recargan issues, dashboard y alertas desde la API.
   async function syncActiveProject() {
     if (!activeProjectKey) return;
     setSyncState({ status: 'RUNNING', projectKey: activeProjectKey });

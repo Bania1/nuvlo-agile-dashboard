@@ -1,0 +1,37 @@
+\chapter{Objetivos}
+\label{objetivos}
+
+Este capítulo concreta el propósito del proyecto y descompone dicho propósito en objetivos específicos. Su contenido parte de la petición de tema inicial y se adapta al alcance finalmente definido para Nuvlo, centrado en Jira Cloud, la visualización de métricas ágiles y la existencia de una demo \textit{offline} reproducible.
+
+\section{Objetivo general}
+
+El objetivo general del proyecto es construir una aplicación web funcional que permita a equipos ágiles visualizar, analizar y gestionar métricas clave de Scrum y Kanban mediante paneles intuitivos y personalizables. La herramienta busca facilitar una lectura clara del estado del trabajo, apoyar la mejora continua y reducir la dependencia de decisiones basadas únicamente en intuición.
+
+La aplicación se apoya en Jira Cloud como fuente principal de datos reales. Tras la autorización del usuario mediante Atlassian OAuth, el sistema sincroniza información de proyectos, incidencias, \textit{sprints} y cambios de estado, persiste dichos datos en una base de datos propia y calcula métricas como \textit{Velocity}, \textit{WIP}, \textit{Lead Time} y \textit{Cycle Time}. Además, incorpora un modo de demostración \textit{offline} basado en un conjunto de datos local, pensado para validar y presentar la aplicación aunque no haya conexión con Jira.
+
+\section{Objetivos específicos}
+
+Para alcanzar el objetivo general se plantean los siguientes objetivos específicos:
+
+\begin{itemize}
+    \item Analizar las necesidades de equipos que trabajan con Scrum o Kanban y que requieren una visión clara de sus métricas de flujo.
+    \item Estudiar las limitaciones de herramientas existentes de gestión y analítica ágil, especialmente en relación con coste, personalización, trazabilidad y dependencia de plataformas externas.
+    \item Diseñar una arquitectura web separada por capas, con \textit{frontend}, \textit{backend}, base de datos, caché y componentes compartidos que puedan evolucionar de forma ordenada.
+    \item Implementar un mecanismo de autenticación basado en Atlassian OAuth 2.0, evitando registro local de usuarios y delegando el acceso en la cuenta Jira del usuario.
+    \item Desarrollar un módulo de sincronización con Jira Cloud capaz de importar proyectos, incidencias, \textit{sprints} y transiciones de estado necesarias para el cálculo de métricas.
+    \item Persistir los datos sincronizados en PostgreSQL para que la aplicación no dependa de consultar Jira en cada interacción del usuario.
+    \item Utilizar Redis como apoyo operativo para cachear respuestas temporales y exponer el estado de sincronización de forma eficiente.
+    \item Calcular métricas ágiles relevantes, incluyendo \textit{Velocity}, \textit{WIP}, \textit{Lead Time}, \textit{Cycle Time}, medias y percentiles cuando los datos disponibles lo permitan.
+    \item Diseñar una interfaz \textit{responsive} con \textit{dashboard} principal, filtros, \textit{widgets} configurables, vista de tablero, alertas, actividad y configuración.
+    \item Implementar reglas de alerta por umbral e historial de actividad para mejorar la trazabilidad del uso de la aplicación.
+    \item Incorporar una demo \textit{offline} reproducible mediante CSV o \textit{dataset} local para permitir validación y presentación sin depender de servicios externos.
+    \item Aplicar medidas de seguridad coherentes con el uso de OAuth y datos sensibles, incluyendo \textit{cookies} \texttt{httpOnly}, protección CSRF, PKCE, cifrado de \textit{tokens} y exclusión de secretos del repositorio.
+    \item Validar la implementación mediante pruebas unitarias, pruebas de integración, pruebas E2E y comprobaciones manuales sobre Jira real y demo \textit{offline}.
+    \item Elaborar la documentación técnica y de usuario necesaria para comprender, ejecutar, mantener y evaluar la aplicación.
+\end{itemize}
+
+\section{Alcance de los objetivos}
+
+Algunos objetivos previstos inicialmente se han ajustado durante el desarrollo para mantener un alcance realista y verificable. La integración principal se centra en Jira Cloud, mientras que métricas dependientes de repositorios o despliegues, como \textit{Deployment Frequency}, quedan documentadas como posible ampliación futura. Del mismo modo, la validación se apoya en pruebas automatizadas, revisión funcional y datos reales o simulados, sin plantear una implantación prolongada en varios equipos externos.
+
+Este alcance permite concentrar el trabajo en una solución completa y evaluable: autenticación con Atlassian, sincronización controlada, persistencia local, cálculo de métricas, visualización, alertas, registros de actividad, demo \textit{offline} y documentación asociada.

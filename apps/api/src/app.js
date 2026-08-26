@@ -7,10 +7,9 @@ import { env } from './config/env.js';
 import { authRequired, clearSessionCookie, setSessionCookie, signSession } from './security/session.js';
 import { clearCsrfCookie, csrfRequired, setCsrfCookie } from './security/csrf.js';
 import { createAuthorizationRequest, exchangeAuthorizationCode, fetchAccessibleResources, fetchAtlassianProfile } from './services/atlassianOAuth.js';
-import { getAuthenticatedUser, getLatestAtlassianSession, persistAtlassianLogin, refreshAtlassianSession } from './services/authRepository.js';
+import { getActiveAtlassianAccess, getAuthenticatedUser, persistAtlassianLogin } from './services/authRepository.js';
 import { buildDemoDashboard } from './services/demoDashboard.js';
 import { jiraRequest } from './services/jiraClient.js';
-import { decryptSecret } from './utils/crypto.js';
 import { getJsonCache, getSyncStatus, setJsonCache } from './cache/redis.js';
 import { getPersistedProjectIssues, syncJiraProject } from './services/jiraSync.js';
 import { buildProjectDashboard } from './services/projectDashboard.js';
@@ -25,28 +24,11 @@ export function createApp() {
   app.use(cookieParser());
   app.use(rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: true, legacyHeaders: false }));
 
-  async function getActiveAtlassianAccess(userId) {
-    const atlassianSession = await getLatestAtlassianSession(userId);
-    if (!atlassianSession) {
-      const error = new Error('Atlassian session not found.');
-      error.statusCode = 404;
-      error.code = 'ATLASSIAN_SESSION_NOT_FOUND';
-      throw error;
-    }
-    let activeSession = atlassianSession;
-    if (activeSession.expiresAt && activeSession.expiresAt <= new Date()) {
-      activeSession = await refreshAtlassianSession(activeSession);
-    }
-    return {
-      atlassianSession: activeSession,
-      accessToken: decryptSecret(activeSession.encryptedAccessToken),
-    };
-  }
-
   app.get('/api/health', (_req, res) => {
     res.json({ name: 'Nuvlo API', status: 'ok' });
   });
 
+  // Inicio OAuth 2.0 3LO: state evita CSRF OAuth y PKCE protege el codigo de autorizacion.
   app.get('/api/auth/atlassian/start', (req, res, next) => {
     try {
       const { state, codeVerifier, url } = createAuthorizationRequest();
@@ -70,6 +52,7 @@ export function createApp() {
     }
   });
 
+  // Callback OAuth: se validan state y PKCE antes de crear la sesion local httpOnly.
   app.get('/api/auth/atlassian/callback', async (req, res, next) => {
     try {
       if (!req.query.state || req.query.state !== req.cookies?.nuvlo_oauth_state) {
@@ -105,7 +88,7 @@ export function createApp() {
     res.json({ csrfToken });
   });
 
-  app.get('/api/auth/me', authRequired, async (req, res, next) => {
+  async function respondWithAuthenticatedUser(req, res, next) {
     try {
       const user = await getAuthenticatedUser(req.session.sub);
       if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
@@ -113,17 +96,10 @@ export function createApp() {
     } catch (error) {
       return next(error);
     }
-  });
+  }
 
-  app.get('/api/me', authRequired, async (req, res, next) => {
-    try {
-      const user = await getAuthenticatedUser(req.session.sub);
-      if (!user) return res.status(404).json({ error: 'USER_NOT_FOUND' });
-      return res.json({ user });
-    } catch (error) {
-      return next(error);
-    }
-  });
+  app.get('/api/auth/me', authRequired, respondWithAuthenticatedUser);
+  app.get('/api/me', authRequired, respondWithAuthenticatedUser);
 
   app.get('/api/activity', authRequired, async (req, res, next) => {
     try {
@@ -134,6 +110,7 @@ export function createApp() {
     }
   });
 
+  // Lecturas de Jira: Redis cachea respuestas breves para evitar peticiones repetidas al refrescar la UI.
   app.get('/api/jira/projects', authRequired, async (req, res, next) => {
     try {
       const { atlassianSession, accessToken } = await getActiveAtlassianAccess(req.session.sub);
@@ -296,6 +273,7 @@ export function createApp() {
     }
   });
 
+  // Sincronizacion bajo demanda: Jira se consulta aqui y la UI lee despues desde PostgreSQL.
   app.post('/api/jira/projects/:projectKey/sync', authRequired, csrfRequired, async (req, res, next) => {
     try {
       const requestedMaxIssues = Number(req.body?.maxIssues || 100);

@@ -3,7 +3,7 @@
 
 \section{Introducción}
 
-Este anexo resume la organización del código fuente de Nuvlo. El proyecto se ha implementado como una aplicación web en arquitectura cliente-servidor, con frontend en React, backend en Node.js/Express, persistencia en PostgreSQL mediante Prisma y uso de Redis como caché temporal y soporte operativo~\cite{ReactDocs,NodeDocs,ExpressDocs,PrismaDocs,PostgreSQLDocs,RedisDocs}.
+Este anexo resume la organización del código fuente de Nuvlo. El proyecto se ha implementado como una aplicación web en arquitectura cliente-servidor, con \textit{frontend} en React, \textit{backend} en Node.js/Express, persistencia en PostgreSQL mediante Prisma y uso de Redis como caché temporal y soporte operativo~\cite{ReactDocs,NodeDocs,ExpressDocs,PrismaDocs,PostgreSQLDocs,RedisDocs}.
 
 El código fuente completo se mantiene en el repositorio GitHub del proyecto:
 
@@ -15,7 +15,7 @@ No se incluye una impresión completa del código fuente para evitar duplicar co
 
 \section{Estructura del repositorio}
 
-El proyecto usa un monorepo sencillo con \texttt{npm workspaces}, mecanismo proporcionado por npm para gestionar varios paquetes locales desde un único repositorio~\cite{NpmWorkspaces}. Esta organización permite evolucionar conjuntamente frontend, backend, paquetes compartidos, documentación, Prisma y scripts.
+El proyecto usa un \textit{monorepo} sencillo con \texttt{npm workspaces}, mecanismo proporcionado por npm para gestionar varios paquetes locales desde un único repositorio~\cite{NpmWorkspaces}. Esta organización permite evolucionar conjuntamente \textit{frontend}, \textit{backend}, paquetes compartidos, documentación, Prisma y \textit{scripts}.
 
 \begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize]
 tfg/
@@ -46,29 +46,29 @@ tfg/
 
 \section{Frontend}
 
-El frontend se encuentra en \texttt{apps/web}. Está desarrollado con React y Vite~\cite{ReactDocs,ViteDocs}. Las vistas principales se organizan en \texttt{src/views}:
+El \textit{frontend} se encuentra en \texttt{apps/web}. Está desarrollado con React y Vite~\cite{ReactDocs,ViteDocs}. Las vistas principales se organizan en \texttt{src/views}:
 
 \begin{itemize}
     \item \texttt{Landing.jsx}: pantalla inicial con conexión a Jira y acceso a demo local.
-    \item \texttt{DashboardView.jsx}: dashboard principal, filtros, widgets y métricas.
+    \item \texttt{DashboardView.jsx}: \textit{dashboard} principal, filtros, \textit{widgets} y métricas.
     \item \texttt{BoardView.jsx}: tablero de flujo agrupado por estados.
     \item \texttt{AlertsView.jsx}: reglas de alerta e historial de eventos.
     \item \texttt{ActivityView.jsx}: registro de actividad del sistema.
     \item \texttt{SettingsView.jsx}: conexión con Jira, sesión y proyectos importados.
 \end{itemize}
 
-Los componentes reutilizables se encuentran en \texttt{src/components} y la comunicación con el backend se centraliza en \texttt{src/lib/api.js}. La hoja principal de estilos es \texttt{src/styles.css}.
+Los componentes reutilizables se encuentran en \texttt{src/components} y la comunicación con el \textit{backend} se centraliza en \texttt{src/lib/api.js}. La hoja principal de estilos es \texttt{src/styles.css}.
 
 \section{Backend}
 
-El backend se encuentra en \texttt{apps/api}. Está desarrollado con Node.js y Express~\cite{NodeDocs,ExpressDocs}. Sus responsabilidades principales son:
+El \textit{backend} se encuentra en \texttt{apps/api}. Está desarrollado con Node.js y Express~\cite{NodeDocs,ExpressDocs}. Sus responsabilidades principales son:
 
 \begin{itemize}
     \item Gestionar el flujo OAuth 2.0 3LO con Atlassian~\cite{AtlassianOAuth3LO,OWASPOAuth2}.
-    \item Proteger la sesión mediante cookie \texttt{httpOnly}.
-    \item Aplicar protección CSRF en operaciones mutables, siguiendo el patrón de token/header recomendado para aplicaciones web modernas~\cite{OWASPCSRF}.
-    \item Renovar tokens de Atlassian mediante refresh token rotatorio.
-    \item Sincronizar proyectos, issues, sprints y changelog desde Jira Cloud~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}.
+    \item Proteger la sesión mediante \textit{cookie} \texttt{httpOnly}.
+    \item Aplicar protección CSRF en operaciones mutables, siguiendo el patrón de \textit{token}/header recomendado para aplicaciones web modernas~\cite{OWASPCSRF}.
+    \item Renovar \textit{tokens} de Atlassian mediante refresh \textit{token} rotatorio.
+    \item Sincronizar proyectos, \textit{issues}, \textit{sprints} y \textit{changelog} desde Jira Cloud~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}.
     \item Persistir datos en PostgreSQL mediante Prisma.
     \item Calcular métricas y evaluar alertas.
     \item Registrar eventos de actividad y errores relevantes.
@@ -78,7 +78,7 @@ Los servicios principales se encuentran en \texttt{apps/api/src/services}. Entre
 
 \section{Base de datos y Redis}
 
-El modelo de datos se define en \texttt{prisma/schema.prisma}. PostgreSQL almacena información durable~\cite{PrismaDocs,PostgreSQLDocs}: usuarios, sesiones cifradas de Atlassian, proyectos, tableros, sprints, incidencias, transiciones, métricas, alertas, ejecuciones de sincronización y logs de actividad.
+El modelo de datos se define en \texttt{prisma/schema.prisma}. PostgreSQL almacena información durable~\cite{PrismaDocs,PostgreSQLDocs}: usuarios, sesiones cifradas de Atlassian, proyectos, tableros, \textit{sprints}, incidencias, transiciones, métricas, alertas, ejecuciones de sincronización y \textit{logs} de actividad.
 
 Redis se utiliza como componente temporal~\cite{RedisDocs}. En la implementación actual almacena cachés de corta duración para datos de Jira y estados de sincronización. Estos datos tienen TTL y no se consideran fuente principal de verdad. La fuente durable del sistema es PostgreSQL.
 
@@ -90,10 +90,10 @@ La configuración local parte de \texttt{.env.example}. El fichero real \texttt{
     \item \texttt{DATABASE\_URL}: conexión a PostgreSQL.
     \item \texttt{REDIS\_URL}: conexión a Redis.
     \item \texttt{JWT\_SECRET}: secreto para firmar sesiones.
-    \item \texttt{ENCRYPTION\_KEY}: clave para cifrar tokens OAuth.
+    \item \texttt{ENCRYPTION\_KEY}: clave para cifrar \textit{tokens} OAuth.
     \item Credenciales OAuth de Atlassian: identificador de cliente, secreto de cliente y URI de redirección.
-    \item \texttt{RETENTION\_*}: parámetros de retención de logs, métricas y eventos.
-    \item \texttt{DEMO\_FIXED\_TICK}: opción para congelar la demo offline al generar capturas reproducibles.
+    \item \texttt{RETENTION\_*}: parámetros de retención de \textit{logs}, métricas y eventos.
+    \item \texttt{DEMO\_FIXED\_TICK}: opción para congelar la demo \textit{offline} al generar capturas reproducibles.
 \end{itemize}
 
 \section{Instalación y ejecución}
@@ -123,22 +123,22 @@ npm run test:e2e
 npm run build
 \end{lstlisting}
 
-Las pruebas unitarias validan cálculo de métricas, reglas de alerta, CSRF y política de retención mediante Vitest~\cite{VitestGuide}. Las pruebas de integración comprueban endpoints del backend con mocks. Las pruebas E2E con Playwright validan el flujo principal de la UI en modo demo, incluyendo entrada, filtros, widgets y alertas~\cite{PlaywrightDocs}.
+Las pruebas unitarias validan cálculo de métricas, reglas de alerta, CSRF y política de retención mediante Vitest~\cite{VitestGuide}. Las pruebas de integración comprueban endpoints del \textit{backend} con \textit{mocks}. Las pruebas E2E con Playwright validan el flujo principal de la UI en modo demo, incluyendo entrada, filtros, \textit{widgets} y alertas~\cite{PlaywrightDocs}.
 
 \section{Capturas de documentación}
 
-Las capturas de la memoria se generan de forma reproducible mediante scripts:
+Las capturas de la memoria se generan de forma reproducible mediante \textit{scripts}:
 
 \begin{lstlisting}[language=bash]
 npm run docs:screenshots:jira
 npm run docs:screenshots:demo
 \end{lstlisting}
 
-El primer comando requiere una sesión OAuth previa y sincroniza el proyecto Jira real antes de capturar. El segundo utiliza mocks y dataset offline para generar imágenes estables de respaldo.
+El primer comando requiere una sesión OAuth previa y sincroniza el proyecto Jira real antes de capturar. El segundo utiliza \textit{mocks} y \textit{dataset} \textit{offline} para generar imágenes estables de respaldo.
 
 \section{Código de terceros y fuentes externas}
 
-No se han copiado ficheros completos de código fuente externos en la implementación. Se han usado librerías de código abierto instaladas mediante npm, como React, Vite, Express, Prisma, Playwright, Vitest, Recharts y Lucide React, respetando sus licencias y uso habitual como dependencias~\cite{ReactDocs,ViteDocs,ExpressDocs,PrismaDocs,PlaywrightDocs,VitestGuide,RechartsDocs}. Para la dirección visual del dashboard se tomó como inspiración una plantilla de administración moderna publicada por Morphin~\cite{MorphinDashboardInspiration}, sin reutilizar su código fuente.
+No se han copiado ficheros completos de código fuente externos en la implementación. Se han usado librerías de código abierto instaladas mediante npm, como React, Vite, Express, Prisma, Playwright, Vitest, Recharts y Lucide React, respetando sus licencias y uso habitual como dependencias~\cite{ReactDocs,ViteDocs,ExpressDocs,PrismaDocs,PlaywrightDocs,VitestGuide,RechartsDocs}. Para la dirección visual del \textit{dashboard} se tomó como inspiración una plantilla de administración moderna publicada por Morphin~\cite{MorphinDashboardInspiration}, sin reutilizar su código fuente.
 
 La integración con Jira Cloud se ha implementado consultando la documentación oficial de Atlassian sobre OAuth 2.0 3LO y Jira REST API~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3,AtlassianJiraIssuesApi}. Esa documentación se ha usado como referencia técnica para entender el flujo de autorización, los permisos, los endpoints disponibles y las restricciones de uso de la API, no como fuente de código copiado directamente.
 

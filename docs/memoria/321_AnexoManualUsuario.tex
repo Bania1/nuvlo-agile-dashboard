@@ -3,13 +3,13 @@
 
 \section{Introducción}
 
-Este anexo describe el uso básico de Nuvlo desde el punto de vista de un usuario final. Nuvlo es una aplicación web para consultar métricas ágiles calculadas a partir de datos de Jira Cloud, tomando como referencia la gestión de trabajo de Jira y la información disponible mediante su API REST~\cite{AtlassianJira,AtlassianJiraRestV3}. La aplicación no sustituye a Jira como herramienta de gestión de proyectos, sino que actúa como una capa de análisis para visualizar indicadores como WIP, Velocity, Lead Time, Cycle Time, alertas y registros de actividad.
+Este anexo describe el uso básico de Nuvlo desde el punto de vista de un usuario final. Nuvlo es una aplicación web para consultar métricas ágiles calculadas a partir de datos de Jira Cloud, tomando como referencia la gestión de trabajo de Jira y la información disponible mediante su API REST~\cite{AtlassianJira,AtlassianJiraRestV3}. La aplicación no sustituye a Jira como herramienta de gestión de proyectos, sino que actúa como una capa de análisis para visualizar indicadores como \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, alertas y registros de actividad.
 
 El sistema ofrece dos modos de trabajo:
 
 \begin{itemize}
     \item \textbf{Modo Jira}: utiliza autenticación OAuth con Atlassian y sincroniza datos reales desde Jira Cloud~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3}.
-    \item \textbf{Modo demo offline}: utiliza un conjunto de datos local controlado para probar la aplicación aunque Jira Cloud o la conexión de red no estén disponibles.
+    \item \textbf{Modo demo \textit{offline}}: utiliza un conjunto de datos local controlado para probar la aplicación aunque Jira Cloud o la conexión de red no estén disponibles.
 \end{itemize}
 
 \section{Acceso a la aplicación}
@@ -25,42 +25,42 @@ Al abrir la aplicación, el usuario encuentra una pantalla de entrada con el bot
 
 Si el usuario necesita realizar una demostración sin conexión con Jira, puede acceder al modo local mediante la opción de demo. Esta alternativa no realiza llamadas a Jira Cloud y utiliza datos simulados cargados desde el propio proyecto.
 
-\section{Dashboard principal}
+\section{\textit{Dashboard} principal}
 
-Tras iniciar sesión o acceder al modo demo, Nuvlo muestra el dashboard principal. Esta vista resume el estado del proyecto seleccionado e incluye tarjetas de métricas, gráficos, avisos y una lista de incidencias recientes.
+Tras iniciar sesión o acceder al modo demo, Nuvlo muestra el \textit{dashboard} principal. Esta vista resume el estado del proyecto seleccionado e incluye tarjetas de métricas, gráficos, avisos y una lista de incidencias recientes.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth,trim=0 420bp 0 0,clip]{img/app-jira/01-dashboard-jira.png}
-    \caption{Dashboard principal con datos sincronizados desde Jira}
+    \caption{\textit{Dashboard} principal con datos sincronizados desde Jira}
     \label{fig:manual-dashboard-jira}
 \end{figure}
 
 Las tarjetas superiores muestran:
 
 \begin{itemize}
-    \item \textbf{Lead Time}: tiempo desde la creación de una incidencia hasta su finalización, métrica habitual para analizar el flujo de entrega~\cite{Anderson2010Kanban}.
-    \item \textbf{Cycle Time}: tiempo desde que una incidencia entra en trabajo activo hasta que se finaliza.
-    \item \textbf{WIP}: trabajo en curso visible según los filtros aplicados.
-    \item \textbf{Velocity}: trabajo completado, usando puntos de historia cuando Jira los proporciona o número de incidencias como alternativa, en línea con la planificación iterativa descrita en Scrum~\cite{ScrumGuide2020}.
+    \item \textbf{\textit{Lead Time}}: tiempo desde la creación de una incidencia hasta su finalización, métrica habitual para analizar el flujo de entrega~\cite{Anderson2010Kanban}.
+    \item \textbf{\textit{Cycle Time}}: tiempo desde que una incidencia entra en trabajo activo hasta que se finaliza.
+    \item \textbf{\textit{WIP}}: trabajo en curso visible según los filtros aplicados.
+    \item \textbf{\textit{Velocity}}: trabajo completado, usando puntos de historia cuando Jira los proporciona o número de incidencias como alternativa, en línea con la planificación iterativa descrita en Scrum~\cite{ScrumGuide2020}.
 \end{itemize}
 
-En proyectos reales creados para demostración, algunas métricas temporales pueden aparecer con valores muy bajos o nulos si las transiciones de Jira se han producido en un intervalo corto. Para validar cálculos temporales históricos se utiliza el dataset offline controlado.
+En proyectos reales creados para demostración, algunas métricas temporales pueden aparecer con valores muy bajos o nulos si las transiciones de Jira se han producido en un intervalo corto. Para validar cálculos temporales históricos se utiliza el \textit{dataset} \textit{offline} controlado.
 
-\section{Filtros y widgets}
+\section{Filtros y \textit{widgets}}
 
-El botón \textit{Filtros} abre un panel de filtrado rápido. Desde este panel el usuario puede limitar las incidencias visibles por estado, tipo o búsqueda textual. También puede ocultar o mostrar widgets del dashboard para adaptar la vista al tipo de análisis que se quiera realizar.
+El botón \textit{Filtros} abre un panel de filtrado rápido. Desde este panel el usuario puede limitar las incidencias visibles por estado, tipo o búsqueda textual. También puede ocultar o mostrar \textit{widgets} del \textit{dashboard} para adaptar la vista al tipo de análisis que se quiera realizar.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth,trim=0 570bp 0 0,clip]{img/app-jira/02-dashboard-jira-filtros.png}
-    \caption{Filtros rápidos y configuración de widgets}
+    \caption{Filtros rápidos y configuración de \textit{widgets}}
     \label{fig:manual-filtros-widgets}
 \end{figure}
 
 \section{Sincronización con Jira}
 
-Cuando hay una sesión OAuth activa, el botón \textit{Sincronizar Jira} actualiza los datos del proyecto seleccionado. La aplicación solicita los datos necesarios a Jira Cloud, incluidos datos de incidencias y cambios de estado cuando están disponibles~\cite{AtlassianJiraIssuesApi}, los almacena en PostgreSQL y recalcula el dashboard desde la base de datos local. Este diseño reduce llamadas repetidas a Jira y permite consultar la información aunque la API externa no se llame en cada interacción de la interfaz.
+Cuando hay una sesión OAuth activa, el botón \textit{Sincronizar Jira} actualiza los datos del proyecto seleccionado. La aplicación solicita los datos necesarios a Jira Cloud, incluidos datos de incidencias y cambios de estado cuando están disponibles~\cite{AtlassianJiraIssuesApi}, los almacena en PostgreSQL y recalcula el \textit{dashboard} desde la base de datos local. Este diseño reduce llamadas repetidas a Jira y permite consultar la información aunque la API externa no se llame en cada interacción de la interfaz.
 
 \section{Vista de tablero}
 
@@ -88,7 +88,7 @@ Cuando existen alertas activas, la campana de notificaciones muestra un contador
 
 \section{Registro de actividad}
 
-La vista de actividad muestra eventos relevantes del sistema, como inicios de sesión, renovaciones de token, sincronizaciones, creación de reglas de alerta y tareas de limpieza. Estos logs sirven como apoyo para depuración y trazabilidad durante el uso de la aplicación.
+La vista de actividad muestra eventos relevantes del sistema, como inicios de sesión, renovaciones de \textit{token}, sincronizaciones, creación de reglas de alerta y tareas de limpieza. Estos \textit{logs} sirven como apoyo para depuración y trazabilidad durante el uso de la aplicación.
 
 \begin{figure}[htbp]
     \centering
@@ -110,18 +110,18 @@ La vista de configuración resume el estado de conexión con Jira, los proyectos
 
 \section{Uso en móvil}
 
-La interfaz se adapta a pantallas pequeñas. En móvil, la navegación lateral pasa a una disposición compacta superior y los widgets se apilan para conservar la legibilidad.
+La interfaz se adapta a pantallas pequeñas. En móvil, la navegación lateral pasa a una disposición compacta superior y los \textit{widgets} se apilan para conservar la legibilidad.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[height=0.82\textheight,keepaspectratio,trim=0 2250bp 0 0,clip]{img/app-jira/07-dashboard-jira-movil.png}
-    \caption{Dashboard en vista móvil}
+    \caption{\textit{Dashboard} en vista móvil}
     \label{fig:manual-dashboard-movil}
 \end{figure}
 
-\section{Demo offline}
+\section{Demo \textit{offline}}
 
-La demo offline se utiliza como respaldo operativo y como conjunto de validación controlado. Sus capturas se encuentran en \texttt{img/app-demo}. A diferencia de Jira real, este dataset sí contiene valores temporales preparados para comprobar que los cálculos de Lead Time, Cycle Time, percentiles, WIP y Velocity se visualizan correctamente.
+La demo \textit{offline} se utiliza como respaldo operativo y como conjunto de validación controlado. Sus capturas se encuentran en \texttt{img/app-demo}. A diferencia de Jira real, este \textit{dataset} sí contiene valores temporales preparados para comprobar que los cálculos de \textit{Lead Time}, \textit{Cycle Time}, percentiles, \textit{WIP} y \textit{Velocity} se visualizan correctamente.
 
 \phantomsection
 \addcontentsline{toc}{section}{Referencias}

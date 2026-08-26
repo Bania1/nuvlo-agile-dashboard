@@ -7,13 +7,13 @@ El presente capítulo describe el problema que motiva el desarrollo del proyecto
 
 En el desarrollo de software actual es habitual que los equipos organicen su trabajo mediante enfoques ágiles. Marcos como Scrum y Kanban proporcionan formas de planificar, visualizar y adaptar el trabajo a medida que avanza el proyecto. Scrum estructura el desarrollo en iteraciones temporales y promueve la inspección frecuente del producto y del proceso~\cite{ScrumGuide2020}. Kanban, por su parte, se centra en la visualización del flujo de trabajo, la limitación del trabajo en curso y la mejora evolutiva del sistema~\cite{Anderson2010Kanban}.
 
-En ambos casos, la actividad diaria del equipo genera una gran cantidad de datos: incidencias, tareas, cambios de estado, sprints, tiempos de entrega, bloqueos, prioridades o información sobre el avance del trabajo. Estos datos pueden aportar valor si se transforman en métricas comprensibles, pero por sí solos no garantizan una mejora del proceso. De hecho, la adopción de prácticas ágiles no implica necesariamente que el equipo disponga de una visión clara de su rendimiento. El informe \textit{17th State of Agile} de Digital.ai indica que el uso de Agile está muy extendido en el ciclo de vida del desarrollo software, pero también refleja que la satisfacción con su funcionamiento y su escalado no siempre es elevada~\cite{DigitalAI2024StateOfAgile}.
+En ambos casos, la actividad diaria del equipo genera una gran cantidad de datos: incidencias, tareas, cambios de estado, \textit{sprints}, tiempos de entrega, bloqueos, prioridades o información sobre el avance del trabajo. Estos datos pueden aportar valor si se transforman en métricas comprensibles, pero por sí solos no garantizan una mejora del proceso. De hecho, la adopción de prácticas ágiles no implica necesariamente que el equipo disponga de una visión clara de su rendimiento. El informe \textit{17th State of Agile} de Digital.ai indica que el uso de Agile está muy extendido en el ciclo de vida del desarrollo software, pero también refleja que la satisfacción con su funcionamiento y su escalado no siempre es elevada~\cite{DigitalAI2024StateOfAgile}.
 
 Por tanto, el problema se sitúa en un entorno en el que los equipos sí cuentan con herramientas y datos, pero no siempre con mecanismos accesibles para convertir esa información en conocimiento útil para la toma de decisiones.
 
 \section{Situación actual y fragmentación de la información}
 
-Una parte importante de los equipos ágiles utiliza herramientas especializadas para gestionar su trabajo. Jira, por ejemplo, permite modelar proyectos, incidencias, tableros, sprints y flujos de trabajo, y se ha consolidado como una de las herramientas más utilizadas en este ámbito~\cite{AtlassianJira}. Sin embargo, la información relevante para evaluar el funcionamiento de un equipo no siempre se encuentra en una única plataforma.
+Una parte importante de los equipos ágiles utiliza herramientas especializadas para gestionar su trabajo. Jira, por ejemplo, permite modelar proyectos, incidencias, tableros, \textit{sprints} y flujos de trabajo, y se ha consolidado como una de las herramientas más utilizadas en este ámbito~\cite{AtlassianJira}. Sin embargo, la información relevante para evaluar el funcionamiento de un equipo no siempre se encuentra en una única plataforma.
 
 En un proyecto software real, Jira puede contener la planificación y el estado de las tareas, mientras que repositorios como GitHub almacenan commits, ramas y solicitudes de integración. A su vez, las plataformas de integración y despliegue continuo pueden registrar información sobre builds, despliegues o fallos en producción. Esta separación no es necesariamente negativa, ya que cada herramienta cumple una función concreta. El problema aparece cuando el equipo necesita relacionar datos procedentes de distintas fuentes para entender cómo fluye realmente el trabajo.
 
@@ -21,25 +21,17 @@ En este contexto, la información puede quedar dispersa y requerir procesos manu
 
 \section{Dificultad para transformar datos en métricas útiles}
 
-El problema no consiste únicamente en almacenar datos del proyecto. Para que estos datos sean útiles deben ser seleccionados, relacionados y transformados en métricas que respondan a preguntas concretas del equipo. Por ejemplo, no basta con conocer cuántas incidencias hay en un tablero; puede ser necesario saber cuántas tareas se completan por sprint, cuánto tiempo tarda una tarea desde que se solicita hasta que se entrega, cuánto trabajo está simultáneamente en curso o en qué estados se producen los principales cuellos de botella.
+El problema no consiste únicamente en almacenar datos del proyecto. Para que estos datos sean útiles deben ser seleccionados, relacionados y transformados en métricas que respondan a preguntas concretas del equipo. Por ejemplo, no basta con conocer cuántas incidencias hay en un tablero; puede ser necesario saber cuántas tareas se completan por \textit{sprint}, cuánto tiempo tarda una tarea desde que se solicita hasta que se entrega, cuánto trabajo está simultáneamente en curso o en qué estados se producen los principales cuellos de botella.
 
-Entre las métricas habituales en equipos Scrum y Kanban se encuentran la Velocity, el WIP, el Cycle Time y el Lead Time. La Velocity permite analizar la cantidad de trabajo completado en un sprint; el WIP ayuda a observar el trabajo en curso; el Cycle Time permite estudiar el tiempo que una tarea permanece en flujo activo; y el Lead Time ofrece una visión más amplia del tiempo total desde la solicitud hasta la entrega. Estas métricas pueden apoyar la mejora continua, pero requieren una definición consistente para evitar interpretaciones erróneas.
+Entre las métricas habituales en equipos Scrum y Kanban se encuentran la \textit{Velocity}, el \textit{WIP}, el \textit{Cycle Time} y el \textit{Lead Time}. La \textit{Velocity} permite analizar la cantidad de trabajo completado en un \textit{sprint}; el \textit{WIP} ayuda a observar el trabajo en curso; el \textit{Cycle Time} permite estudiar el tiempo que una tarea permanece en flujo activo; y el \textit{Lead Time} ofrece una visión más amplia del tiempo total desde la solicitud hasta la entrega. Estas métricas pueden apoyar la mejora continua, pero requieren una definición consistente para evitar interpretaciones erróneas.
 
-Además, algunas métricas procedentes del ámbito DevOps, como Deployment Frequency o Change Lead Time, están relacionadas con el rendimiento de entrega de software. La investigación de DORA las presenta como indicadores útiles para evaluar la capacidad de entregar software de forma rápida y estable~\cite{DORAMetrics}. No obstante, estas métricas no deben confundirse con las métricas ágiles de planificación y flujo, ni utilizarse fuera de contexto. DORA advierte que convertir las métricas en objetivos aislados, comparar equipos con contextos distintos o medir sin orientar la mejora puede producir efectos contraproducentes~\cite{DORAMetrics}.
+Además, algunas métricas procedentes del ámbito DevOps, como \textit{Deployment Frequency} o \textit{Change Lead Time}, están relacionadas con el rendimiento de entrega de software. La investigación de DORA las presenta como indicadores útiles para evaluar la capacidad de entregar software de forma rápida y estable~\cite{DORAMetrics}. No obstante, estas métricas no deben confundirse con las métricas ágiles de planificación y flujo, ni utilizarse fuera de contexto. DORA advierte que convertir las métricas en objetivos aislados, comparar equipos con contextos distintos o medir sin orientar la mejora puede producir efectos contraproducentes~\cite{DORAMetrics}.
 
 Por ello, una necesidad central del problema es facilitar el cálculo y la interpretación de métricas sin perder de vista que su finalidad debe ser mejorar el sistema de trabajo, no vigilar individualmente a las personas ni generar rankings simplistas.
 
-\section{Limitaciones de las soluciones existentes}
+\section{Relación con soluciones existentes}
 
-El mercado ya ofrece soluciones relacionadas con la gestión ágil y la analítica de equipos de desarrollo. Esta existencia confirma que el problema tiene relevancia práctica, pero también muestra que no todas las soluciones se ajustan al alcance, coste o nivel de personalización requerido por equipos pequeños o proyectos académicos.
-
-Jira proporciona funcionalidades de gestión y generación de informes, y sus planes comerciales diferencian capacidades según el tipo de suscripción. En particular, Atlassian Analytics y Atlassian Data Lake aparecen asociados al plan Enterprise, lo que muestra que la analítica avanzada e integrada forma parte de niveles orientados a organizaciones de mayor tamaño~\cite{AtlassianJiraPricing}. Esto no significa que Jira carezca de métricas, sino que puede existir margen para desarrollar una capa especializada, controlable y adaptada al alcance concreto de este trabajo.
-
-Otras plataformas, como LinearB o Swarmia, integran datos procedentes de repositorios, sistemas de gestión de trabajo y herramientas de entrega para proporcionar métricas de ingeniería, visibilidad del flujo y análisis de cuellos de botella~\cite{LinearBMetrics,SwarmiaIntegrations}. Estas herramientas son referencias relevantes porque muestran la utilidad de combinar información de distintas fuentes. Sin embargo, su amplitud funcional y orientación empresarial exceden el objetivo académico de este proyecto.
-
-También existen herramientas más ligeras de organización visual, como Trello o Taiga, que resultan útiles para representar tableros y coordinar tareas~\cite{Trello,Taiga}. Su principal valor está en la simplicidad, aunque no siempre ofrecen la profundidad analítica necesaria para estudiar métricas de flujo con detalle histórico. Por otro lado, plataformas integrales como Azure DevOps agrupan gestión de trabajo, repositorios y procesos de entrega, pero pueden resultar más amplias de lo necesario cuando el objetivo principal es comprender un conjunto concreto de métricas Scrum/Kanban~\cite{AzureDevOps}.
-
-En consecuencia, la oportunidad de desarrollo no consiste en reemplazar estas soluciones, sino en abordar un problema acotado: disponer de una herramienta especializada, replicable y de bajo coste que permita analizar métricas ágiles a partir de Jira como fuente principal de datos.
+El mercado ya ofrece herramientas de gestión y analítica relacionadas con equipos ágiles. Sin embargo, su análisis detallado se recoge en el Capítulo~\ref{antecedentes}, dedicado a los antecedentes y alternativas existentes. En este capítulo se mantiene el foco en el problema: la necesidad de disponer de una visión clara, trazable y accesible de las métricas de flujo a partir de los datos generados durante el trabajo diario.
 
 \section{Necesidades detectadas}
 
@@ -47,12 +39,12 @@ A partir del contexto anterior se identifican varias necesidades que el sistema 
 
 \begin{itemize}
     \item Centralizar los datos relevantes procedentes de Jira para evitar consultas manuales repetitivas.
-    \item Permitir definir el ámbito de análisis, por ejemplo mediante proyectos, tableros, sprints, etiquetas o tipos de incidencia.
-    \item Calcular métricas ágiles de forma consistente, especialmente Velocity, WIP, Cycle Time y Lead Time.
-    \item Presentar las métricas mediante dashboards claros, comprensibles y adaptables a distintos equipos.
+    \item Permitir definir el ámbito de análisis, por ejemplo mediante proyectos, tableros, \textit{sprints}, etiquetas o tipos de incidencia.
+    \item Calcular métricas ágiles de forma consistente, especialmente \textit{Velocity}, \textit{WIP}, \textit{Cycle Time} y \textit{Lead Time}.
+    \item Presentar las métricas mediante \textit{dashboards} claros, comprensibles y adaptables a distintos equipos.
     \item Facilitar el análisis histórico para observar tendencias y detectar posibles cuellos de botella.
     \item Mantener una solución técnicamente replicable, basada en tecnologías de uso común y sin dependencia obligatoria de licencias comerciales avanzadas.
-    \item Proteger credenciales, tokens y datos sensibles asociados a la integración con Jira.
+    \item Proteger credenciales, \textit{tokens} y datos sensibles asociados a la integración con Jira.
     \item Documentar el sistema de forma que pueda ser entendido, desplegado y mantenido por otros estudiantes o equipos pequeños.
 \end{itemize}
 
@@ -68,7 +60,7 @@ También se contempla un uso académico o de equipos pequeños. En este caso, el
 
 El problema presenta varias restricciones que condicionan la futura solución. La primera es que Jira Cloud API se toma como fuente principal de datos. Esto permite acotar la integración inicial y evitar que el sistema dependa desde el principio de múltiples plataformas externas. Aunque otras fuentes como GitHub o sistemas de CI/CD pueden aportar información adicional, su integración no debe considerarse imprescindible para una primera versión funcional.
 
-Otra restricción relevante es la seguridad. La conexión con Jira puede requerir credenciales, tokens o mecanismos de autenticación que deben tratarse con especial cuidado. Por tanto, el sistema deberá evitar la exposición de información sensible y aplicar buenas prácticas de configuración y almacenamiento.
+Otra restricción relevante es la seguridad. La conexión con Jira puede requerir credenciales, \textit{tokens} o mecanismos de autenticación que deben tratarse con especial cuidado. Por tanto, el sistema deberá evitar la exposición de información sensible y aplicar buenas prácticas de configuración y almacenamiento.
 
 También deben considerarse los límites y condiciones de uso de las APIs externas. Un sistema que consulte datos de Jira de forma indiscriminada podría ser ineficiente o alcanzar límites de uso. Por ello, el problema exige pensar en mecanismos de sincronización, almacenamiento temporal o actualización bajo demanda que reduzcan peticiones innecesarias.
 
@@ -76,6 +68,6 @@ Finalmente, el alcance definido impone una restricción natural: el sistema debe
 
 \section{Alcance del problema}
 
-El problema abordado se limita a la obtención, cálculo y visualización de métricas ágiles para equipos que gestionan su trabajo principalmente mediante Jira. Quedan dentro del alcance el análisis de datos de proyectos, tableros, sprints e incidencias; el cálculo de métricas como Velocity, WIP, Cycle Time y Lead Time; y la presentación de resultados mediante dashboards que ayuden a interpretar el estado y evolución del trabajo.
+El problema abordado se limita a la obtención, cálculo y visualización de métricas ágiles para equipos que gestionan su trabajo principalmente mediante Jira. Quedan dentro del alcance el análisis de datos de proyectos, tableros, \textit{sprints} e incidencias; el cálculo de métricas como \textit{Velocity}, \textit{WIP}, \textit{Cycle Time} y \textit{Lead Time}; y la presentación de resultados mediante \textit{dashboards} que ayuden a interpretar el estado y evolución del trabajo.
 
 Queda fuera del alcance inicial sustituir a Jira como herramienta de gestión, reproducir una plataforma comercial completa de ingeniería, evaluar individualmente el rendimiento de desarrolladores o construir un sistema de analítica empresarial a gran escala. Esta delimitación permite enfocar la solución en una necesidad concreta y abordable, manteniendo un alcance realista y verificable.

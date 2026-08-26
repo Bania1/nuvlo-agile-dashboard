@@ -28,6 +28,7 @@ export function summarizeTemporalMetric(values) {
   };
 }
 
+// Calcula metricas de flujo desde transiciones normalizadas, no desde agregados de Jira.
 export function calculateFlowMetrics({ issues, config }) {
   const startStatuses = new Set(config.startStatuses);
   const doneStatuses = new Set(config.doneStatuses);

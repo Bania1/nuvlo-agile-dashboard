@@ -16,6 +16,7 @@ async function readErrorBody(response) {
   return text ? text.slice(0, 500) : '';
 }
 
+// Cliente Jira centralizado: aplica auth Bearer, paginacion por parametros y backoff ante 429.
 export async function jiraRequest({ cloudId, accessToken, path, searchParams, method = 'GET', body, api = 'platform' }) {
   const apiPrefix = api === 'agile' ? '/rest/agile/1.0' : '/rest/api/3';
   const url = new URL(`https://api.atlassian.com/ex/jira/${cloudId}${apiPrefix}${path}`);
