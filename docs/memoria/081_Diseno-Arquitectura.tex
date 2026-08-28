@@ -1,16 +1,21 @@
 \chapter{Diseño y arquitectura del sistema}
 
+
 \section{Enfoque general}
 
-Nuvlo se ha diseñado como una aplicación web de apoyo al análisis de equipos ágiles que trabajan con Jira Cloud. La decisión principal de arquitectura ha sido separar claramente la interfaz, la API, la persistencia y los servicios de integración, manteniendo todo dentro de un \textit{monorepo} sencillo gestionado con \textit{npm workspaces}~\cite{NpmWorkspaces}. Esta organización permite que \textit{frontend}, \textit{backend}, esquema de base de datos, documentación y pruebas evolucionen en el mismo repositorio, lo que facilita la trazabilidad del desarrollo y la revisión del proyecto.
+Nuvlo se ha diseñado como una aplicación web de apoyo al análisis de equipos ágiles que trabajan con Jira Cloud. La decisión principal de arquitectura ha sido separar claramente la interfaz, la API, la persistencia y los servicios de integración, manteniendo todo dentro de un \textit{monorepo} sencillo gestionado con \textit{npm workspaces}~\cite{NpmWorkspaces}. Esta organización permite que \textit{frontend}, \textit{backend}, esquema de base de datos, documentación y pruebas evolucionen en el mismo repositorio, lo que facilita la trazabilidad del desarrollo y la revisión de cambios.
 
-Se descartó dividir el sistema en varios repositorios porque habría aumentado el coste de configuración y coordinación para un proyecto individual. También se evitó mezclar \textit{frontend} y \textit{backend} en un único directorio sin separación interna, ya que habría dificultado explicar las responsabilidades de cada parte y mantener una estructura limpia durante la implementación.
+El diseño se ha orientado a tres objetivos: aislar la dependencia con Jira Cloud, conservar una copia local suficiente para calcular métricas y ofrecer una interfaz comprensible para usuarios que no necesariamente conocen los detalles técnicos de la API. Por ello, el sistema no consulta Jira cada vez que el usuario abre una vista, sino que sincroniza datos, los normaliza y calcula las métricas sobre información persistida.
+
+Se descartó dividir el sistema en varios repositorios porque habría aumentado el coste de configuración y coordinación. También se evitó mezclar \textit{frontend} y \textit{backend} en un único directorio sin separación interna, ya que habría dificultado explicar las responsabilidades de cada parte y mantener una estructura limpia durante la implementación.
 
 \section{Arquitectura lógica}
 
 La arquitectura sigue un esquema cliente-servidor. La aplicación web se ejecuta en el navegador y se comunica con una API propia. La API es la única parte del sistema que interactúa con Jira Cloud, PostgreSQL y Redis. De este modo, el \textit{frontend} no necesita conocer credenciales ni detalles internos de sincronización.
 
 El \textit{frontend} se ha implementado con React y Vite~\cite{ReactDocs,ViteDocs}. La API se ha construido con Node.js y Express~\cite{NodeDocs,ExpressDocs}. La persistencia principal se realiza con PostgreSQL, accedida mediante Prisma~\cite{PostgreSQLDocs,PrismaDocs}. Redis se utiliza como almacenamiento temporal para datos de sesión, estados de seguridad del flujo OAuth y elementos de corta duración~\cite{RedisDocs}. El entorno local se levanta mediante Docker Compose~\cite{DockerComposeDocs}.
+
+La organización lógica se puede leer por capas. La capa de presentación contiene las vistas y componentes visuales; la capa de aplicación expone la API y coordina los casos de uso; la capa de dominio concentra sincronización, cálculo de métricas y alertas; y la capa de persistencia encapsula el acceso a PostgreSQL y Redis. Esta separación reduce acoplamiento, facilita las pruebas y permite que los cambios en la interfaz no obliguen a modificar la integración con Jira.
 
 Los diagramas incluidos en la memoria representan esta separación por capas y ayudan a entender el recorrido de los datos: el usuario entra por la interfaz, la API valida la sesión, sincroniza información desde Jira cuando procede y consulta la base de datos local para construir las métricas visibles en el \textit{dashboard}.
 
@@ -116,11 +121,37 @@ Este diagrama de secuencia describe el comportamiento asociado al caso de uso CU
 La Figura~\ref{fig:secuencia-cu07-configurar-reglas-alerta} muestra cómo el usuario autenticado accede a la configuración de alertas, selecciona una métrica y define una condición o umbral. El sistema valida la regla propuesta, comprueba que sea compatible con la métrica seleccionada y la almacena para que pueda evaluarse posteriormente cuando se actualicen las métricas. También se contempla el caso alternativo en el que la regla no es válida o no puede aplicarse a la métrica elegida.
 \clearpage
 
+
 \section{Modelo de datos y sincronización}
 
-El modelo de datos se orienta a conservar una copia local de la información necesaria para calcular métricas ágiles. Se almacenan proyectos, incidencias, \textit{sprints}, estados y datos de transición cuando están disponibles. Esta decisión evita que cada interacción de la interfaz dependa de una llamada directa a Jira Cloud y permite recalcular métricas de forma controlada.
+El modelo de datos se orienta a conservar una copia local de la información necesaria para calcular métricas ágiles. Se almacenan proyectos, tableros, incidencias, \textit{sprints}, estados, métricas calculadas, alertas y eventos de actividad. Esta decisión evita que cada interacción de la interfaz dependa de una llamada directa a Jira Cloud y permite recalcular métricas de forma controlada.
 
-La sincronización se realiza por ámbitos concretos, no como una descarga completa indiscriminada. El sistema solicita únicamente los campos necesarios y trabaja con paginación de la API de Jira~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}. Esta aproximación reduce el número de llamadas externas y encaja mejor con las restricciones de uso de una API remota.
+El modelo toma como base las entidades de análisis descritas en el capítulo anterior. El diagrama de clases de la Figura~\ref{fig:clases-dominio-sistema} muestra los conceptos principales del dominio, mientras que el diagrama entidad-relación de la Figura~\ref{fig:entidad-relacion-base-datos} concreta cómo se trasladan esos conceptos a la persistencia. En diseño, la decisión clave consiste en separar los datos sincronizados desde Jira de los resultados calculados por Nuvlo.
+
+{\renewcommand{\arraystretch}{1.22}\footnotesize
+\begin{longtable}{p{3.4cm}p{5.0cm}p{5.0cm}}
+\caption{Modelo lógico utilizado durante la sincronización y el cálculo}\label{tab:modelo-datos-sincronizacion}\\
+\toprule
+\textbf{Bloque} & \textbf{Datos principales} & \textbf{Uso dentro de Nuvlo} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Bloque} & \textbf{Datos principales} & \textbf{Uso dentro de Nuvlo} \\
+\midrule
+\endhead
+Identidad y sesión & Usuario Atlassian, sitio Jira autorizado, \textit{scopes}, expiración de sesión y referencias cifradas a \textit{tokens}. & Permite autenticar al usuario y limitar las operaciones a los recursos autorizados. \\
+Datos Jira sincronizados & Proyecto, tablero, \textit{sprint}, incidencia, estado, prioridad, responsable, etiquetas, estimación y fechas de Jira. & Sirven como base local para construir vistas, filtros y métricas sin consultar Jira en cada carga. \\
+Histórico de flujo & Transiciones de estado, fecha de cambio, estado origen y estado destino. & Permite reconstruir el recorrido de una incidencia y calcular \textit{Lead Time} y \textit{Cycle Time}. \\
+Configuración de análisis & Ámbito seleccionado, estados de inicio/fin, filtros, percentiles y campo de esfuerzo. & Parametriza los cálculos para adaptarlos a la forma de trabajo del proyecto. \\
+Resultados y trazabilidad & Métricas calculadas, reglas de alerta, alertas activadas, sincronizaciones y \textit{logs}. & Conservan evidencia de cálculo, avisos y eventos relevantes para depuración y validación. \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+La sincronización se realiza por ámbitos concretos, no como una descarga completa indiscriminada. El usuario selecciona el contexto de análisis y el \textit{backend} recupera los recursos asociados. Después normaliza los datos, actualiza PostgreSQL, registra el resultado de la operación y recalcula las métricas afectadas. Redis queda reservado para información efímera, como estados OAuth, protección CSRF, PKCE y cachés de vida corta.
+
+El sistema solicita únicamente los campos necesarios y trabaja con paginación de la API de Jira~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}. Esta aproximación reduce el número de llamadas externas, evita recalcular información estable de forma innecesaria y encaja mejor con las restricciones de uso de una API remota.
 
 \section{Seguridad}
 
@@ -128,19 +159,64 @@ El acceso final a Nuvlo se basa en OAuth 2.0 de Atlassian, concretamente en el f
 
 Para proteger el proceso de autenticación se han incorporado medidas habituales en aplicaciones web modernas: parámetro \textit{state}, PKCE y protección CSRF~\cite{OWASPOAuth2,OWASPCSRF}. Los \textit{tokens} no se exponen al navegador como credenciales persistentes de larga duración. La API actúa como capa intermedia y aplica validaciones antes de permitir operaciones protegidas.
 
+
 \section{Diseño de interfaz}
 
-El diseño visual parte de los prototipos realizados durante la fase de análisis y de los diagramas de vistas incluidos en la memoria. La interfaz final no replica cada prototipo de forma literal, pero conserva su planteamiento: navegación lateral, \textit{dashboard} principal, vista de tablero, alertas, actividad y configuración.
+El diseño de interfaz parte de los prototipos elaborados durante la fase de análisis y de las vistas incluidas en esta memoria. La interfaz final no replica cada prototipo de forma literal, pero conserva su planteamiento funcional: navegación lateral, \textit{dashboard} principal, vista de tablero, alertas, actividad y configuración.
 
-La estética de Nuvlo se apoya en una identidad propia basada en la idea de ``nube + flujo''. Para el \textit{dashboard} se tomó como inspiración visual una plantilla pública de administración moderna de Morphin~\cite{MorphinDashboardInspiration}, sin reutilizar su código fuente. La referencia se usó únicamente para orientar decisiones de composición, tarjetas, jerarquía visual y navegación.
+La pantalla se organiza en zonas estables para reducir carga cognitiva. La zona lateral izquierda concentra la navegación principal y el proyecto activo; la zona superior muestra contexto, filtros y acciones frecuentes; y el área central se reserva para métricas, gráficos, listados o formularios según la vista seleccionada. Esta distribución permite que el usuario mantenga siempre una referencia clara de dónde está y qué datos está consultando.
 
-\section{Prototipo de vistas de la aplicación}
+En el \textit{dashboard}, las métricas principales se presentan como tarjetas resumidas. Los gráficos ocupan una zona de lectura más amplia y los avisos aparecen como elementos secundarios, sin competir con los indicadores principales. Las alertas se refuerzan con un contador visual y notificaciones ligeras, mientras que el registro de actividad queda separado para no mezclar análisis de métricas con trazabilidad técnica.
 
-El prototipo de vistas recoge una aproximación visual inicial de la interfaz del sistema. Su objetivo no es cerrar el diseño gráfico definitivo, sino comprobar que las funcionalidades principales descritas en los casos de uso tienen una representación coherente en pantalla: consulta de métricas, revisión del tablero, autenticación, trazabilidad de actividad, gestión de alertas y configuración de la cuenta. Para evitar que el mockup completo pierda legibilidad al insertarse en una única figura, se divide en varios bloques funcionales.
+La estética de Nuvlo se apoya en una identidad propia basada en la idea de ``nube + flujo''. Se eligieron tonos verdes suaves, tarjetas claras, bordes redondeados y sombras discretas para diferenciar la aplicación de interfaces más genéricas. Para el \textit{dashboard} se tomó como inspiración visual una plantilla pública de administración moderna de Morphin~\cite{MorphinDashboardInspiration}, sin reutilizar su código fuente. La referencia se usó únicamente para orientar decisiones de composición, jerarquía visual, densidad de tarjetas y navegación.
+
 
 \begin{figure}[htbp]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.18\textwidth]{diagrams/vistas-panel-tablero.png}}
+    \includegraphics[width=0.95\textwidth,height=0.42\textheight,keepaspectratio]{img/referencias/morphin-dashboard.png}
+    \caption{Referencia visual externa tomada como inspiración para el \textit{dashboard}~\cite{MorphinDashboardInspiration}}
+    \label{fig:referencia-visual-morphin}
+\end{figure}
+
+También se tuvieron en cuenta decisiones de interacción. Los elementos clicables incorporan cursor y pequeñas animaciones para señalar que son interactivos; los cambios de vista usan transiciones suaves para evitar sensación de parpadeo; y el diseño se ajusta a resoluciones de escritorio y móvil reorganizando columnas, tarjetas y navegación.
+
+\section{Prototipo de vistas de la aplicación}
+
+El prototipo de vistas recoge una aproximación visual inicial de la interfaz del sistema. Su objetivo no es cerrar el diseño gráfico definitivo, sino comprobar que las funcionalidades principales descritas en los casos de uso tienen una representación coherente en pantalla: consulta de métricas, revisión del tablero, autenticación, trazabilidad de actividad, gestión de alertas y configuración de la cuenta.
+
+
+Antes de llegar a las vistas finales se plantearon varios bocetos durante la fase de análisis. La base funcional de esos bocetos se definió primero mediante diagramas realizados en draw.io, donde se concretaron las vistas previstas, la navegación principal y los elementos que debía contener cada pantalla. A partir de esa estructura, se utilizó Stitch, herramienta de prototipado asistida por inteligencia artificial de Google~\cite{GoogleStitch}, para dar una apariencia más visual a algunas de esas ideas y comprobar cómo podían comportarse en una interfaz más cercana al producto final. Las propuestas obtenidas no se incorporaron como código fuente, sino como material de apoyo visual para tomar decisiones de diseño.
+
+Las láminas generadas con Stitch muestran una interpretación visual de los bocetos funcionales previos y algunas ideas que evolucionaron durante el análisis y la implementación. En las primeras propuestas se contemplaban pantallas clásicas de inicio de sesión y registro, así como opciones de perfil y rol dentro de la propia aplicación. Finalmente, esa aproximación se simplificó para cumplir mejor el requisito de autenticación exclusiva mediante Atlassian: Nuvlo no gestiona usuarios locales ni contraseñas propias, sino que delega el acceso en OAuth con Jira/Atlassian. Por el mismo motivo, la configuración final se centra más en criterios de análisis, estados, filtros, alertas y sesión conectada que en una administración interna de roles.
+
+Esta diferencia entre prototipo y versión final no se considera una desviación, sino una decisión de diseño derivada de las restricciones de seguridad y del alcance funcional. Los prototipos sirvieron para explorar navegación, distribución visual y jerarquía de información; la versión implementada conserva esa organización general, pero elimina elementos que podían duplicar responsabilidades ya cubiertas por Atlassian o aumentar innecesariamente la complejidad del sistema. Las Figuras~\ref{fig:prototipos-stitch-flujo-principal} y~\ref{fig:prototipos-stitch-vistas-soporte} agrupan esas primeras propuestas para facilitar su lectura dentro del documento.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.95\textwidth,height=0.78\textheight,keepaspectratio]{img/prototipos/prototipos-stitch-flujo-principal.png}
+    \caption{Lámina de prototipos de acceso y panel principal generados con Stitch a partir de los bocetos funcionales}
+    \label{fig:prototipos-stitch-flujo-principal}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.95\textwidth,height=0.74\textheight,keepaspectratio]{img/prototipos/prototipos-stitch-vistas-soporte.png}
+    \caption{Lámina de prototipos de alertas, actividad y configuración generados con Stitch a partir de los bocetos funcionales}
+    \label{fig:prototipos-stitch-vistas-soporte}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{diagrams/vistas-aplicacion-mockup.png}
+    \caption{Prototipo general de vistas elaborado durante la fase de análisis}
+    \label{fig:vistas-aplicacion-mockup}
+\end{figure}
+
+La Figura~\ref{fig:vistas-aplicacion-mockup} muestra el planteamiento general de navegación y distribución de vistas. A partir de ese esquema se separaron las pantallas en bloques más legibles para documentar las decisiones concretas de cada zona de la aplicación.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth,height=0.68\textheight,keepaspectratio]{diagrams/vistas-panel-tablero.png}
     \caption{Prototipo de las vistas de panel de métricas y tablero Kanban}
     \label{fig:vistas-panel-tablero}
 \end{figure}
@@ -149,16 +225,16 @@ La Figura~\ref{fig:vistas-panel-tablero} muestra las dos vistas principales de c
 
 \begin{figure}[htbp]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-login-registro.png}}
-    \caption{Prototipo de las vistas de inicio de sesión y registro de actividad}
+    \includegraphics[width=\textwidth,height=0.68\textheight,keepaspectratio]{diagrams/vistas-login-registro.png}
+    \caption{Prototipo de las vistas de acceso mediante Jira y registro de actividad}
     \label{fig:vistas-login-registro}
 \end{figure}
 
-La Figura~\ref{fig:vistas-login-registro} agrupa la entrada al sistema mediante Jira y la vista de registro de actividad. Esta última facilita la trazabilidad de sincronizaciones, actualizaciones y eventos relevantes del sistema.
+La Figura~\ref{fig:vistas-login-registro} agrupa la entrada al sistema mediante Jira y la vista de registro de actividad. Aunque algunos bocetos iniciales contemplaban un acceso más tradicional, la versión final sustituye ese planteamiento por autenticación delegada en Atlassian. Esta última facilita la trazabilidad de sincronizaciones, actualizaciones y eventos relevantes del sistema.
 
 \begin{figure}[htbp]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-alertas-prototipo.png}}
+    \includegraphics[width=\textwidth,height=0.68\textheight,keepaspectratio]{diagrams/vistas-alertas-prototipo.png}
     \caption{Prototipo de la vista de gestión de alertas}
     \label{fig:vistas-alertas-prototipo}
 \end{figure}
@@ -167,13 +243,10 @@ La Figura~\ref{fig:vistas-alertas-prototipo} completa el flujo de alertas previs
 
 \begin{figure}[htbp]
     \centering
-    \makebox[\textwidth][c]{\includegraphics[width=1.12\textwidth]{diagrams/vistas-configuracion.png}}
+    \includegraphics[width=\textwidth,height=0.68\textheight,keepaspectratio]{diagrams/vistas-configuracion.png}
     \caption{Prototipo de la vista de configuración de la cuenta}
     \label{fig:vistas-configuracion}
 \end{figure}
 
 La Figura~\ref{fig:vistas-configuracion} presenta la vista de configuración, desde la que el usuario puede revisar información de perfil, gestionar integraciones y acceder a acciones de sesión o cuenta. Esta vista se relaciona con los requisitos de autenticación, configuración del entorno de análisis y gestión básica del acceso al sistema.
 
-\section{Relación con los anexos}
-
-Los capítulos principales explican las decisiones de diseño y el resultado técnico. Los anexos cumplen una función complementaria: el manual de usuario muestra cómo utilizar la aplicación, el manual de código fuente resume la organización del repositorio y los comandos principales, y el anexo de uso de IA documenta el apoyo recibido durante el desarrollo. Por tanto, puede existir cierta relación temática entre capítulos y anexos, pero no se considera redundante si cada parte mantiene un nivel de detalle distinto.

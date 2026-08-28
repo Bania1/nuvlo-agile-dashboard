@@ -1,6 +1,6 @@
 \chapter{Uso de herramientas de inteligencia artificial}\label{uso-ia}
 \begin{refsection}
-Durante la elaboración de este Trabajo de Fin de Grado se han utilizado herramientas de inteligencia artificial generativa como apoyo auxiliar, principalmente OpenAI Codex y ChatGPT, junto con consultas puntuales en Claude, Perplexity, Gemini y NotebookLM/Gemini Notebook~\cite{OpenAICodex,OpenAIChatGPT,AnthropicClaude,PerplexityAI,GoogleGemini,GoogleNotebookLM}. Su uso se ha orientado a mejorar el proceso de desarrollo y documentación, pero sin sustituir el criterio técnico del autor ni la revisión final de los contenidos incorporados a la memoria y al código fuente.
+Durante la elaboración de este Trabajo de Fin de Grado se han utilizado herramientas de inteligencia artificial generativa como apoyo auxiliar, principalmente OpenAI Codex y ChatGPT, junto con consultas puntuales en Claude, Perplexity, Gemini, NotebookLM/Gemini Notebook y Stitch de Google~\cite{OpenAICodex,OpenAIChatGPT,AnthropicClaude,PerplexityAI,GoogleGemini,GoogleNotebookLM,GoogleStitch}. Su uso se ha orientado a mejorar el proceso de desarrollo y documentación, pero sin sustituir el criterio técnico del autor ni la revisión final de los contenidos incorporados a la memoria y al código fuente.
 
 \section{Objetivo del uso}
 
@@ -28,7 +28,7 @@ En particular, se empleó apoyo de IA en las siguientes áreas de la implementac
 
 \begin{itemize}
     \item Estructuración del \textit{monorepo} con aplicaciones separadas para \textit{frontend} y \textit{backend}.
-    \item Desarrollo de la interfaz web de Nuvlo y adaptación visual a las vistas previstas en los prototipos.
+    \item Desarrollo de la interfaz web de Nuvlo y adaptación visual a las vistas previstas en los prototipos. Para explorar alternativas iniciales de composición se partió de bocetos funcionales realizados en draw.io y posteriormente se utilizó Stitch de Google como apoyo visual, sin reutilizar código generado por dicha herramienta~\cite{GoogleStitch}.
     \item Configuración de autenticación con Atlassian mediante OAuth 2.0 3LO, incluyendo estado de sesión, CSRF, PKCE y uso de \textit{cookies} \texttt{httpOnly}, tomando como referencia documentación oficial y recomendaciones de seguridad web~\cite{AtlassianOAuth3LO,OWASPOAuth2,OWASPCSRF}.
     \item Integración con Jira Cloud API para sincronizar proyectos, incidencias, \textit{sprints} y \textit{changelog}~\cite{AtlassianJiraRestV3,AtlassianJiraIssuesApi}.
     \item Persistencia en PostgreSQL y uso de Redis para datos temporales y cachés con tiempo de vida limitado~\cite{PostgreSQLDocs,RedisDocs}.
@@ -64,7 +64,7 @@ Estos prompts se formularon delimitando el rol esperado, el objetivo de la revis
 
 Cuando se ha necesitado información técnica externa, se han consultado fuentes documentales específicas, como la documentación oficial de Atlassian para OAuth 2.0 3LO y Jira REST API~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3}, la documentación de las herramientas utilizadas en el stack y las referencias de las librerías empleadas~\cite{ReactDocs,ViteDocs,NodeDocs,ExpressDocs,PrismaDocs,DockerComposeDocs}. Estas fuentes se han usado para comprender APIs, parámetros de configuración, buenas prácticas y restricciones técnicas.
 
-No se han incorporado ficheros completos de código fuente externo como parte propia del proyecto. La aplicación utiliza dependencias de código abierto instaladas mediante los gestores habituales del ecosistema JavaScript, como React, Vite, Express, Prisma, Vitest, Playwright y otras librerías auxiliares. En el diseño visual del \textit{dashboard} se consultó como inspiración una plantilla moderna de administración de Morphin~\cite{MorphinDashboardInspiration}; esta referencia se usó para orientar criterios generales de composición, tarjetas, navegación lateral y aspecto de \textit{dashboard}, sin copiar su código fuente ni reproducirla literalmente.
+No se han incorporado ficheros completos de código fuente externo como parte propia del proyecto. La aplicación utiliza dependencias de código abierto instaladas mediante los gestores habituales del ecosistema JavaScript, como React, Vite, Express, Prisma, Vitest, Playwright y otras librerías auxiliares. En el diseño visual del \textit{dashboard} se consultó como inspiración una plantilla moderna de administración de Morphin~\cite{MorphinDashboardInspiration}; esta referencia se usó para orientar criterios generales de composición, tarjetas, navegación lateral y aspecto de \textit{dashboard}, sin copiar su código fuente ni reproducirla literalmente. También se empleó Stitch de Google para generar prototipos visuales iniciales de algunas pantallas a partir de bocetos funcionales previos~\cite{GoogleStitch}; estos prototipos se trataron como material de análisis y no como código fuente reutilizado. Algunas ideas presentes en esos bocetos, como registro local o gestión interna de roles, se descartaron posteriormente al consolidar la autenticación oficial con Atlassian y el alcance final de la aplicación.
 
 \section{Supervisión y responsabilidad}
 

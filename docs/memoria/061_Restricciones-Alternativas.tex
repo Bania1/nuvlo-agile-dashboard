@@ -61,7 +61,7 @@ Prisma se eligió como ORM para definir el modelo de datos, ejecutar migraciones
 
 \subsection{Datos temporales y caché}
 
-Redis se utiliza como almacén temporal para valores efímeros: estado OAuth, verificadores PKCE, protección CSRF, cachés de corta duración y datos auxiliares~\cite{RedisDocs}. Esta decisión separa los datos persistentes de los datos con caducidad automática.
+Redis se utiliza como almacén temporal para cachés de corta duración, estados de sincronización y datos auxiliares con caducidad automática~\cite{RedisDocs}. El estado OAuth, el verificador PKCE y la protección CSRF se gestionan mediante \textit{cookies} temporales y cabeceras HTTP, mientras que Redis queda reservado para información operativa que puede regenerarse si se pierde.
 
 Una alternativa sería guardar todo en PostgreSQL. Aunque sería posible, obligaría a implementar más limpieza manual para datos de vida corta. Otra opción sería mantener esos datos solo en memoria del proceso Node.js, pero se perderían al reiniciar el servidor y sería menos robusto si en el futuro hubiera más de una instancia.
 
@@ -98,7 +98,7 @@ Base de datos principal & PostgreSQL & Modelo relacional, consistencia y trazabi
 \midrule
 Acceso a datos & Prisma & Esquema centralizado, migraciones y menor repetición de consultas. \\
 \midrule
-Datos efímeros & Redis & TTL nativo para sesiones auxiliares, CSRF, PKCE y cachés temporales. \\
+Datos efímeros & Redis & TTL nativo para cachés temporales y estado de sincronización; OAuth/PKCE/CSRF se apoyan en \textit{cookies} temporales. \\
 \midrule
 Autenticación & OAuth 2.0 3LO Atlassian & Evita contraseñas locales y conecta directamente con la cuenta Jira del usuario. \\
 \midrule

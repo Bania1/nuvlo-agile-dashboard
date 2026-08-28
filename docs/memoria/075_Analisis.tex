@@ -76,4 +76,44 @@ La Figura~\ref{fig:entidad-relacion-base-datos} toma como referencia las entidad
     \item \texttt{ambito\_proyecto} e \texttt{incidencia\_sprint}: actúan como tablas intermedias. La primera asocia ámbitos de análisis con proyectos Jira; la segunda relaciona incidencias con \textit{sprints}, evitando una relación directa rígida cuando una incidencia pueda aparecer en más de una iteración.
     \item \texttt{sincronizacion\_datos}, \texttt{metrica\_calculada}, \texttt{regla\_alerta}, \texttt{alerta\_activada} y \texttt{log\_sistema}: guardan la actividad interna del sistema. Las sincronizaciones actualizan un ámbito, las métricas se calculan a partir de la configuración vigente, las reglas evalúan dichas métricas y las alertas y \textit{logs} conservan la trazabilidad del funcionamiento.
 \end{itemize}
+
+Para completar la lectura del modelo, la Tabla~\ref{tab:campos-er} recoge los campos principales asociados a cada entidad. Se muestran los atributos necesarios para comprender la persistencia lógica del sistema, no todos los detalles internos de implementación. La clave primaria de cada tabla se representa mediante \texttt{id}; las referencias a otras entidades se indican mediante campos terminados en \texttt{\_id} o mediante identificadores externos de Jira cuando proceda.
+
+\begin{landscape}
+{\footnotesize
+\begin{longtable}{>{\raggedright\arraybackslash}p{5.2cm}>{\raggedright\arraybackslash}p{12.0cm}>{\raggedright\arraybackslash}p{6.0cm}}
+\caption{Campos principales del modelo entidad-relación}
+\label{tab:campos-er}\\
+\toprule
+\textbf{Tabla} & \textbf{Campos principales} & \textbf{Observaciones} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tabla} & \textbf{Campos principales} & \textbf{Observaciones} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{usuario\_autenticado} & \texttt{id}, \texttt{atlassian\_account\_id}, \texttt{email}, \texttt{display\_name}, \texttt{created\_at}, \texttt{updated\_at}. & Identifica al usuario mediante Atlassian. No almacena contraseña local, ya que la autenticación se delega en el proveedor externo. \\
+\texttt{sesion\_atlassian} & \texttt{id}, \texttt{usuario\_id}, \texttt{cloud\_id}, \texttt{site\_name}, \texttt{site\_url}, \texttt{encrypted\_access\_token}, \texttt{encrypted\_refresh\_token}, \texttt{scopes}, \texttt{expires\_at}, \texttt{created\_at}, \texttt{updated\_at}. & Guarda la autorización concedida por Atlassian. Los \textit{tokens} se almacenan cifrados y se asocian al sitio Jira autorizado. \\
+\texttt{ambito\_analisis} & \texttt{id}, \texttt{usuario\_id}, \texttt{proyecto\_id}, \texttt{name}, \texttt{board\_jira\_id}, \texttt{sprint\_jira\_id}, \texttt{labels}, \texttt{issue\_types}, \texttt{date\_from}, \texttt{date\_to}, \texttt{start\_statuses}, \texttt{done\_statuses}, \texttt{effort\_field}, \texttt{percentile\_marks}, \texttt{last\_sync\_at}. & Define el contexto sobre el que se consultan métricas y aplica filtros de proyecto, tablero, \textit{sprint}, etiquetas, tipos y fechas. \\
+\texttt{configuracion\_analisis} & \texttt{id}, \texttt{ambito\_id}, \texttt{start\_statuses}, \texttt{done\_statuses}, \texttt{wip\_statuses}, \texttt{effort\_field}, \texttt{percentile\_marks}, \texttt{grouping}. & En la implementación actual estos campos se integran dentro del ámbito de análisis para simplificar el modelo físico, aunque conceptualmente representan la configuración del cálculo. \\
+\texttt{proyecto\_jira} & \texttt{id}, \texttt{cloud\_id}, \texttt{jira\_id}, \texttt{key}, \texttt{name}, \texttt{avatar\_url}. & Conserva la información mínima del proyecto sincronizado desde Jira Cloud. La combinación \texttt{cloud\_id} y \texttt{jira\_id} evita duplicados entre sitios. \\
+\texttt{tablero\_jira} & \texttt{id}, \texttt{jira\_id}, \texttt{name}, \texttt{type}, \texttt{project\_id}. & Representa tableros Scrum o Kanban asociados a un proyecto importado. \\
+\texttt{sprint} & \texttt{id}, \texttt{jira\_id}, \texttt{name}, \texttt{state}, \texttt{start\_date}, \texttt{end\_date}, \texttt{complete\_date}, \texttt{board\_id}. & Permite agrupar incidencias por iteración y calcular métricas por periodo cuando Jira proporciona esa información. \\
+\texttt{incidencia\_jira} & \texttt{id}, \texttt{jira\_id}, \texttt{key}, \texttt{summary}, \texttt{issue\_type}, \texttt{status}, \texttt{status\_category}, \texttt{priority}, \texttt{assignee}, \texttt{labels}, \texttt{story\_points}, \texttt{jira\_created\_at}, \texttt{jira\_updated\_at}, \texttt{project\_id}, \texttt{sprint\_id}. & Es la entidad central del análisis. Aporta estado, tipo, esfuerzo, fechas y vínculos con proyecto y \textit{sprint}. \\
+\texttt{transicion\_estado} & \texttt{id}, \texttt{issue\_id}, \texttt{from\_status}, \texttt{to\_status}, \texttt{happened\_at}. & Registra el historial de cambios de estado necesario para calcular \textit{Lead Time}, \textit{Cycle Time} y evolución del flujo. \\
+\texttt{metrica\_calculada} & \texttt{id}, \texttt{scope\_id}, \texttt{type}, \texttt{value}, \texttt{unit}, \texttt{period\_key}, \texttt{metadata}, \texttt{created\_at}. & Guarda resultados calculados para un ámbito concreto. El campo \texttt{metadata} permite conservar detalles auxiliares como percentiles, conteos o valores por estado. \\
+\texttt{regla\_alerta} & \texttt{id}, \texttt{scope\_id}, \texttt{metric\_type}, \texttt{operator}, \texttt{threshold}, \texttt{enabled}, \texttt{created\_at}. & Define condiciones evaluables sobre métricas. Permite activar o desactivar reglas sin eliminar su definición. \\
+\texttt{alerta\_activada} & \texttt{id}, \texttt{rule\_id}, \texttt{status}, \texttt{value}, \texttt{triggered\_at}, \texttt{resolved\_at}. & Registra cada activación de una regla, el valor que la produjo y su estado de resolución. \\
+\texttt{sincronizacion\_datos} & \texttt{id}, \texttt{scope\_id}, \texttt{status}, \texttt{started\_at}, \texttt{finished\_at}, \texttt{imported}, \texttt{error\_message}. & Permite auditar cada sincronización real o simulada, indicando resultado, volumen importado y errores si existen. \\
+\texttt{log\_sistema} & \texttt{id}, \texttt{user\_id}, \texttt{event\_type}, \texttt{message}, \texttt{metadata}, \texttt{created\_at}. & Recoge eventos de actividad, autenticación, sincronización, cálculo, alertas y errores. Se considera información retenible por política de conservación. \\
+\texttt{ambito\_proyecto} & \texttt{ambito\_id}, \texttt{proyecto\_id}. & Tabla puente conceptual para asociar un ámbito con varios proyectos. En la implementación inicial se admite un proyecto principal por ámbito. \\
+\texttt{incidencia\_sprint} & \texttt{incidencia\_id}, \texttt{sprint\_id}. & Tabla puente conceptual para reflejar que una incidencia puede analizarse en más de una iteración. En la implementación inicial se conserva el \textit{sprint} principal sincronizado. \\
+\end{longtable}
+}
+\end{landscape}
+
+Esta descripción de campos permite relacionar el modelo lógico con la implementación posterior. Algunas entidades conceptuales se han simplificado en el esquema físico inicial para reducir complejidad, pero se mantienen en el análisis porque ayudan a explicar la evolución natural del sistema si se amplía el soporte de múltiples proyectos por ámbito o de incidencias presentes en varios \textit{sprints}.
+
 \clearpage

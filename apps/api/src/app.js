@@ -15,6 +15,7 @@ import { getPersistedProjectIssues, syncJiraProject } from './services/jiraSync.
 import { buildProjectDashboard } from './services/projectDashboard.js';
 import { getActivityLogs } from './services/activityRepository.js';
 import { createProjectAlertRule, deleteProjectAlertRule, listProjectAlerts, updateProjectAlertRule } from './services/alertRepository.js';
+import { getProjectAnalysisScope, updateProjectAnalysisScope } from './services/analysisScope.js';
 
 export function createApp() {
   const app = express();
@@ -213,6 +214,34 @@ export function createApp() {
     }
   });
 
+  app.get('/api/jira/projects/:projectKey/analysis-scope', authRequired, async (req, res, next) => {
+    try {
+      const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
+      const payload = await getProjectAnalysisScope({
+        userId: req.session.sub,
+        cloudId: atlassianSession.cloudId,
+        projectKey: req.params.projectKey,
+      });
+      return res.json(payload);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.patch('/api/jira/projects/:projectKey/analysis-scope', authRequired, csrfRequired, async (req, res, next) => {
+    try {
+      const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
+      const payload = await updateProjectAnalysisScope({
+        userId: req.session.sub,
+        cloudId: atlassianSession.cloudId,
+        projectKey: req.params.projectKey,
+        payload: req.body,
+      });
+      return res.json(payload);
+    } catch (error) {
+      return next(error);
+    }
+  });
   app.get('/api/jira/projects/:projectKey/alerts', authRequired, async (req, res, next) => {
     try {
       const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
@@ -312,7 +341,7 @@ export function createApp() {
       }
 
       const { atlassianSession } = await getActiveAtlassianAccess(req.session.sub);
-      const dashboard = await buildProjectDashboard({ cloudId: atlassianSession.cloudId, projectKey });
+      const dashboard = await buildProjectDashboard({ cloudId: atlassianSession.cloudId, projectKey, userId: req.session.sub });
       if (!dashboard) {
         return res.status(404).json({ error: 'PROJECT_DASHBOARD_NOT_SYNCED', message: 'Project has no synced issues yet.' });
       }
@@ -338,3 +367,4 @@ export function createApp() {
 
   return app;
 }
+

@@ -20,6 +20,7 @@ function DashboardApp() {
   const [jiraProjects, setJiraProjects] = useState(null);
   const [jiraIssues, setJiraIssues] = useState(null);
   const [projectDashboard, setProjectDashboard] = useState(null);
+  const [analysisScope, setAnalysisScope] = useState(null);
   const [syncState, setSyncState] = useState(null);
   const [authNotice, setAuthNotice] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -66,6 +67,7 @@ function DashboardApp() {
         if (alive) {
           setJiraIssues(issuesPayload);
           setProjectDashboard(dashboardPayload);
+          loadAnalysisScopeFor(projectKey).catch(() => {});
         }
       } catch {
         if (alive) {
@@ -119,6 +121,7 @@ function DashboardApp() {
   async function loadAlertSummary() {
     if (!activeProjectKey) {
       setAlertSummary(fallbackAlertSummary);
+      setAnalysisScope(null);
       return fallbackAlertSummary;
     }
     try {
@@ -169,12 +172,27 @@ function DashboardApp() {
     setJiraIssues(issuesPayload);
     await loadProjectDashboardFor(projectKey);
     await loadAlertSummary();
+    await loadAnalysisScopeFor(projectKey).catch(() => {});
   }
 
   async function loadProjectDashboardFor(projectKey) {
     if (!projectKey) return;
     const dashboardPayload = await fetchJson(`/api/jira/projects/${projectKey}/dashboard`);
     setProjectDashboard(dashboardPayload);
+  }
+
+  async function loadAnalysisScopeFor(projectKey) {
+    if (!projectKey) return null;
+    const payload = await fetchJson(`/api/jira/projects/${projectKey}/analysis-scope`);
+    setAnalysisScope(payload);
+    return payload;
+  }
+
+  async function refreshProjectAfterAnalysisChange() {
+    if (!activeProjectKey) return;
+    await loadProjectDashboardFor(activeProjectKey);
+    await loadAlertSummary();
+    await loadAnalysisScopeFor(activeProjectKey).catch(() => {});
   }
 
   // La sincronizacion real escribe en PostgreSQL; despues se recargan issues, dashboard y alertas desde la API.
@@ -201,6 +219,7 @@ function DashboardApp() {
     setProjectDashboard(null);
     setSyncState(null);
     setAlertSummary(fallbackAlertSummary);
+    setAnalysisScope(null);
   }
 
   function navigateTo(event, href) {
@@ -219,7 +238,7 @@ function DashboardApp() {
           <Topbar data={activeDashboard} view={view} canSync={Boolean(activeProjectKey)} syncState={syncState} filtersOpen={filtersOpen} alertSummary={alertSummary} onToggleFilters={() => setFiltersOpen((open) => !open)} onSync={syncActiveProject} onNavigate={navigateTo} />
           {authNotice ? <div className="auth-notice"><span>{authNotice}</span><a href={`${import.meta.env.VITE_API_URL || 'http://localhost:3002'}/api/auth/atlassian/start`}>Reconectar Jira</a></div> : null}
           {toastAlert ? <AlertToast alert={toastAlert} onClose={() => setToastAlert(null)} /> : null}
-          <ViewContent currentPath={currentPath} data={activeDashboard} demoData={data} jiraProjects={jiraProjects} jiraIssues={jiraIssues} syncState={syncState} filtersOpen={filtersOpen} onAlertsChanged={loadAlertSummary} onLogout={logout} />
+          <ViewContent currentPath={currentPath} data={activeDashboard} demoData={data} jiraProjects={jiraProjects} jiraIssues={jiraIssues} syncState={syncState} filtersOpen={filtersOpen} analysisScope={analysisScope} onAnalysisChanged={refreshProjectAfterAnalysisChange} onAlertsChanged={loadAlertSummary} onLogout={logout} />
         </div>
       </section>
     </main>
@@ -239,10 +258,13 @@ function AlertToast({ alert, onClose }) {
   );
 }
 
-function ViewContent({ currentPath, data, demoData, jiraProjects, jiraIssues, syncState, filtersOpen, onAlertsChanged, onLogout }) {
+function ViewContent({ currentPath, data, demoData, jiraProjects, jiraIssues, syncState, filtersOpen, analysisScope, onAnalysisChanged, onAlertsChanged, onLogout }) {
   if (currentPath.startsWith('/dashboard/board')) return <BoardView data={demoData} jiraIssues={jiraIssues} syncState={syncState} />;
   if (currentPath.startsWith('/dashboard/alerts')) return <AlertsView data={data} projectKey={jiraProjects?.projects?.[0]?.key} onAlertsChanged={onAlertsChanged} />;
   if (currentPath.startsWith('/dashboard/activity')) return <ActivityView data={data} />;
-  if (currentPath.startsWith('/dashboard/settings')) return <SettingsView data={data} jiraProjects={jiraProjects} jiraIssues={jiraIssues} syncState={syncState} onLogout={onLogout} />;
+  if (currentPath.startsWith('/dashboard/settings')) return <SettingsView data={data} jiraProjects={jiraProjects} jiraIssues={jiraIssues} syncState={syncState} analysisScope={analysisScope} onAnalysisChanged={onAnalysisChanged} onLogout={onLogout} />;
   return <DashboardView data={data} filtersOpen={filtersOpen} />;
 }
+
+
+

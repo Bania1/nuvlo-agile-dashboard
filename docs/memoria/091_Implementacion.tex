@@ -58,7 +58,3 @@ La Figura~\ref{fig:despliegue-sistema} distingue entre el cliente del usuario, l
 
 Las rutas de comunicación muestran que el navegador puede ser redirigido a Atlassian durante la autenticación OAuth, mientras que el servidor de aplicación se comunica con Jira mediante peticiones \texttt{REST}. La caché se sitúa entre la lógica de aplicación y la persistencia para acelerar consultas frecuentes, pero la base de datos mantiene la información definitiva del sistema.
 \clearpage
-
-\section{Integración continua}
-
-El repositorio incluye un flujo de GitHub Actions para compilar la memoria en LaTeX. La compilación se ha ajustado para entornos con menos memoria, evitando generación innecesaria de SyncTeX en CI y verificando explícitamente paquetes requeridos. De esta forma, el PDF puede generarse de manera reproducible tanto en local como en el entorno remoto.

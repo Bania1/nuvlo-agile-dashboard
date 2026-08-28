@@ -210,7 +210,7 @@ RI-10 & Should & El sistema debería gestionar información sobre alertas activa
 \clearpage
 \section{Matriz requisito-prueba}
 
-Para validar el alcance de la versión implementada se define una matriz de relación entre requisitos y evidencias de prueba. La matriz no sustituye a las pruebas automatizadas ni a la revisión funcional, pero permite comprobar de forma resumida qué requisitos quedan cubiertos por el MVP, cuáles se consideran parciales y cuáles se dejan como trabajo futuro. Los requisitos marcados como parciales pertenecen a prioridades \textit{Should Have} o \textit{Could Have}; los requisitos \textit{Must Have} se consideran cubiertos por la versión actual del MVP.
+Para validar el alcance de la versión implementada se define una matriz de relación entre requisitos y evidencias de prueba. La matriz no sustituye a las pruebas automatizadas ni a la revisión funcional, pero permite comprobar de forma resumida qué requisitos quedan cubiertos por el producto mínimo viable (MVP), cuáles se consideran parciales y cuáles se dejan como trabajo futuro. Los requisitos marcados como parciales pertenecen a prioridades \textit{Should Have} o \textit{Could Have}; los requisitos \textit{Must Have} se consideran cubiertos por la versión actual del MVP.
 
 {\renewcommand{\arraystretch}{1.22}\scriptsize
 \begin{longtable}{p{2.2cm}p{2.2cm}p{5.9cm}p{3.1cm}}
@@ -222,7 +222,7 @@ RF-01, RF-03, RF-05, RI-01--RI-06 & Cumplido & Sincronización real del proyecto
 RF-02, RF-20 & Cumplido & Selección de proyecto importado, sincronización asociada y filtros rápidos por estado, tipo y búsqueda textual en \textit{dashboard}. Los filtros avanzados por tablero, \textit{sprint}, etiquetas y rango temporal se tratan como ampliación dentro de RF-08. & E2E y revisión UI \\
 RF-04 & Parcial & Existe sincronización bajo demanda y reutilización de datos persistidos; la planificación automática periódica no forma parte del MVP. & Revisión funcional \\
 RF-06 & Parcial & El \textit{dashboard} muestra avisos de calidad de datos y limitaciones de \textit{changelog}/\textit{sprints}; la detección exhaustiva de inconsistencias queda como mejora. & Revisión funcional \\
-RF-07, RF-08, RI-08 & Parcial & El \textit{backend} almacena ámbitos de análisis y percentiles; la configuración avanzada completa desde UI queda pendiente de ampliación al tratarse de requisitos \textit{Should Have}. & Revisión técnica \\
+RF-07, RF-08, RI-08 & Cumplido & La configuración de análisis se persiste por usuario y proyecto en PostgreSQL. Permite definir estados de inicio y fin, tipos de incidencia, etiquetas, rango temporal y percentiles, y el \textit{dashboard} recalcula las métricas con ese ámbito. & Integración, revisión UI y pruebas de configuración \\
 RF-09, RF-11--RF-15, RI-09 & Cumplido & Cálculo de \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, media y percentiles con \textit{dataset} \textit{offline} y datos sincronizados. & Unitarias y E2E \\
 RF-10, RF-16, RF-17, RF-18, RF-23 & Futuro & Requisitos de mejora no imprescindibles para el MVP: \textit{Deployment Frequency}, métricas Scrum/Kanban adicionales, eventos manuales y modo presentación específico. & No aplicado al MVP \\
 RF-19, RF-21, RF-22, RNF-01 & Cumplido & \textit{Dashboard} \textit{responsive}, \textit{widgets} configurables, ayudas contextuales y capturas de escritorio/móvil. & E2E, revisión \textit{responsive} y capturas \\
@@ -237,7 +237,7 @@ RI-07 & Cumplido & Dataset \textit{offline} generado desde CSV/\textit{script} y
 \vspace{0.45em}
 }
 
-Los requisitos marcados como parciales o futuros no impiden la existencia de un MVP funcional, porque no afectan a requisitos clasificados como \textit{Must Have}. Su presencia delimita el trabajo restante y evita presentar como completadas funcionalidades que todavía requieren desarrollo adicional.
+Los requisitos marcados como parciales o futuros no impiden la existencia de un MVP funcional, porque no afectan a requisitos clasificados como \textit{Must Have}. Su presencia delimita el trabajo restante y evita presentar como completadas funcionalidades que todavía requieren desarrollo adicional. La configuración avanzada de análisis queda cubierta en una versión acotada y persistente; se reserva como mejora futura la selección manual completa de campos personalizados de esfuerzo en cualquier instancia Jira.
 
 \clearpage
 \section{Casos de uso}
@@ -651,3 +651,4 @@ Una vez identificados los casos de uso principales y validada su relación con l
 }
 
 \clearpage
+

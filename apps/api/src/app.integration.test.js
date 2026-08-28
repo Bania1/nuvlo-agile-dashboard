@@ -16,6 +16,8 @@ const mocks = vi.hoisted(() => ({
   createProjectAlertRule: vi.fn(),
   updateProjectAlertRule: vi.fn(),
   deleteProjectAlertRule: vi.fn(),
+  getProjectAnalysisScope: vi.fn(),
+  updateProjectAnalysisScope: vi.fn(),
 }));
 
 vi.mock('./services/authRepository.js', () => ({
@@ -53,6 +55,11 @@ vi.mock('./services/alertRepository.js', () => ({
   createProjectAlertRule: mocks.createProjectAlertRule,
   updateProjectAlertRule: mocks.updateProjectAlertRule,
   deleteProjectAlertRule: mocks.deleteProjectAlertRule,
+}));
+
+vi.mock('./services/analysisScope.js', () => ({
+  getProjectAnalysisScope: mocks.getProjectAnalysisScope,
+  updateProjectAnalysisScope: mocks.updateProjectAnalysisScope,
 }));
 
 process.env.JWT_SECRET = 'integration-test-secret-with-enough-length';
@@ -96,6 +103,17 @@ describe('Nuvlo API integration', () => {
     mocks.getJsonCache.mockResolvedValue(null);
     mocks.setJsonCache.mockResolvedValue(undefined);
     mocks.getPersistedProjectIssues.mockResolvedValue(null);
+    mocks.getProjectAnalysisScope.mockResolvedValue({
+      source: 'postgres',
+      project: { id: 'project-1', key: 'TFG', name: 'TFG Agile Metrics Simulation' },
+      scope: { startStatuses: ['In Progress'], doneStatuses: ['Done'], issueTypes: [], labels: [], percentileMarks: [50, 85] },
+      options: { statuses: ['To Do', 'In Progress', 'Done'], issueTypes: ['Task'], labels: [], percentileMarks: [50, 75, 85, 90, 95] },
+    });
+    mocks.updateProjectAnalysisScope.mockResolvedValue({
+      source: 'postgres',
+      project: { id: 'project-1', key: 'TFG', name: 'TFG Agile Metrics Simulation' },
+      scope: { startStatuses: ['Review'], doneStatuses: ['Done'], issueTypes: ['Task'], labels: [], percentileMarks: [50, 90] },
+    });
   });
 
   it('serves health and demo dashboard without authentication', async () => {
@@ -160,6 +178,45 @@ describe('Nuvlo API integration', () => {
       });
   });
 
+  it('loads and updates persisted analysis scope with CSRF protection', async () => {
+    const app = createApp();
+    const agent = request.agent(app);
+
+    await agent
+      .get('/api/jira/projects/TFG/analysis-scope')
+      .set('Cookie', authCookie())
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.scope.startStatuses).toEqual(['In Progress']);
+        expect(body.options.statuses).toContain('Done');
+      });
+
+    await agent
+      .patch('/api/jira/projects/TFG/analysis-scope')
+      .set('Cookie', authCookie())
+      .send({ startStatuses: ['Review'], doneStatuses: ['Done'] })
+      .expect(403);
+
+    const csrfResponse = await agent
+      .get('/api/auth/csrf')
+      .set('Cookie', authCookie())
+      .expect(200);
+    const csrfCookie = csrfResponse.headers['set-cookie'].find((cookie) => cookie.startsWith('nuvlo_csrf='));
+
+    await agent
+      .patch('/api/jira/projects/TFG/analysis-scope')
+      .set('Cookie', `${authCookie()}; ${csrfCookie.split(';')[0]}`)
+      .set('x-csrf-token', csrfResponse.body.csrfToken)
+      .send({ startStatuses: ['Review'], doneStatuses: ['Done'], issueTypes: ['Task'], percentileMarks: [50, 90] })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.scope.startStatuses).toEqual(['Review']);
+        expect(body.scope.percentileMarks).toEqual([50, 90]);
+      });
+
+    expect(mocks.getProjectAnalysisScope).toHaveBeenCalledWith(expect.objectContaining({ userId: 'user-1', projectKey: 'TFG' }));
+    expect(mocks.updateProjectAnalysisScope).toHaveBeenCalledWith(expect.objectContaining({ userId: 'user-1', projectKey: 'TFG' }));
+  });
   it('loads Jira projects through OAuth session and stores cache', async () => {
     mocks.jiraRequest.mockResolvedValue({
       values: [
@@ -193,3 +250,4 @@ describe('Nuvlo API integration', () => {
     expect(mocks.setJsonCache).toHaveBeenCalledWith(expect.stringContaining('jira:projects:user-1:cloud-1'), expect.any(Object), 60);
   });
 });
+

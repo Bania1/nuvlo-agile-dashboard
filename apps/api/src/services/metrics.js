@@ -16,15 +16,19 @@ export function percentile(values, p) {
   return Math.round((sorted[lower] * (1 - weight) + sorted[upper] * weight) * 10) / 10;
 }
 
-export function summarizeTemporalMetric(values) {
+export function summarizeTemporalMetric(values, percentileMarks = [50, 85]) {
   const clean = values.filter((value) => typeof value === 'number' && value >= 0);
   if (!clean.length) return null;
   const average = clean.reduce((sum, value) => sum + value, 0) / clean.length;
+  const percentiles = Object.fromEntries(
+    percentileMarks.map((mark) => [`p${mark}`, percentile(clean, Number(mark) / 100)]),
+  );
   return {
     count: clean.length,
     average: Math.round(average * 10) / 10,
-    p50: percentile(clean, 0.5),
-    p85: percentile(clean, 0.85),
+    percentiles,
+    p50: percentiles.p50 ?? percentile(clean, 0.5),
+    p85: percentiles.p85 ?? percentile(clean, 0.85),
   };
 }
 
@@ -32,6 +36,7 @@ export function summarizeTemporalMetric(values) {
 export function calculateFlowMetrics({ issues, config }) {
   const startStatuses = new Set(config.startStatuses);
   const doneStatuses = new Set(config.doneStatuses);
+  const percentileMarks = config.percentileMarks?.length ? config.percentileMarks : [50, 85];
   const leadTimes = [];
   const cycleTimes = [];
   const incomplete = [];
@@ -60,8 +65,8 @@ export function calculateFlowMetrics({ issues, config }) {
     .reduce((sum, issue) => sum + (Number(issue.storyPoints) || 0), 0);
 
   return {
-    leadTime: summarizeTemporalMetric(leadTimes),
-    cycleTime: summarizeTemporalMetric(cycleTimes),
+    leadTime: summarizeTemporalMetric(leadTimes, percentileMarks),
+    cycleTime: summarizeTemporalMetric(cycleTimes, percentileMarks),
     wip,
     velocity,
     incomplete,

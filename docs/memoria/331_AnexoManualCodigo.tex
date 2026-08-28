@@ -74,7 +74,7 @@ El \textit{backend} se encuentra en \texttt{apps/api}. Está desarrollado con No
     \item Registrar eventos de actividad y errores relevantes.
 \end{itemize}
 
-Los servicios principales se encuentran en \texttt{apps/api/src/services}. Entre ellos destacan \texttt{jiraSync.js}, \texttt{jiraClient.js}, \texttt{projectDashboard.js}, \texttt{metrics.js}, \texttt{alertRepository.js} y \texttt{activityRepository.js}.
+Los servicios principales se encuentran en \texttt{apps/api/src/services}. Entre ellos destacan los módulos de sincronización con Jira, cliente Jira, construcción del \textit{dashboard}, cálculo de métricas, configuración de análisis, alertas y actividad. En particular, \texttt{analysisScope.js} centraliza la lectura y actualización de la configuración persistente de análisis por proyecto.
 
 \section{Base de datos y Redis}
 
@@ -123,7 +123,7 @@ npm run test:e2e
 npm run build
 \end{lstlisting}
 
-Las pruebas unitarias validan cálculo de métricas, reglas de alerta, CSRF y política de retención mediante Vitest~\cite{VitestGuide}. Las pruebas de integración comprueban endpoints del \textit{backend} con \textit{mocks}. Las pruebas E2E con Playwright validan el flujo principal de la UI en modo demo, incluyendo entrada, filtros, \textit{widgets} y alertas~\cite{PlaywrightDocs}.
+Las pruebas unitarias validan cálculo de métricas, percentiles configurables, reglas de alerta, CSRF y política de retención mediante Vitest~\cite{VitestGuide}. Las pruebas de integración comprueban endpoints del \textit{backend} con \textit{mocks}, incluyendo lectura y actualización de la configuración de análisis con protección CSRF. Las pruebas E2E con Playwright validan el flujo principal de la UI en modo demo, incluyendo entrada, filtros, \textit{widgets} y alertas~\cite{PlaywrightDocs}.
 
 \section{Capturas de documentación}
 
@@ -150,3 +150,5 @@ El mantenimiento del proyecto se apoya en commits pequeños, pruebas automatizad
 \addcontentsline{toc}{section}{Referencias}
 \printbibliography[heading=subbibliography]
 \end{refsection}
+
+

@@ -129,7 +129,7 @@ function serializeRule(rule, evaluation, persistedEvent = null) {
 
 export async function listProjectAlerts({ userId, cloudId, projectKey }) {
   const { project, scope } = await getProjectAndScope({ userId, cloudId, projectKey });
-  const dashboard = await buildProjectDashboard({ cloudId, projectKey: project.key });
+  const dashboard = await buildProjectDashboard({ cloudId, projectKey: project.key, userId });
   if (!dashboard) {
     const error = new Error('Project dashboard is not available yet.');
     error.statusCode = 404;
@@ -213,7 +213,7 @@ export async function createProjectAlertRule({ userId, cloudId, projectKey, payl
     },
   });
 
-  const dashboard = await buildProjectDashboard({ cloudId, projectKey: project.key });
+  const dashboard = await buildProjectDashboard({ cloudId, projectKey: project.key, userId });
   const evaluation = dashboard ? evaluateAlertRule(rule, dashboardMetrics(dashboard)) : { active: false, reason: 'METRIC_UNAVAILABLE' };
   const persistedEvent = await persistEvaluation({ rule, evaluation });
 
@@ -249,7 +249,7 @@ export async function updateProjectAlertRule({ userId, cloudId, projectKey, rule
     },
   });
 
-  const dashboard = await buildProjectDashboard({ cloudId, projectKey: project.key });
+  const dashboard = await buildProjectDashboard({ cloudId, projectKey: project.key, userId });
   const evaluation = rule.enabled && dashboard
     ? evaluateAlertRule(rule, dashboardMetrics(dashboard))
     : { active: false, reason: rule.enabled ? 'METRIC_UNAVAILABLE' : 'RULE_DISABLED' };
@@ -273,3 +273,4 @@ export async function deleteProjectAlertRule({ userId, cloudId, projectKey, rule
 
   return { id: rule.id, deleted: true };
 }
+

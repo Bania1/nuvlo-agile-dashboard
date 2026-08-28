@@ -445,6 +445,11 @@ export async function syncJiraProject({ userId, projectKey, maxIssues = 100 }) {
         }
       }
 
+      await tx.analysisScope.updateMany({
+        where: { userId, projectId: project.id },
+        data: { lastSyncAt: new Date() },
+      });
+
       await tx.activityLog.create({
         data: {
           userId,
@@ -500,6 +505,7 @@ export async function getPersistedProjectIssues({ cloudId, projectKey }) {
       statusCategory: issue.statusCategory,
       priority: issue.priority,
       assignee: issue.assignee || 'Sin asignar',
+      labels: issue.labels || [],
       storyPoints: issue.storyPoints,
       sprint: issue.sprint ? { id: issue.sprint.id, name: issue.sprint.name, state: issue.sprint.state } : null,
       createdAt: issue.jiraCreatedAt.toISOString(),
@@ -512,3 +518,4 @@ export async function getPersistedProjectIssues({ cloudId, projectKey }) {
     })),
   };
 }
+

@@ -47,7 +47,7 @@ Integración Jira y autenticación & Cumplido & Flujo OAuth 2.0 3LO, sesión pro
 Métricas principales & Cumplido & Cálculo de \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, media y percentiles con \textit{dataset} \textit{offline} y datos sincronizados. \\
 Alertas y actividad & Cumplido & Reglas de umbral, contador visual de alertas, notificación emergente, historial de alertas y registro de actividad. \\
 Retención, seguridad y mantenimiento & Cumplido & Cookies \texttt{httpOnly}, CSRF, PKCE, cifrado de \textit{tokens}, Redis con TTL y limpieza de \textit{logs}/alertas antiguos. \\
-Configuración avanzada y métricas futuras & Parcial/Futuro & Configuración básica disponible; quedan como ampliación requisitos no imprescindibles clasificados como \textit{Should Have} o \textit{Could Have}, entre ellos la configuración avanzada completa, \textit{Deployment Frequency} y más métricas de flujo. \\
+Configuración avanzada y métricas futuras & Cumplido/Futuro & La configuración de análisis se guarda por proyecto y afecta al recálculo de métricas. Quedan como ampliación no imprescindible la selección manual completa de campos personalizados de esfuerzo, \textit{Deployment Frequency} y métricas adicionales Scrum/Kanban. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
@@ -64,8 +64,26 @@ La validación con Jira real también sirve para detectar limitaciones práctica
 
 La demo \textit{offline} cubre el caso contrario: proporciona datos preparados para que todas las métricas tengan valores visibles y coherentes. Este modo es útil para presentaciones, pruebas sin conexión y comprobaciones de regresión visual. Al no depender de la API de Jira, permite demostrar el comportamiento esperado de la interfaz incluso si la autenticación externa falla o no hay red disponible.
 
+
+\section{Retos y problemas encontrados}
+
+Durante el desarrollo se detectaron varios problemas que condicionaron decisiones técnicas y ayudaron a validar el comportamiento real de la aplicación. No todos fueron errores de programación en sentido estricto; algunos estuvieron relacionados con restricciones de las APIs externas, configuración del entorno o calidad de los datos disponibles.
+
+\begin{itemize}
+    \item \textbf{Autenticación con Atlassian}: el paso desde una prueba con token personal a OAuth 2.0 3LO obligó a rediseñar el flujo de acceso. Fue necesario configurar correctamente \textit{scopes}, URI de redirección, parámetro \textit{state}, PKCE y protección CSRF para que el usuario no tuviera que registrarse localmente.
+    \item \textbf{Cambios en la API de Jira Cloud}: algunos endpoints de búsqueda utilizados en pruebas iniciales devolvían errores por cambios o deprecaciones. La sincronización se adaptó al endpoint actual con paginación y selección explícita de campos.
+    \item \textbf{Calidad del histórico de Jira}: en proyectos recién creados, las incidencias no siempre tienen transiciones suficientes para calcular tiempos de flujo representativos. Por ello se incorporó una demo \textit{offline} con datos controlados que permite validar métricas aunque Jira real no tenga todavía histórico útil.
+    \item \textbf{Gestión de sesión y expiración}: los \textit{tokens} de Atlassian pueden expirar o renovarse mediante \textit{refresh tokens} rotatorios. La aplicación separa la sesión del navegador de la autorización Atlassian y contempla renovación, cierre de sesión y errores de autenticación.
+    \item \textbf{Persistencia y retención}: fue necesario distinguir datos persistentes, datos operativos y datos efímeros. PostgreSQL conserva la información necesaria para análisis e histórico, mientras que Redis almacena estados temporales con TTL.
+    \item \textbf{Coherencia visual y \textit{responsive}}: algunas vistas y figuras iniciales resultaban demasiado grandes o se salían de márgenes. La interfaz y las capturas se revisaron para mejorar legibilidad en escritorio y móvil.
+\end{itemize}
+
+Estos retos permitieron ajustar el alcance de la versión implementada y separar con mayor claridad qué funcionalidades forman parte del producto mínimo viable y cuáles quedan como evolución futura.
+
+
 \section{Resultados obtenidos}
 
-El resultado actual es un MVP funcional de Nuvlo. La aplicación permite iniciar sesión con Atlassian, sincronizar información de Jira, consultar métricas ágiles, aplicar filtros, configurar \textit{widgets}, crear alertas y revisar actividad. Además, dispone de una demo \textit{offline} que actúa como respaldo para validación y presentación. Según la matriz requisito-prueba, no quedan requisitos \textit{Must Have} pendientes; los elementos parciales o futuros corresponden a mejoras clasificadas con menor prioridad.
+El resultado actual es un producto mínimo viable (MVP) funcional de Nuvlo. La aplicación permite iniciar sesión con Atlassian, sincronizar información de Jira, consultar métricas ágiles, aplicar filtros, configurar \textit{widgets}, crear alertas y revisar actividad. Además, dispone de una demo \textit{offline} que actúa como respaldo para validación y presentación. Según la matriz requisito-prueba, no quedan requisitos \textit{Must Have} pendientes; los elementos parciales o futuros corresponden a mejoras clasificadas con menor prioridad.
 
 El sistema todavía no pretende cubrir todos los escenarios de una herramienta comercial. Algunas mejoras, como métricas avanzadas, despliegue productivo, integración con repositorios de código o análisis predictivo, quedan fuera del alcance principal y se recogen como líneas de trabajo futuro.
+
