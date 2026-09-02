@@ -1555,6 +1555,12 @@ a:active,
   border-color: #103d2b;
 }
 
+.topbar-actions .active-filter-button:not(:disabled):hover {
+  color: white;
+  background: #245a3f;
+  border-color: #245a3f;
+}
+
 .view-transition {
   animation: viewFadeIn 260ms ease both;
 }
