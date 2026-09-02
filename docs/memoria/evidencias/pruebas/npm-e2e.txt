@@ -1,0 +1,15 @@
+
+> nuvlo-tfg@0.1.0 test:e2e
+> npm run test:e2e --workspace=@nuvlo/web
+
+
+> @nuvlo/web@0.1.0 test:e2e
+> playwright test
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › e2e/dashboard-demo.spec.js:4:1 › landing exposes Jira connection and local demo entry points (680ms)
+  ✓  2 [chromium] › e2e/dashboard-demo.spec.js:13:1 › dashboard demo supports alert popover, filters and configurable widgets (1.7s)
+
+  2 passed (3.6s)

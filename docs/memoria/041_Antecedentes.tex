@@ -1,108 +1,115 @@
 \chapter{Antecedentes}
 \label{antecedentes}
 
-Este capítulo analiza herramientas y soluciones existentes relacionadas con la gestión ágil, la visualización de métricas y la analítica de equipos de desarrollo. El objetivo no es presentar todavía la solución implementada en detalle, sino situarla frente a alternativas reales y justificar por qué existe margen para desarrollar una herramienta específica, ligera y centrada en métricas ágiles procedentes de Jira Cloud.
+Este capítulo analiza herramientas y soluciones existentes relacionadas con la gestión ágil, la visualización de métricas y la analítica de equipos de desarrollo. El objetivo no es presentar todavía la solución implementada en detalle, sino situarla frente a alternativas reales y justificar por qué existe margen para desarrollar una herramienta específica, ligera y centrada en métricas ágiles procedentes de \textit{Jira Cloud}. Para facilitar la comparación visual, se incluyen capturas públicas de interfaz o documentación de producto siempre que ha sido posible, priorizando vistas de uso real frente a páginas promocionales.
 
 \section{Herramientas de gestión ágil}
 
-\subsection{Jira Cloud}
+\subsection{\textit{Jira Cloud}}
 
-Jira Cloud es una de las plataformas más extendidas para la gestión de proyectos software. Permite trabajar con proyectos, incidencias, tableros, \textit{sprints}, flujos de trabajo, estimaciones y distintos informes asociados a Scrum y Kanban~\cite{AtlassianJira}. Además, proporciona una API REST que facilita el acceso programático a parte de esta información~\cite{AtlassianJiraRestV3}.
+\textit{Jira Cloud} es una de las plataformas más extendidas para la gestión de proyectos software. Permite trabajar con proyectos, incidencias, tableros, \textit{Sprints}, flujos de trabajo, estimaciones y distintos informes asociados a \textit{Scrum} y \textit{Kanban}~\cite{AtlassianJira}. Además, proporciona una \textit{API REST} que facilita el acceso programático a parte de esta información~\cite{AtlassianJiraRestV3}.
 
-Su principal ventaja es que actúa como fuente de datos operativa: muchos equipos ya registran en Jira la planificación y evolución diaria de su trabajo. Sin embargo, sus capacidades analíticas avanzadas dependen del plan contratado. Funcionalidades como Atlassian Analytics y Atlassian Data Lake aparecen asociadas al plan Enterprise, orientado a organizaciones de mayor tamaño~\cite{AtlassianJiraPricing}. Por ello, aunque Jira ofrece informes útiles, puede resultar limitado cuando se busca una capa de análisis propia, económica, explicable y ajustada a métricas concretas.
+Su principal ventaja es que actúa como fuente de datos operativa: muchos equipos ya registran en \textit{Jira} la planificación y evolución diaria de su trabajo. Sin embargo, sus capacidades analíticas avanzadas dependen del plan contratado. Funcionalidades como \textit{Atlassian Analytics} y \textit{Atlassian Data Lake} aparecen asociadas al plan Enterprise, orientado a organizaciones de mayor tamaño~\cite{AtlassianJiraPricing}. Por ello, aunque \textit{Jira} ofrece informes útiles, puede resultar limitado cuando se busca una capa de análisis propia, económica, explicable y ajustada a métricas concretas. La Figura~\ref{fig:antecedentes-jira-cloud} muestra una vista de tablero \textit{Kanban} en \textit{Jira}, donde el trabajo se organiza por columnas y tarjetas.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.42\textheight,keepaspectratio]{img/antecedentes/jira-cloud.png}
-    \caption{Vista pública de Jira Cloud como herramienta de gestión ágil~\cite{AtlassianJira}}
+    \includegraphics[width=0.88\textwidth,height=0.30\textheight,keepaspectratio]{img/antecedentes/jira-cloud.png}
+    \caption{Captura de tablero \textit{Kanban} en \textit{Jira Cloud}~\cite{AtlassianJiraKanbanBoards}}
     \label{fig:antecedentes-jira-cloud}
 \end{figure}
+\FloatBarrier
 
-\subsection{Trello}
+\subsection{\textit{Trello}}
 
-Trello es una herramienta visual basada en tableros, listas y tarjetas. Su sencillez facilita representar el estado de las tareas y coordinar equipos pequeños~\cite{Trello}. Esta simplicidad es una ventaja para la organización diaria, pero también limita la profundidad analítica cuando se necesitan métricas históricas, percentiles, reglas de alerta o trazabilidad de cálculos.
+\textit{Trello} es una herramienta visual basada en tableros, listas y tarjetas. Su sencillez facilita representar el estado de las tareas y coordinar equipos pequeños~\cite{Trello}. Esta simplicidad es una ventaja para la organización diaria, pero también limita la profundidad analítica cuando se necesitan métricas históricas, percentiles, reglas de alerta o trazabilidad de cálculos.
 
-En relación con el problema tratado, Trello representa una alternativa útil para visualizar trabajo, pero no cubre por sí mismo la necesidad de calcular y explicar métricas como \textit{Lead Time}, \textit{Cycle Time}, \textit{WIP} o \textit{Velocity} con el nivel de detalle requerido.
+En relación con el problema tratado, \textit{Trello} representa una alternativa útil para visualizar trabajo, pero no cubre por sí mismo la necesidad de calcular y explicar métricas como \textit{Lead Time}, \textit{Cycle Time}, \textit{WIP} o \textit{Velocity} con el nivel de detalle requerido. La Figura~\ref{fig:antecedentes-trello} muestra el planteamiento de tablero visual con listas y tarjetas característico de la herramienta.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.42\textheight,keepaspectratio]{img/antecedentes/trello.png}
-    \caption{Vista pública de Trello como herramienta visual basada en tableros~\cite{Trello}}
+    \includegraphics[width=0.88\textwidth,height=0.30\textheight,keepaspectratio]{img/antecedentes/trello.png}
+    \caption{Captura de tablero \textit{Trello} como herramienta visual basada en listas y tarjetas~\cite{NuclinoTrelloAlternative}}
     \label{fig:antecedentes-trello}
 \end{figure}
+\FloatBarrier
 
-\subsection{Taiga}
+\subsection{\textit{Taiga}}
 
-Taiga es una plataforma de gestión ágil de código abierto orientada a equipos que trabajan con Scrum y Kanban~\cite{Taiga}. Su carácter abierto y su enfoque ágil la convierten en una alternativa interesante para proyectos pequeños o equipos que buscan mayor control sobre la herramienta.
+\textit{Taiga} es una plataforma de gestión ágil de código abierto orientada a equipos que trabajan con \textit{Scrum} y \textit{Kanban}~\cite{Taiga}. Su carácter abierto y su enfoque ágil la convierten en una alternativa interesante para proyectos pequeños o equipos que buscan mayor control sobre la herramienta.
 
-No obstante, para el caso de uso planteado, Taiga exigiría que el equipo migrase o duplicase su gestión si ya trabaja en Jira. Además, aunque proporciona funcionalidades ágiles, el objetivo de este proyecto no es sustituir la herramienta de gestión, sino aprovechar los datos existentes en Jira para construir una capa de análisis complementaria.
+No obstante, para el caso de uso planteado, \textit{Taiga} exigiría que el equipo migrase o duplicase su gestión si ya trabaja en \textit{Jira}. Además, aunque proporciona funcionalidades ágiles, el objetivo de este proyecto no es sustituir la herramienta de gestión, sino aprovechar los datos existentes en \textit{Jira} para construir una capa de análisis complementaria. La Figura~\ref{fig:antecedentes-taiga} presenta una vista de gestión ágil en \textit{Taiga}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.42\textheight,keepaspectratio]{img/antecedentes/taiga.png}
-    \caption{Vista pública de Taiga como herramienta abierta de gestión ágil~\cite{Taiga}}
+    \includegraphics[width=0.78\textwidth,height=0.31\textheight,keepaspectratio]{img/antecedentes/taiga.png}
+    \caption{Captura de interfaz de \textit{Taiga} como herramienta abierta de gestión ágil~\cite{Taiga}}
     \label{fig:antecedentes-taiga}
 \end{figure}
+\FloatBarrier
 
 \section{Plataformas integradas de desarrollo}
 
-\subsection{Azure DevOps}
+\subsection{\textit{Azure DevOps}}
 
-Azure DevOps integra planificación de trabajo, repositorios, \textit{pipelines}, pruebas y despliegues dentro del ecosistema de Microsoft~\cite{AzureDevOps}. Su principal ventaja es ofrecer una visión amplia del ciclo de vida software, desde la definición de tareas hasta la entrega.
+\textit{Azure DevOps} integra planificación de trabajo, repositorios, \textit{pipelines}, pruebas y despliegues dentro del ecosistema de Microsoft~\cite{AzureDevOps}. Su principal ventaja es ofrecer una visión amplia del ciclo de vida software, desde la definición de tareas hasta la entrega.
 
-Esta amplitud también supone una limitación para el alcance del problema: cuando el objetivo es analizar métricas ágiles concretas a partir de Jira, una plataforma completa de ingeniería puede resultar excesiva. Además, su adopción implicaría cambiar de ecosistema o integrar múltiples herramientas, mientras que el enfoque de este proyecto parte de mantener Jira como fuente principal y construir una visualización específica sobre sus datos.
+Esta amplitud también supone una limitación para el alcance del problema: cuando el objetivo es analizar métricas ágiles concretas a partir de \textit{Jira}, una plataforma completa de ingeniería puede resultar excesiva. Además, su adopción implicaría cambiar de ecosistema o integrar múltiples herramientas, mientras que el enfoque de este proyecto parte de mantener \textit{Jira} como fuente principal y construir una visualización específica sobre sus datos. La Figura~\ref{fig:antecedentes-azure-devops} muestra una vista de tablero de \textit{Azure Boards} dentro de \textit{Azure DevOps}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.42\textheight,keepaspectratio]{img/antecedentes/azure-devops.png}
-    \caption{Vista pública de Azure DevOps como plataforma integrada de desarrollo~\cite{AzureDevOps}}
+    \includegraphics[width=0.82\textwidth,height=0.23\textheight,keepaspectratio]{img/antecedentes/azure-devops.png}
+    \caption{Captura de tablero en \textit{Azure Boards} dentro de \textit{Azure DevOps}~\cite{AzureBoardsQuickstart}}
     \label{fig:antecedentes-azure-devops}
 \end{figure}
+\FloatBarrier
 
-\subsection{GitLab}
+\subsection{\textit{GitLab}}
 
-GitLab ofrece una plataforma integral para repositorios, integración continua, despliegue y gestión del ciclo de vida del software~\cite{GitLabDevSecOps}. Incluye capacidades de planificación y seguimiento, por lo que puede aportar información valiosa sobre entrega y operación.
+\textit{GitLab} ofrece una plataforma integral para repositorios, integración continua, despliegue y gestión del ciclo de vida del software~\cite{GitLabDevSecOps}. Dentro de sus capacidades de planificación incorpora tableros de incidencias, como se muestra en la Figura~\ref{fig:antecedentes-gitlab}, que permiten organizar trabajo pendiente y en curso~\cite{GitLabIssueBoards}.
 
-Sin embargo, su punto fuerte se encuentra en la integración del repositorio y el flujo \textit{DevSecOps}. Para un equipo que ya utiliza Jira como herramienta principal de gestión, GitLab no resuelve directamente la necesidad de explotar el histórico de incidencias de Jira ni de construir un \textit{dashboard} especializado en \textit{Velocity}, \textit{WIP}, \textit{Lead Time} y \textit{Cycle Time} sobre dicha fuente.
+Sin embargo, su punto fuerte se encuentra en la integración del repositorio y el flujo \textit{DevSecOps}. Para un equipo que ya utiliza \textit{Jira} como herramienta principal de gestión, \textit{GitLab} no resuelve directamente la necesidad de explotar el histórico de incidencias de \textit{Jira} ni de construir un \textit{dashboard} especializado en \textit{Velocity}, \textit{WIP}, \textit{Lead Time} y \textit{Cycle Time} sobre dicha fuente.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.42\textheight,keepaspectratio]{img/antecedentes/gitlab.png}
-    \caption{Vista pública de GitLab como plataforma \textit{DevSecOps} integrada~\cite{GitLabDevSecOps}}
+    \includegraphics[width=0.82\textwidth,height=0.29\textheight,keepaspectratio]{img/antecedentes/gitlab.png}
+    \caption{Vista pública de tableros de incidencias en \textit{GitLab}~\cite{GitLabIssueBoards}}
     \label{fig:antecedentes-gitlab}
 \end{figure}
+\FloatBarrier
 
 \section{Herramientas de analítica de ingeniería}
 
-\subsection{LinearB}
+\subsection{\textit{LinearB}}
 
-LinearB se orienta a métricas de ingeniería, visibilidad de flujo e integración con herramientas como Jira y repositorios de código~\cite{LinearBMetrics}. Este tipo de plataforma muestra claramente la utilidad de relacionar información de gestión con datos de desarrollo para detectar bloqueos, medir tiempos y mejorar procesos.
+\textit{LinearB} se orienta a métricas de ingeniería, visibilidad de flujo e integración con herramientas como \textit{Jira} y repositorios de código~\cite{LinearBMetrics}. Este tipo de plataforma muestra claramente la utilidad de relacionar información de gestión con datos de desarrollo para detectar bloqueos, medir tiempos y mejorar procesos.
 
-Su limitación principal para este proyecto es su orientación empresarial. Proporciona un conjunto amplio de funcionalidades, pero esa amplitud puede implicar dependencia de una plataforma comercial, menor control sobre el cálculo exacto de las métricas y un coste superior al deseado para equipos pequeños o entornos académicos.
+Su limitación principal para este proyecto es su orientación empresarial. Proporciona un conjunto amplio de funcionalidades, pero esa amplitud puede implicar dependencia de una plataforma comercial, menor control sobre el cálculo exacto de las métricas y un coste superior al deseado para equipos pequeños o entornos académicos. La Figura~\ref{fig:antecedentes-linearb} muestra un ejemplo de panel de progreso y métricas asociado a proyectos \textit{Jira} en \textit{LinearB}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.42\textheight,keepaspectratio]{img/antecedentes/linearb.png}
-    \caption{Vista pública de LinearB como herramienta de analítica de ingeniería~\cite{LinearBMetrics}}
+    \includegraphics[width=0.82\textwidth,height=0.29\textheight,keepaspectratio]{img/antecedentes/linearb.png}
+    \caption{Captura de panel de progreso y métricas en \textit{LinearB}~\cite{LinearBProjectDelivery}}
     \label{fig:antecedentes-linearb}
 \end{figure}
+\FloatBarrier
 
-\subsection{Swarmia}
+\subsection{\textit{Swarmia}}
 
-Swarmia es otra herramienta centrada en productividad de ingeniería, salud del flujo y conexión con herramientas de desarrollo y gestión~\cite{SwarmiaIntegrations}. Al igual que LinearB, sirve como antecedente porque evidencia la importancia de medir el flujo de trabajo y detectar cuellos de botella con datos reales.
+\textit{Swarmia} es otra herramienta centrada en productividad de ingeniería, salud del flujo y conexión con herramientas de desarrollo y gestión~\cite{SwarmiaIntegrations}. Al igual que \textit{LinearB}, sirve como antecedente porque evidencia la importancia de medir el flujo de trabajo y detectar cuellos de botella con datos reales.
 
-En este caso, la limitación vuelve a estar relacionada con el alcance y la dependencia de una solución externa. Para el problema planteado, se busca una aplicación más acotada, transparente en sus cálculos y directamente documentable, que permita explicar cómo se sincronizan los datos, cómo se almacenan y cómo se obtienen las métricas principales.
+En este caso, la limitación vuelve a estar relacionada con el alcance y la dependencia de una solución externa. Para el problema planteado, se busca una aplicación más acotada, transparente en sus cálculos y directamente documentable, que permita explicar cómo se sincronizan los datos, cómo se almacenan y cómo se obtienen las métricas principales. La Figura~\ref{fig:antecedentes-swarmia} muestra una vista de métricas de incidencias en \textit{Swarmia}, con indicadores temporales y comparativas por equipo.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth,height=0.42\textheight,keepaspectratio]{img/antecedentes/swarmia.png}
-    \caption{Vista pública de Swarmia como herramienta de productividad y flujo de ingeniería~\cite{SwarmiaIntegrations}}
+    \includegraphics[width=0.82\textwidth,height=0.30\textheight,keepaspectratio]{img/antecedentes/swarmia.png}
+    \caption{Captura de métricas de incidencias y flujo en \textit{Swarmia}~\cite{SwarmiaIssueMetrics}}
     \label{fig:antecedentes-swarmia}
 \end{figure}
+\FloatBarrier
 
 \section{Comparativa de alternativas}
 
-La Tabla~\ref{tab:comparativa-antecedentes} resume las principales diferencias entre las soluciones revisadas y el enfoque propuesto para Nuvlo. La comparación se centra en los criterios relevantes para el problema: uso de Jira como fuente, cálculo de métricas ágiles, personalización, coste relativo, control de datos y adecuación a una solución ligera.
+La Tabla~\ref{tab:comparativa-antecedentes} resume las principales diferencias entre las soluciones revisadas y el enfoque propuesto para \textit{Nuvlo}. La comparación se centra en los criterios relevantes para el problema: uso de \textit{Jira} como fuente, cálculo de métricas ágiles, personalización, coste relativo, control de datos y adecuación a una solución ligera.
 
 
 \begin{landscape}
@@ -113,25 +120,25 @@ La Tabla~\ref{tab:comparativa-antecedentes} resume las principales diferencias e
 \renewcommand{\arraystretch}{1.12}
 \begin{tabularx}{\linewidth}{p{2.7cm}p{4.3cm}p{2.5cm}p{2.5cm}X}
 \toprule
-\textbf{Herramienta} & \textbf{Enfoque principal} & \textbf{Uso de Jira} & \textbf{Analítica} & \textbf{Limitación frente al enfoque propuesto} \\
+\textbf{Herramienta} & \textbf{Enfoque principal} & \textbf{Uso de \textit{Jira}} & \textbf{Analítica} & \textbf{Limitación frente al enfoque propuesto} \\
 \midrule
-Jira Cloud & Gestión de proyectos, incidencias, tableros e informes propios. & Fuente principal & Media & La analítica avanzada puede depender de planes superiores y no siempre permite una capa personalizada y explicable. \\
-Trello & Organización visual mediante tableros y tarjetas. & No principal & Baja & Muy útil para coordinación simple, pero insuficiente para histórico de métricas ágiles detalladas. \\
-Taiga & Gestión ágil abierta con Scrum/Kanban. & No principal & Media & Requiere trabajar en otro sistema o migrar datos si el equipo ya utiliza Jira. \\
-Azure DevOps & Planificación, repositorios, pruebas y entrega software. & Integrable & Alta & Es más amplia de lo necesario cuando el objetivo es analizar métricas concretas desde Jira. \\
-GitLab & Plataforma \textit{DevSecOps} con repositorios, CI/CD y planificación. & Integrable & Media/Alta & Su fortaleza está en el ciclo de vida del código; no explota directamente Jira como fuente principal. \\
-LinearB & Analítica de ingeniería y flujo de desarrollo. & Sí & Alta & Orientación empresarial, dependencia comercial y menor control sobre el cálculo interno. \\
-Swarmia & Productividad de ingeniería, flujo y mejora continua. & Sí & Alta & Plataforma comercial amplia, más compleja que una solución específica y ligera. \\
-Nuvlo & Visualización propia de métricas ágiles sincronizadas desde Jira. & Fuente principal & Media/Alta & Alcance más reducido, pero con control sobre datos, cálculos, documentación y demo \textit{offline}. \\
+\textit{Jira Cloud} & Gestión de proyectos, incidencias, tableros e informes propios. & Fuente principal & Media & La analítica avanzada puede depender de planes superiores y no siempre permite una capa personalizada y explicable. \\
+\textit{Trello} & Organización visual mediante tableros y tarjetas. & No principal & Baja & Muy útil para coordinación simple, pero insuficiente para histórico de métricas ágiles detalladas. \\
+\textit{Taiga} & Gestión ágil abierta con \textit{Scrum}/\textit{Kanban}. & No principal & Media & Requiere trabajar en otro sistema o migrar datos si el equipo ya utiliza \textit{Jira}. \\
+\textit{Azure DevOps} & Planificación, repositorios, pruebas y entrega software. & Integrable & Alta & Es más amplia de lo necesario cuando el objetivo es analizar métricas concretas desde \textit{Jira}. \\
+\textit{GitLab} & Plataforma \textit{DevSecOps} con repositorios, \textit{CI/CD} y planificación. & Integrable & Media/Alta & Su fortaleza está en el ciclo de vida del código; no explota directamente \textit{Jira} como fuente principal. \\
+\textit{LinearB} & Analítica de ingeniería y flujo de desarrollo. & Sí & Alta & Orientación empresarial, dependencia comercial y menor control sobre el cálculo interno. \\
+\textit{Swarmia} & Productividad de ingeniería, flujo y mejora continua. & Sí & Alta & Plataforma comercial amplia, más compleja que una solución específica y ligera. \\
+\textit{Nuvlo} & Visualización propia de métricas ágiles sincronizadas desde \textit{Jira}. & Fuente principal & Media/Alta & Alcance más reducido, pero con control sobre datos, cálculos, documentación y demo \textit{offline}. \\
 \bottomrule
 \end{tabularx}
-\caption{Comparativa de herramientas relacionadas con la analítica ágil y el enfoque de Nuvlo}
+\caption{Comparativa de herramientas relacionadas con la analítica ágil y el enfoque de \textit{Nuvlo}}
 \label{tab:comparativa-antecedentes}
 \end{table}
 \end{landscape}
 
 \section{Conclusión del análisis de antecedentes}
 
-Las alternativas estudiadas muestran que existen herramientas consolidadas para gestionar trabajo, representar tableros o analizar productividad de ingeniería. Sin embargo, también dejan espacio para una solución centrada en un objetivo más concreto: sincronizar datos desde Jira Cloud, almacenarlos localmente, calcular métricas ágiles seleccionadas y mostrarlas mediante una interfaz clara y configurable.
+Las alternativas estudiadas muestran que existen herramientas consolidadas para gestionar trabajo, representar tableros o analizar productividad de ingeniería. Sin embargo, también dejan espacio para una solución centrada en un objetivo más concreto: sincronizar datos desde \textit{Jira Cloud}, almacenarlos localmente, calcular métricas ágiles seleccionadas y mostrarlas mediante una interfaz clara y configurable.
 
-El desarrollo de Nuvlo se justifica por esa especialización. No pretende sustituir a Jira, Trello, Taiga, Azure DevOps, GitLab, LinearB o Swarmia, sino construir una capa complementaria, controlable y reproducible para analizar métricas como \textit{Velocity}, \textit{WIP}, \textit{Lead Time} y \textit{Cycle Time}. Esta orientación permite reducir dependencia de funciones comerciales avanzadas, explicar el proceso de cálculo y disponer de una demo \textit{offline} para validación cuando no sea posible utilizar datos reales.
+El desarrollo de \textit{Nuvlo} se justifica por esa especialización. No pretende sustituir a \textit{Jira}, \textit{Trello}, \textit{Taiga}, \textit{Azure DevOps}, \textit{GitLab}, \textit{LinearB} o \textit{Swarmia}, sino construir una capa complementaria, controlable y reproducible para analizar métricas como \textit{Velocity}, \textit{WIP}, \textit{Lead Time} y \textit{Cycle Time}. Esta orientación permite reducir dependencia de funciones comerciales avanzadas, explicar el proceso de cálculo y disponer de una demo \textit{offline} para validación cuando no sea posible utilizar datos reales.

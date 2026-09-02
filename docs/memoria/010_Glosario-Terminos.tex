@@ -15,27 +15,35 @@ Este apartado recoge algunos términos utilizados a lo largo de la memoria. No p
 \textbf{Término} & \textbf{Descripción} \\
 \midrule
 \endhead
-Nuvlo & Nombre de la aplicación desarrollada. Representa la idea de unir nube y flujo: nube por su conexión con Jira Cloud y flujo por el análisis del trabajo ágil mediante métricas visuales. \\
-Filosofía ágil & Enfoque de desarrollo que prioriza la entrega incremental de valor, la adaptación al cambio, la colaboración y la mejora continua. En este trabajo se toma como contexto general para interpretar los marcos Scrum y Kanban~\cite{AgileManifesto,DigitalAI2024StateOfAgile}. \\
-Scrum & Marco de trabajo ágil basado en iteraciones, roles, eventos y artefactos. Se usa como referencia para interpretar conceptos como \textit{sprint}, planificación, revisión y \textit{Velocity}~\cite{ScrumGuide2020}. \\
-Sprint & Iteración de trabajo de duración limitada dentro de Scrum. En Nuvlo se utiliza para agrupar incidencias y calcular métricas por periodo cuando Jira proporciona datos suficientes~\cite{ScrumGuide2020}. \\
-Kanban & Método de gestión visual del flujo de trabajo que permite analizar estados, límites de trabajo en curso y tiempos de entrega~\cite{Anderson2010Kanban}. \\
-\textit{WIP} & \textit{Work in Progress}. Representa el trabajo que se encuentra en curso en un momento determinado. Es útil para detectar sobrecarga o acumulación de tareas en el flujo~\cite{Anderson2010Kanban}. \\
-\textit{Velocity} & Métrica usada habitualmente en Scrum para observar el trabajo completado por \textit{sprint} o periodo. En Nuvlo se calcula a partir del esfuerzo disponible o, en su defecto, del número de incidencias completadas~\cite{ScrumGuide2020}. \\
+\textit{Nuvlo} & Nombre de la aplicación desarrollada. Representa la idea de unir nube y flujo: nube por su conexión con \textit{Jira Cloud} y flujo por el análisis del trabajo ágil mediante métricas visuales. \\
+Filosofía ágil & Enfoque de desarrollo que prioriza la entrega incremental de valor, la adaptación al cambio, la colaboración y la mejora continua. En este trabajo se toma como contexto general para interpretar \textit{Scrum} y \textit{Kanban}~\cite{AgileManifesto,DigitalAI2024StateOfAgile}. \\
+\textit{Scrum} & Marco de trabajo ágil basado en iteraciones, roles, eventos y artefactos. Se usa como referencia para interpretar conceptos como \textit{Sprint}, planificación, revisión y \textit{Velocity}~\cite{ScrumGuide2020}. \\
+\textit{Sprint} & Iteración de trabajo de duración limitada dentro de \textit{Scrum}. En \textit{Nuvlo} se utiliza para agrupar incidencias y calcular métricas por periodo cuando \textit{Jira} proporciona datos suficientes~\cite{ScrumGuide2020}. \\
+\textit{Kanban} & Sistema de gestión visual del flujo de trabajo que permite analizar estados, límites de trabajo en curso y tiempos de entrega~\cite{Anderson2010Kanban}. \\
+\textit{WIP} & Siglas de \textit{Work in Progress}. Representa el límite de trabajo que se puede encontrar en curso en un momento determinado. Es útil para detectar sobrecarga o acumulación de tareas en el flujo~\cite{Anderson2010Kanban}. \\
+\textit{Velocity} & Métrica usada habitualmente en \textit{Scrum} para observar el trabajo completado por \textit{Sprint} o periodo. En \textit{Nuvlo} se calcula a partir del esfuerzo disponible o, en su defecto, del número de incidencias completadas~\cite{ScrumGuide2020}. \\
 \textit{Lead Time} & Tiempo transcurrido desde la creación de una incidencia hasta su finalización. Permite analizar el tiempo total que una unidad de trabajo tarda en recorrer el sistema~\cite{Anderson2010Kanban}. \\
-\textit{Cycle Time} & Tiempo transcurrido desde que una incidencia entra en trabajo activo hasta que se completa. Es útil para analizar la eficiencia del flujo una vez iniciado el trabajo~\cite{Anderson2010Kanban}. \\
-\textit{Dashboard} & Vista de resumen que agrupa indicadores, gráficos y avisos para facilitar la interpretación del estado de un proyecto. En Nuvlo es la pantalla principal de análisis. \\
-Jira Cloud & Herramienta de Atlassian utilizada como fuente principal de datos de proyectos, incidencias, \textit{sprints} y cambios de estado~\cite{AtlassianJira,AtlassianJiraRestV3}. \\
-API REST & Interfaz de comunicación HTTP utilizada por Nuvlo para consultar datos de Jira Cloud desde el \textit{backend}~\cite{AtlassianJiraRestV3}. \\
-OAuth 2.0 3LO & Flujo de autorización utilizado para permitir que el usuario conecte su cuenta de Atlassian sin introducir credenciales propias en Nuvlo~\cite{AtlassianOAuth3LO,OWASPOAuth2}. \\
-PKCE & Extensión de OAuth que protege el intercambio del código de autorización mediante un verificador y un reto criptográfico, reduciendo riesgos de interceptación~\cite{OWASPOAuth2}. \\
-CSRF & Ataque en el que un tercero intenta forzar acciones autenticadas en nombre del usuario. Nuvlo incorpora protección CSRF para operaciones sensibles~\cite{OWASPCSRF}. \\
-PostgreSQL & Base de datos relacional utilizada para persistir usuarios, proyectos, incidencias, métricas calculadas, alertas y registros relevantes~\cite{PostgreSQLDocs}. \\
-Redis & Almacén en memoria utilizado para datos efímeros, cachés y estados temporales con tiempo de vida limitado~\cite{RedisDocs}. \\
-MVP & Siglas de \textit{Minimum Viable Product}, traducido como producto mínimo viable. Hace referencia a una primera versión funcional que cubre los requisitos imprescindibles y permite validar la propuesta antes de incorporar ampliaciones. \\
-CI/CD & Siglas de \textit{Continuous Integration} y \textit{Continuous Delivery/Deployment}. Se refiere a prácticas de automatización para compilar, probar o desplegar cambios de forma repetible. \\
-ORM & Siglas de \textit{Object-Relational Mapping}. En Nuvlo se utiliza Prisma como capa de acceso a PostgreSQL para trabajar con entidades del dominio sin escribir todas las consultas SQL manualmente~\cite{PrismaDocs}. \\
-TTL & Siglas de \textit{Time To Live}. Indica el tiempo durante el que un dato temporal permanece válido antes de expirar automáticamente, especialmente en Redis~\cite{RedisDocs}. \\
+\textit{Cycle Time} & Tiempo transcurrido desde que una incidencia o tarea entra en trabajo activo hasta que se completa. Es útil para analizar la eficiencia del flujo una vez iniciado el trabajo~\cite{Anderson2010Kanban}. \\
+\textit{Percentil} & Medida estadística que indica el valor por debajo del cual se sitúa un porcentaje determinado de observaciones. En \textit{Nuvlo}, P50 representa la mediana y P85 ayuda a observar tiempos altos sin depender únicamente de la media. \\
+\textit{Dashboard} & Vista de resumen que agrupa indicadores, gráficos y avisos para facilitar la interpretación del estado de un proyecto. En \textit{Nuvlo} es la pantalla principal de análisis. \\
+\textit{CSV} & Siglas de \textit{Comma-Separated Values}. Es un formato de texto tabular en el que los datos se separan normalmente mediante comas o separadores equivalentes. En \textit{Nuvlo} se utiliza como apoyo para cargar o generar datos de demostración controlados. \\
+\textit{GitHub} & Plataforma de alojamiento de repositorios \textit{Git} utilizada para mantener el código fuente, organizar el historial de cambios y apoyar el trabajo con control de versiones durante el desarrollo de \textit{Nuvlo}. \\
+\textit{Jira Cloud} & Herramienta de \textit{Atlassian} utilizada como fuente principal de datos de proyectos, incidencias, \textit{Sprints} y cambios de estado~\cite{AtlassianJira,AtlassianJiraRestV3}. \\
+\textit{API REST} & Interfaz de comunicación HTTP utilizada por \textit{Nuvlo} para consultar datos de \textit{Jira Cloud} desde el \textit{backend}~\cite{AtlassianJiraRestV3}. \\
+\textit{OAuth} 2.0 3LO & Flujo de autorización utilizado para permitir que el usuario conecte su cuenta de \textit{Atlassian} sin introducir credenciales propias en \textit{Nuvlo}~\cite{AtlassianOAuth3LO,OWASPOAuth2}. \\
+\textit{PKCE} & Siglas de \textit{Proof Key for Code Exchange}. Es una extensión de \textit{OAuth} que protege el intercambio del código de autorización mediante un verificador y un reto criptográfico, reduciendo riesgos de interceptación~\cite{OWASPOAuth2}. \\
+\textit{CSRF} & Siglas de \textit{Cross-Site Request Forgery}. Es un ataque en el que un tercero intenta forzar acciones autenticadas en nombre del usuario. \textit{Nuvlo} incorpora protección \textit{CSRF} para operaciones sensibles~\cite{OWASPCSRF}. \\
+\textit{DORA} & Siglas de \textit{DevOps Research and Assessment}. Es un equipo de Google que estudia prácticas \textit{DevOps} y métricas de entrega de software, como \textit{Deployment Frequency} o \textit{Change Lead Time}~\cite{DORAMetrics}. \\
+\textit{PostgreSQL} & Base de datos relacional utilizada para persistir usuarios, proyectos, incidencias, métricas calculadas, alertas y registros relevantes~\cite{PostgreSQLDocs}. \\
+\textit{Redis} & Almacén en memoria utilizado para datos efímeros, cachés y estados temporales con tiempo de vida limitado~\cite{RedisDocs}. \\
+\textit{MVP} & Siglas de \textit{Minimum Viable Product}, traducido como producto mínimo viable. Hace referencia a una primera versión funcional que cubre los requisitos imprescindibles y permite validar la propuesta antes de incorporar ampliaciones. \\
+\textit{E2E} & Siglas de \textit{End-to-End}. En pruebas software, hace referencia a validaciones de extremo a extremo que recorren un flujo completo de la aplicación desde la perspectiva del usuario. \\
+\textit{CI/CD} & Siglas de \textit{Continuous Integration} y \textit{Continuous Delivery/Deployment}. Se refiere a prácticas de automatización para compilar, probar o desplegar cambios de forma repetible. \\
+\textit{UML} & Siglas de \textit{Unified Modeling Language}. Lenguaje de modelado utilizado para representar casos de uso, clases, componentes, despliegue y secuencias de interacción del sistema~\cite{OMGUML251}. \\
+\textit{OMG} & Siglas de \textit{Object Management Group}. Organización responsable de la especificación de \textit{UML} utilizada como referencia para la notación de los diagramas~\cite{OMGUML251}. \\
+\textit{ORM} & Siglas de \textit{Object-Relational Mapping}. En \textit{Nuvlo} se utiliza \textit{Prisma} como capa de acceso a \textit{PostgreSQL} para trabajar con entidades del dominio sin escribir todas las consultas SQL manualmente~\cite{PrismaDocs}. \\
+\textit{WSL} & Siglas de \textit{Windows Subsystem for Linux}. Permite ejecutar un entorno \textit{Linux} dentro de \textit{Windows}, facilitando el uso de herramientas habituales de desarrollo y despliegue. \\
+\textit{TTL} & Siglas de \textit{Time To Live}. Indica el tiempo durante el que un dato temporal permanece válido antes de expirar automáticamente, especialmente en \textit{Redis}~\cite{RedisDocs}. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}

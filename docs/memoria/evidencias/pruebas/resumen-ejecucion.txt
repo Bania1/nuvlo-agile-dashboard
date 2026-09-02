@@ -1,0 +1,23 @@
+Evidencia de ejecucion de pruebas - Nuvlo
+Fecha de ejecucion: 2026-08-31
+
+Comando: npm test
+Resultado: correcto
+Detalle: 5 ficheros de prueba del backend superados, 16 tests superados.
+Ficheros principales:
+- apps/api/src/services/metrics.test.js
+- apps/api/src/services/alerts.test.js
+- apps/api/src/security/csrf.test.js
+- apps/api/src/services/retentionPolicy.test.js
+- apps/api/src/app.integration.test.js
+
+Comando: npm run build
+Resultado: correcto
+Detalle: compilacion de produccion del frontend completada con Vite.
+
+Comando: npm run test:e2e
+Resultado: correcto
+Detalle: 2 pruebas E2E superadas en Chromium con Playwright.
+Flujos cubiertos:
+- entrada con opcion de conectar Jira y acceso a demo local
+- dashboard demo con popover de alertas, filtros y widgets configurables

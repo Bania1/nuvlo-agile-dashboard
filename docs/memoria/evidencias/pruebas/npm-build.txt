@@ -1,0 +1,18 @@
+
+> nuvlo-tfg@0.1.0 build
+> npm run build --workspaces --if-present
+
+
+> @nuvlo/web@0.1.0 build
+> vite build
+
+vite v6.4.3 building for production...
+transforming...
+✓ 2208 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.53 kB │ gzip:   0.32 kB
+dist/assets/index-Bh1a4322.css     20.16 kB │ gzip:   4.53 kB
+dist/assets/index-DYVUMzHE.js     228.97 kB │ gzip:  71.05 kB
+dist/assets/recharts-D4Y5DRaM.js  416.16 kB │ gzip: 113.70 kB
+✓ built in 7.55s

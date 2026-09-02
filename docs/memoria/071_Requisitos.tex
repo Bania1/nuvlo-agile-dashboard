@@ -10,30 +10,30 @@ Asimismo, los requisitos se priorizan mediante la técnica MoSCoW, que clasifica
 
 \section{Descripción general del sistema}
 
-El sistema consiste en una aplicación web orientada a la visualización de métricas ágiles para equipos que trabajan con marcos como Scrum y Kanban. Su objetivo principal es integrarse con Jira Cloud, obtener información de proyectos e incidencias, procesarla y mostrarla mediante un \textit{dashboard} que facilite el análisis del flujo de trabajo, la evolución del equipo y determinados indicadores relacionados con la entrega de software.
+El sistema consiste en una aplicación web orientada a la visualización de métricas ágiles para equipos que trabajan con marcos como \textit{Scrum} y \textit{Kanban}. Su objetivo principal es integrarse con \textit{Jira Cloud}, obtener información de proyectos e incidencias, procesarla y mostrarla mediante un \textit{dashboard} que facilite el análisis del flujo de trabajo, la evolución del equipo y determinados indicadores relacionados con la entrega de software.
 
-La aplicación no pretende sustituir a Jira como herramienta de gestión del trabajo, sino proporcionar una capa complementaria de análisis centrada en métricas ágiles. De esta forma, los usuarios pueden consultar información agregada, aplicar filtros, revisar alertas y detectar posibles desviaciones en el comportamiento del equipo o del flujo de trabajo.
+La aplicación no pretende sustituir a \textit{Jira} como herramienta de gestión del trabajo, sino proporcionar una capa complementaria de análisis centrada en métricas ágiles. De esta forma, los usuarios pueden consultar información agregada, aplicar filtros, revisar alertas y detectar posibles desviaciones en el comportamiento del equipo o del flujo de trabajo.
 
 \section{Actores del sistema}
 
-Se identifica como actor principal al \textbf{Usuario}, entendido como la persona que utiliza Nuvlo para autenticarse mediante Atlassian, seleccionar un ámbito de análisis, sincronizar datos, consultar métricas, revisar alertas y acceder al registro de actividad.
+Se identifica como actor principal al \textbf{Usuario}, entendido como la persona que utiliza \textit{Nuvlo} para autenticarse mediante \textit{Atlassian}, seleccionar un ámbito de análisis, sincronizar datos, consultar métricas, revisar alertas y acceder al registro de actividad.
 
-Además, existen sistemas externos que participan en algunos casos de uso como actores secundarios: Atlassian interviene en la autenticación OAuth y Jira Cloud API proporciona los datos de proyectos, tableros, \textit{sprints}, incidencias, estados, fechas, estimaciones y transiciones. Estos actores secundarios se indican en la descripción detallada de los casos de uso cuando corresponde, pero no se representan como iniciadores en el diagrama principal.
+Además, existen sistemas externos que participan en algunos casos de uso como actores secundarios: \textit{Atlassian} interviene en la autenticación \textit{OAuth} y \textit{Jira Cloud} \textit{API} proporciona los datos de proyectos, tableros, \textit{Sprints}, incidencias, estados, fechas, estimaciones y transiciones. Estos actores secundarios se indican en la descripción detallada de los casos de uso cuando corresponde, pero no se representan como iniciadores en el diagrama principal.
 
 \section{Restricciones, supuestos y dependencias}
 
-El sistema depende de la disponibilidad de Jira Cloud y de su API oficial para obtener los datos necesarios. Por tanto, cualquier limitación, cambio o indisponibilidad de dicha API puede afectar al funcionamiento de la aplicación.
+El sistema depende de la disponibilidad de \textit{Jira Cloud} y de su \textit{API} oficial para obtener los datos necesarios. Por tanto, cualquier limitación, cambio o indisponibilidad de dicha \textit{API} puede afectar al funcionamiento de la aplicación.
 
-Se asume que los proyectos analizados contienen información suficiente y correctamente mantenida para calcular las métricas previstas. Por ejemplo, fechas de creación y resolución, historial de cambios de estado, estimaciones, asignaciones, \textit{sprints} o campos equivalentes según la configuración del proyecto.
+Se asume que los proyectos analizados contienen información suficiente y correctamente mantenida para calcular las métricas previstas. Por ejemplo, fechas de creación y resolución, historial de cambios de estado, estimaciones, asignaciones, \textit{Sprints} o campos equivalentes según la configuración del proyecto.
 
-También se considera que la autenticación se realizará mediante los mecanismos oficiales de Atlassian, evitando el registro local de usuarios y el uso de credenciales propias ajenas a Jira. Durante el desarrollo pueden emplearse configuraciones locales de prueba, pero el objetivo del sistema final es apoyarse en un flujo de autenticación adecuado para un entorno real.
+También se considera que la autenticación se realizará mediante los mecanismos oficiales de \textit{Atlassian}, evitando el registro local de usuarios y el uso de credenciales propias ajenas a \textit{Jira}. Durante el desarrollo pueden emplearse configuraciones locales de prueba, pero el objetivo del sistema final es apoyarse en un flujo de autenticación adecuado para un entorno real.
 
 \section{Priorización de requisitos}
 
 La priorización de requisitos se realiza mediante la técnica MoSCoW. En este trabajo se interpreta cada categoría de la siguiente forma:
 
 \begin{itemize}
-    \item \textbf{Must Have}: requisito imprescindible para que el sistema cumpla su propósito principal.
+    \item \textbf{Must Have}: requisito imprescindible para que el sistema cumpla su propósito principal. En conjunto, estos requisitos constituyen el producto mínimo viable, o \textit{MVP}, de \textit{Nuvlo}.
     \item \textbf{Should Have}: requisito importante, pero no estrictamente necesario para una primera versión funcional.
     \item \textbf{Could Have}: mejora deseable que aporta valor, pero que puede posponerse sin comprometer el objetivo central del sistema.
     \item \textbf{Won't Have}: requisito descartado para el alcance actual del proyecto, aunque podría considerarse en trabajos futuros.
@@ -41,18 +41,18 @@ La priorización de requisitos se realiza mediante la técnica MoSCoW. En este t
 
 \section{Requisitos funcionales}
 
-Los requisitos funcionales describen los servicios y funcionalidades que debe proporcionar el sistema. Para facilitar su lectura, se agrupan según el área funcional a la que pertenecen.
+Los requisitos funcionales describen los servicios y funcionalidades que debe proporcionar el sistema. Para facilitar su lectura, se agrupan según el área funcional a la que pertenecen. Las Tablas~\ref{tab:rf-integracion-jira},~\ref{tab:rf-configuracion-analisis},~\ref{tab:rf-calculo-metricas},~\ref{tab:rf-dashboard-visualizacion},~\ref{tab:rf-alertas-logs} y~\ref{tab:rf-autenticacion-control-acceso} recogen dicha clasificación.
 
-\subsection{Integración y sincronización con Jira}
+\subsection{Integración y sincronización con \textit{Jira}}
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
-\caption{Requisitos funcionales de integración y sincronización con Jira}\label{tab:rf-integracion-jira}\\
+\caption{Requisitos funcionales de integración y sincronización con \textit{Jira}}\label{tab:rf-integracion-jira}\\
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
-RF-01 & Must & El sistema debe permitir conectar con Jira Cloud para importar los datos necesarios para calcular métricas y alimentar las vistas del sistema, incluyendo proyectos, tableros, \textit{sprints} e incidencias. & Prueba de integración con Jira Cloud API. \\
-RF-02 & Must & El sistema debe permitir definir un ámbito principal de importación, al menos mediante la selección de proyecto Jira y los datos asociados que el sistema pueda sincronizar para dicho proyecto. & Prueba funcional de selección de proyecto e importación asociada. \\
+RF-01 & Must & El sistema debe permitir conectar con \textit{Jira Cloud} para importar los datos necesarios para calcular métricas y alimentar las vistas del sistema, incluyendo proyectos, tableros, \textit{Sprints} e incidencias. & Prueba de integración con \textit{Jira Cloud} \textit{API}. \\
+RF-02 & Must & El sistema debe permitir definir un ámbito principal de importación, al menos mediante la selección de proyecto \textit{Jira} y los datos asociados que el sistema pueda sincronizar para dicho proyecto. & Prueba funcional de selección de proyecto e importación asociada. \\
 RF-03 & Must & El sistema debe permitir ejecutar procesos de actualización de datos bajo demanda, reutilizando la información almacenada cuando no sea necesario realizar una sincronización completa. & Prueba funcional de actualización manual y reutilización de datos almacenados. \\
 RF-04 & Should & El sistema debería permitir actualizar datos automáticamente o de forma periódica cuando detecte que la información almacenada está desactualizada. & Prueba funcional de actualización automática o planificada. \\
 RF-05 & Must & El sistema debe registrar la fecha y hora de la última sincronización realizada para cada origen o ámbito de datos sincronizado. & Revisión de datos de sincronización almacenados. \\
@@ -62,7 +62,7 @@ RF-06 & Should & El sistema debería detectar y señalar incidencias con datos i
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \subsection{Configuración del análisis}
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
@@ -88,14 +88,14 @@ RF-18 & Should & El sistema debería permitir registrar manualmente eventos nece
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
 RF-09 & Must & El sistema debe calcular automáticamente, como mínimo, las métricas \textit{Velocity}, \textit{WIP}, \textit{Lead Time} y \textit{Cycle Time} a partir de los datos sincronizados. & Prueba con conjunto de datos conocido. \\
-RF-10 & Should & El sistema debería calcular la métrica \textit{Deployment Frequency} cuando disponga de datos suficientes para ello, por ejemplo mediante una integración con herramientas de control de versiones o CI/CD. & Prueba condicionada a la integración externa disponible. \\
+RF-10 & Should & El sistema debería calcular la métrica \textit{Deployment Frequency} cuando disponga de datos suficientes para ello, por ejemplo mediante una integración con herramientas de control de versiones o \textit{CI/CD}. & Prueba condicionada a la integración externa disponible. \\
 RF-11 & Must & El sistema debe recalcular las métricas afectadas tras cada sincronización completada con éxito. & Prueba de sincronización y recálculo posterior. \\
-RF-12 & Must & El sistema debe calcular \textit{Velocity} por \textit{sprint} a partir de las incidencias completadas y su esfuerzo asociado. & Prueba con datos de \textit{sprint} y esfuerzo conocidos. \\
+RF-12 & Must & El sistema debe calcular \textit{Velocity} por \textit{Sprint} a partir de las incidencias completadas y su esfuerzo asociado. & Prueba con datos de \textit{Sprint} y esfuerzo conocidos. \\
 RF-13 & Must & El sistema debe calcular el \textit{WIP} actual y su evolución histórica por estado, columna, equipo, proyecto o periodo, según proceda. & Prueba con histórico de incidencias por estado. \\
 RF-14 & Must & El sistema debe calcular \textit{Lead Time} y \textit{Cycle Time} por incidencia y de forma agregada para periodos de análisis. & Prueba con transiciones temporales conocidas. \\
 RF-15 & Should & El sistema debería proporcionar estadísticas agregadas sobre las métricas temporales, incluyendo al menos media y percentiles. & Prueba de cálculo estadístico sobre datos conocidos. \\
-RF-16 & Should & El sistema debería calcular métricas adicionales específicas de Scrum cuando existan datos suficientes, como el cumplimiento del compromiso del \textit{sprint}. & Prueba con datos completos de \textit{sprint}. \\
-RF-17 & Could & El sistema podría calcular métricas adicionales específicas de Kanban cuando existan datos suficientes, como la eficiencia de flujo. & Prueba condicionada a la disponibilidad de datos Kanban. \\
+RF-16 & Should & El sistema debería calcular métricas adicionales específicas de \textit{Scrum} cuando existan datos suficientes, como el cumplimiento del compromiso del \textit{Sprint}. & Prueba con datos completos de \textit{Sprint}. \\
+RF-17 & Could & El sistema podría calcular métricas adicionales específicas de \textit{Kanban} cuando existan datos suficientes, como la eficiencia de flujo. & Prueba condicionada a la disponibilidad de datos \textit{Kanban}. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
@@ -145,17 +145,17 @@ RF-28 & Should & El sistema debería ofrecer una vista para consultar los \texti
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
-RF-29 & Must & El sistema debe gestionar la autenticación exclusivamente mediante el mecanismo oficial de autenticación de Jira o Atlassian. & Prueba de autenticación con cuenta de Atlassian. \\
-RF-31 & Must & El sistema debe proteger las operaciones de configuración, sincronización y consulta de información de acuerdo con la sesión autenticada a través de Jira. & Pruebas de autorización por sesión. \\
+RF-29 & Must & El sistema debe gestionar la autenticación exclusivamente mediante el mecanismo oficial de autenticación de \textit{Jira} o \textit{Atlassian}. & Prueba de autenticación con cuenta de \textit{Atlassian}. \\
+RF-31 & Must & El sistema debe proteger las operaciones de configuración, sincronización y consulta de información de acuerdo con la sesión autenticada a través de \textit{Jira}. & Pruebas de autorización por sesión. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \section{Requisitos no funcionales}
 
-Los requisitos no funcionales recogen propiedades de calidad, restricciones técnicas y criterios generales que debe cumplir el sistema.
+Los requisitos no funcionales recogen propiedades de calidad, restricciones técnicas y criterios generales que debe cumplir el sistema. La Tabla~\ref{tab:requisitos-no-funcionales} sintetiza estos requisitos y sus criterios de verificación.
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{1.65cm}p{6.9cm}p{2.9cm}}
@@ -167,9 +167,9 @@ RNF-01 & Must & El sistema debe ofrecer una interfaz clara y adaptable a disposi
 RNF-02 & Must & El sistema debe preservar la integridad y consistencia de los datos importados y calculados. & Pruebas de importación, cálculo y revisión de datos. \\
 RNF-03 & Must & El sistema debe persistir los datos necesarios para soportar análisis históricos y comparativos. & Revisión de almacenamiento y consulta histórica. \\
 RNF-04 & Must & El sistema debe registrar eventos relevantes de operación, errores de integración y fallos de procesamiento para facilitar trazabilidad y diagnóstico. & Revisión de \textit{logs} durante pruebas funcionales. \\
-RNF-05 & Must & El sistema debe proteger credenciales, \textit{tokens} y demás información sensible mediante mecanismos de almacenamiento y tratamiento seguro. & Revisión de código, configuración y tratamiento de secretos. \\
+RNF-05 & Must & El sistema debe proteger credenciales, \textit{tokens} y demás información sensible mediante mecanismos de almacenamiento y gestión segura. & Revisión de código, configuración y gestión segura de secretos. \\
 RNF-06 & Must & El sistema debe minimizar el impacto de los límites de uso de servicios externos mediante estrategias de control de acceso, reducción de peticiones, almacenamiento temporal y evitación de sincronizaciones completas innecesarias. & Pruebas de integración y revisión de llamadas externas. \\
-RNF-07 & Must & El sistema debe mantener tiempos de respuesta inferiores a 2 segundos para la carga de vistas ya sincronizadas en entorno local de validación y con un volumen de datos de demostración o proyecto Jira pequeño/medio. & Pruebas básicas de rendimiento y revisión manual de tiempos de carga. \\
+RNF-07 & Must & El sistema debe mantener tiempos de respuesta inferiores a 2 segundos para la carga de vistas ya sincronizadas en entorno local de validación y con un volumen de datos de demostración o proyecto \textit{Jira} pequeño/medio. & Pruebas básicas de rendimiento y revisión manual de tiempos de carga. \\
 RNF-08 & Should & El sistema debería permitir ampliar el análisis hasta al menos 10 proyectos, 12 meses de histórico y varios miles de incidencias sin superar una degradación aproximada del 50\% respecto al tiempo de respuesta base en consultas ya sincronizadas. & Pruebas de carga o revisión técnica de escalabilidad. \\
 RNF-09 & Must & El sistema debe exponer interfaces de comunicación internas y externas de forma consistente y documentada, especialmente en la comunicación entre \textit{frontend}, \textit{backend} y servicios externos. & Revisión de documentación técnica e interfaces. \\
 RNF-10 & Must & El sistema debe diseñarse para facilitar mantenimiento, prueba y evolución incremental. & Revisión de estructura del código y pruebas. \\
@@ -179,12 +179,12 @@ RNF-11 & Should & El sistema debería aplicar una política de retención sobre 
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \section{Requisitos de información}
 
-Los requisitos de información describen los datos que el sistema debe gestionar para poder ofrecer sus funcionalidades. En este proyecto incluyen tanto la información obtenida desde Jira Cloud como la información generada o configurada dentro del propio sistema, por ejemplo proyectos, incidencias, estados, métricas calculadas, filtros, alertas y parámetros de análisis.
+Los requisitos de información describen los datos que el sistema debe gestionar para poder ofrecer sus funcionalidades. En este proyecto incluyen tanto la información obtenida desde \textit{Jira Cloud} como la información generada o configurada dentro del propio sistema, por ejemplo proyectos, incidencias, estados, métricas calculadas, filtros, alertas y parámetros de análisis.
 
-Este tipo de requisito ayuda a identificar qué información relevante debe estar disponible para alcanzar los objetivos del sistema~\cite{DuranBernardez2000Elicitacion}. En el caso de este proyecto, resultan especialmente importantes porque las métricas ágiles dependen directamente de la calidad, disponibilidad y estructura de los datos procedentes de Jira.
+La Tabla~\ref{tab:requisitos-informacion} recoge estos requisitos de información. En esta tabla se utiliza la columna «Origen» en lugar de una columna de verificación, porque el objetivo es identificar la procedencia de los datos necesarios para el sistema: \textit{Jira Cloud} \textit{API} o el propio sistema. Este tipo de requisito ayuda a identificar qué información relevante debe estar disponible para alcanzar los objetivos del sistema~\cite{DuranBernardez2000Elicitacion}. En el caso de este proyecto, resultan especialmente importantes porque las métricas ágiles dependen directamente de la calidad, disponibilidad y estructura de los datos procedentes de \textit{Jira}.
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.2cm}p{1.65cm}p{4.6cm}p{3.35cm}p{1.65cm}}
@@ -192,13 +192,13 @@ Este tipo de requisito ayuda a identificar qué información relevante debe esta
 \toprule
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Datos principales} & \textbf{Origen} \\
 \midrule
-RI-01 & Must & El sistema debe gestionar información básica de las incidencias importadas desde Jira cuando estos datos estén disponibles. & Identificador, resumen, tipo, estado y prioridad. & Jira Cloud API \\
-RI-02 & Must & El sistema debe obtener y gestionar el historial de transiciones de estado de las incidencias para calcular métricas temporales. & Estado origen, estado destino, fecha y hora de transición, incidencia asociada. & Jira Cloud API \\
-RI-03 & Must & El sistema debe gestionar información sobre el esfuerzo asociado a las incidencias cuando sea necesario para calcular \textit{Velocity} u otras métricas equivalentes. & Puntos de historia, estimación temporal o campo de esfuerzo configurado. & Jira Cloud API \\
-RI-04 & Must & El sistema debe gestionar información de \textit{sprint} o periodo de trabajo cuando exista. & Nombre, fecha de inicio, fecha de fin y fechas relevantes. & Jira Cloud API \\
-RI-05 & Must & El sistema debe gestionar la relación entre incidencias, proyectos, tableros y equipos necesaria para segmentar los análisis. & Proyecto, tablero, \textit{sprint}, equipo y relaciones con incidencias. & Jira Cloud API \\
+RI-01 & Must & El sistema debe gestionar información básica de las incidencias importadas desde \textit{Jira} cuando estos datos estén disponibles. & Identificador, resumen, tipo, estado y prioridad. & \textit{Jira Cloud} \textit{API} \\
+RI-02 & Must & El sistema debe obtener y gestionar el historial de transiciones de estado de las incidencias para calcular métricas temporales. & Estado origen, estado destino, fecha y hora de transición, incidencia asociada. & \textit{Jira Cloud} \textit{API} \\
+RI-03 & Must & El sistema debe gestionar información sobre el esfuerzo asociado a las incidencias cuando sea necesario para calcular \textit{Velocity} u otras métricas equivalentes. & Puntos de historia, estimación temporal o campo de esfuerzo configurado. & \textit{Jira Cloud} \textit{API} \\
+RI-04 & Must & El sistema debe gestionar información de \textit{Sprint} o periodo de trabajo cuando exista. & Nombre, fecha de inicio, fecha de fin y fechas relevantes. & \textit{Jira Cloud} \textit{API} \\
+RI-05 & Must & El sistema debe gestionar la relación entre incidencias, proyectos, tableros y equipos necesaria para segmentar los análisis. & Proyecto, tablero, \textit{Sprint}, equipo y relaciones con incidencias. & \textit{Jira Cloud} \textit{API} \\
 RI-06 & Should & El sistema debería conservar información de sincronización asociada a los datos importados. & Fecha y hora de actualización, origen de datos y ámbito sincronizado. & Sistema propio \\
-RI-07 & Must & El sistema debe incluir un conjunto mínimo de datos de prueba o demostración que permita validar su comportamiento en ausencia de conexión con fuentes reales. & Proyectos, incidencias, transiciones, \textit{sprints} y métricas simuladas, cargables mediante \textit{script}, CSV o \textit{dataset} local. & Sistema propio \\
+RI-07 & Must & El sistema debe incluir un conjunto mínimo de datos de prueba o demostración que permita validar su comportamiento en ausencia de conexión con fuentes reales. & Proyectos, incidencias, transiciones, \textit{Sprints} y métricas simuladas, cargables mediante \textit{script}, \textit{CSV} o \textit{dataset} local. & Sistema propio \\
 RI-08 & Must & El sistema debe gestionar información de configuración del análisis. & Filtros aplicados, estados de inicio y fin, rangos temporales, campos de esfuerzo y parámetros de cálculo. & Sistema propio \\
 RI-09 & Must & El sistema debe gestionar información sobre las métricas calculadas. & Tipo de métrica, valor obtenido, periodo analizado, proyecto asociado y filtros aplicados. & Sistema propio \\
 RI-10 & Should & El sistema debería gestionar información sobre alertas activadas e históricas conservadas. & Métrica asociada, umbral, fecha de activación, estado y fecha de expiración o periodo de conservación. & Sistema propio \\
@@ -207,42 +207,44 @@ RI-10 & Should & El sistema debería gestionar información sobre alertas activa
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \section{Matriz requisito-prueba}
 
-Para validar el alcance de la versión implementada se define una matriz de relación entre requisitos y evidencias de prueba. La matriz no sustituye a las pruebas automatizadas ni a la revisión funcional, pero permite comprobar de forma resumida qué requisitos quedan cubiertos por el producto mínimo viable (MVP), cuáles se consideran parciales y cuáles se dejan como trabajo futuro. Los requisitos marcados como parciales pertenecen a prioridades \textit{Should Have} o \textit{Could Have}; los requisitos \textit{Must Have} se consideran cubiertos por la versión actual del MVP.
+Para validar el alcance de la versión implementada se define una matriz de relación entre requisitos y evidencias de prueba, recogida en la Tabla~\ref{tab:matriz-requisito-prueba}. La matriz no sustituye a las pruebas automatizadas ni a la revisión funcional, pero permite comprobar de forma resumida qué requisitos quedan cubiertos por el producto mínimo viable (\textit{MVP}), cuáles se consideran parciales y cuáles se dejan como trabajo futuro. Los requisitos marcados como parciales pertenecen a prioridades \textit{Should Have} o \textit{Could Have}; los requisitos \textit{Must Have} se consideran cubiertos por la versión actual del \textit{MVP}.
+
+No todos los requisitos se acompañan de un pantallazo, ya que algunas evidencias son más adecuadas mediante pruebas automatizadas, revisión de código, registros de actividad o comprobación de persistencia en base de datos. Las capturas se emplean principalmente para validar requisitos visibles desde la interfaz. En el caso de RNF-08, no se han realizado pruebas de carga completas con el volumen máximo previsto porque el alcance de validación se centra en un entorno local controlado y en un proyecto \textit{Jira} pequeño/medio; por ello se deja como requisito parcial y como línea clara de validación futura.
 
 {\renewcommand{\arraystretch}{1.22}\scriptsize
-\begin{longtable}{p{2.2cm}p{2.2cm}p{5.9cm}p{3.1cm}}
+\begin{longtable}{p{1.65cm}p{1.55cm}p{1.65cm}p{5.35cm}p{2.45cm}}
 \caption{Matriz de validación requisito-prueba}\label{tab:matriz-requisito-prueba}\\
 \toprule
-\textbf{Requisitos} & \textbf{Estado} & \textbf{Evidencia principal} & \textbf{Tipo de prueba} \\
+\textbf{Requisitos} & \textbf{MoSCoW} & \textbf{Estado} & \textbf{Evidencia principal} & \textbf{Tipo de prueba} \\
 \midrule
-RF-01, RF-03, RF-05, RI-01--RI-06 & Cumplido & Sincronización real del proyecto Jira \texttt{TFG}, persistencia en PostgreSQL y registro de \texttt{SyncRun}. Capturas en Figuras~\ref{fig:manual-dashboard-jira} y~\ref{fig:manual-tablero-jira}. & Integración Jira y revisión funcional \\
-RF-02, RF-20 & Cumplido & Selección de proyecto importado, sincronización asociada y filtros rápidos por estado, tipo y búsqueda textual en \textit{dashboard}. Los filtros avanzados por tablero, \textit{sprint}, etiquetas y rango temporal se tratan como ampliación dentro de RF-08. & E2E y revisión UI \\
-RF-04 & Parcial & Existe sincronización bajo demanda y reutilización de datos persistidos; la planificación automática periódica no forma parte del MVP. & Revisión funcional \\
-RF-06 & Parcial & El \textit{dashboard} muestra avisos de calidad de datos y limitaciones de \textit{changelog}/\textit{sprints}; la detección exhaustiva de inconsistencias queda como mejora. & Revisión funcional \\
-RF-07, RF-08, RI-08 & Cumplido & La configuración de análisis se persiste por usuario y proyecto en PostgreSQL. Permite definir estados de inicio y fin, tipos de incidencia, etiquetas, rango temporal y percentiles, y el \textit{dashboard} recalcula las métricas con ese ámbito. & Integración, revisión UI y pruebas de configuración \\
-RF-09, RF-11--RF-15, RI-09 & Cumplido & Cálculo de \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, media y percentiles con \textit{dataset} \textit{offline} y datos sincronizados. & Unitarias y E2E \\
-RF-10, RF-16, RF-17, RF-18, RF-23 & Futuro & Requisitos de mejora no imprescindibles para el MVP: \textit{Deployment Frequency}, métricas Scrum/Kanban adicionales, eventos manuales y modo presentación específico. & No aplicado al MVP \\
-RF-19, RF-21, RF-22, RNF-01 & Cumplido & \textit{Dashboard} \textit{responsive}, \textit{widgets} configurables, ayudas contextuales y capturas de escritorio/móvil. & E2E, revisión \textit{responsive} y capturas \\
-RF-24--RF-26, RI-10 & Cumplido & Reglas de alerta persistidas, badge de notificación, aviso emergente e historial de eventos. Figura~\ref{fig:manual-alertas-jira}. & Integración y revisión funcional \\
-RF-27, RF-28, RNF-04 & Cumplido & Vista de actividad con \textit{logs} de autenticación, sincronización, alertas y retención. Figura~\ref{fig:manual-actividad-jira}. & Integración y revisión funcional \\
-RF-29, RF-31, RNF-05 & Cumplido & OAuth 2.0 3LO con Atlassian, ausencia de registro local, \textit{cookies} \texttt{httpOnly}, CSRF, PKCE y cifrado de \textit{tokens} OAuth en PostgreSQL. & Revisión de código e integración \\
-RNF-02, RNF-03, RNF-06, RNF-07, RNF-09, RNF-10, RNF-11 & Cumplido & Persistencia normalizada, Redis con TTL, política de retención, estructura \textit{monorepo}, documentación técnica y pruebas automatizadas. & Unitarias, integración y revisión técnica \\
-RNF-08 & Parcial & La arquitectura permite evolución incremental y el requisito queda definido con límites cuantitativos, pero no se han ejecutado pruebas de carga completas con el volumen máximo previsto. & Revisión técnica \\
-RI-07 & Cumplido & Dataset \textit{offline} generado desde CSV/\textit{script} y capturas demo reproducibles en \texttt{img/app-demo}. & E2E y capturas demo \\
+RF-01, RF-03, RF-05, RI-01--RI-06 & Must & Cumplido & Sincronización real del proyecto \textit{Jira} \texttt{TFG}, persistencia en \textit{PostgreSQL} y registro de \texttt{SyncRun}. Capturas en Figuras~\ref{fig:manual-dashboard-jira} y~\ref{fig:manual-tablero-jira}. & Integración \textit{Jira} y revisión funcional \\
+RF-02, RF-20 & Must & Cumplido & Selección de proyecto importado, sincronización asociada y filtros rápidos por estado, tipo y búsqueda textual en \textit{dashboard}. Los filtros avanzados por tablero, \textit{Sprint}, etiquetas y rango temporal se tratan como ampliación dentro de RF-08. & \textit{E2E} y revisión UI \\
+RF-04 & Should & Parcial & Existe sincronización bajo demanda y reutilización de datos persistidos; la planificación automática periódica no forma parte del \textit{MVP}. & Revisión funcional \\
+RF-06 & Should & Parcial & El \textit{dashboard} muestra avisos de calidad de datos y limitaciones de \textit{changelog}/\textit{Sprints}; la detección exhaustiva de inconsistencias queda como mejora. & Revisión funcional \\
+RF-07, RF-08, RI-08 & Should/Must & Cumplido & La configuración de análisis se persiste por usuario y proyecto en \textit{PostgreSQL}. Permite definir estados de inicio y fin, tipos de incidencia, etiquetas, rango temporal y percentiles, y el \textit{dashboard} recalcula las métricas con ese ámbito. & Integración, revisión UI y pruebas de configuración \\
+RF-09, RF-11--RF-15, RI-09 & Must/Should & Cumplido & Cálculo de \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, media y percentiles con \textit{dataset} \textit{offline} y datos sincronizados. & Unitarias y \textit{E2E} \\
+RF-10, RF-16, RF-17, RF-18, RF-23 & Should/Could & Futuro & Requisitos de mejora no imprescindibles para el \textit{MVP}: \textit{Deployment Frequency}, métricas \textit{Scrum}/\textit{Kanban} adicionales, eventos manuales y modo presentación específico. & No aplicado al \textit{MVP} \\
+RF-19, RF-21, RF-22, RNF-01 & Must/Should & Cumplido & \textit{Dashboard} \textit{responsive}, \textit{widgets} configurables, ayudas contextuales y capturas de escritorio/móvil. & \textit{E2E}, revisión \textit{responsive} y capturas \\
+RF-24--RF-26, RI-10 & Must/Should & Cumplido & Reglas de alerta persistidas, badge de notificación, aviso emergente e historial de eventos. Figura~\ref{fig:manual-alertas-jira}. & Integración y revisión funcional \\
+RF-27, RF-28, RNF-04 & Must/Should & Cumplido & Vista de actividad con \textit{logs} de autenticación, sincronización, alertas y retención. Figura~\ref{fig:manual-actividad-jira}. & Integración y revisión funcional \\
+RF-29, RF-31, RNF-05 & Must & Cumplido & \textit{OAuth} 2.0 3LO con \textit{Atlassian}, ausencia de registro local, \textit{cookies} \texttt{httpOnly}, \textit{CSRF}, \textit{PKCE} y cifrado de \textit{tokens} \textit{OAuth} en \textit{PostgreSQL}. & Revisión de código e integración \\
+RNF-02, RNF-03, RNF-06, RNF-07, RNF-09, RNF-10, RNF-11 & Must/Should & Cumplido & Persistencia normalizada, \textit{Redis} con \textit{TTL}, política de retención, estructura \textit{monorepo}, documentación técnica y pruebas automatizadas. & Unitarias, integración y revisión técnica \\
+RNF-08 & Should & Parcial & La arquitectura permite evolución incremental y el requisito queda definido con límites cuantitativos, pero no se han ejecutado pruebas de carga completas con el volumen máximo previsto. & Revisión técnica \\
+RI-07 & Must & Cumplido & Dataset \textit{offline} generado desde \textit{CSV}/\textit{script} y capturas demo reproducibles en \texttt{img/app-demo}. & \textit{E2E} y capturas demo \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
 }
 
-Los requisitos marcados como parciales o futuros no impiden la existencia de un MVP funcional, porque no afectan a requisitos clasificados como \textit{Must Have}. Su presencia delimita el trabajo restante y evita presentar como completadas funcionalidades que todavía requieren desarrollo adicional. La configuración avanzada de análisis queda cubierta en una versión acotada y persistente; se reserva como mejora futura la selección manual completa de campos personalizados de esfuerzo en cualquier instancia Jira.
+Los requisitos marcados como parciales o futuros no impiden la existencia de un \textit{MVP} funcional, porque no afectan a requisitos clasificados como \textit{Must Have}. Su presencia delimita el trabajo restante y evita presentar como completadas funcionalidades que todavía requieren desarrollo adicional. La configuración avanzada de análisis queda cubierta en una versión acotada y persistente; se reserva como mejora futura la selección manual completa de campos personalizados de esfuerzo en cualquier instancia \textit{Jira}.
 
-\clearpage
+\FloatBarrier
 \section{Casos de uso}
 
-A partir de los requisitos funcionales se identifican los principales casos de uso del sistema. Esta primera relación sirve como base para elaborar posteriormente el diagrama de casos de uso y para describir de forma detallada el comportamiento esperado del sistema desde el punto de vista del usuario.
+A partir de los requisitos funcionales se identifican los principales casos de uso del sistema. La Tabla~\ref{tab:casos-uso-identificados} resume esta primera relación y sirve como base para elaborar posteriormente el diagrama de casos de uso y para describir de forma detallada el comportamiento esperado del sistema desde el punto de vista del usuario.
 
 {\renewcommand{\arraystretch}{1.28}\footnotesize
 \begin{longtable}{p{1.35cm}p{3.45cm}p{7.55cm}}
@@ -250,12 +252,12 @@ A partir de los requisitos funcionales se identifican los principales casos de u
 \toprule
 \textbf{ID} & \textbf{Caso de uso} & \textbf{Descripción} \\
 \midrule
-CU-01 & Autenticarse mediante Atlassian & El usuario accede al sistema utilizando el mecanismo oficial de autenticación de Jira o Atlassian. \\
-CU-02 & Seleccionar ámbito de análisis & El usuario selecciona el proyecto principal de análisis y, cuando estén disponibles, criterios adicionales como tablero, \textit{sprint}, rango temporal u otros filtros. \\
-CU-03 & Actualizar datos de Jira & El sistema actualiza los datos procedentes de Jira Cloud de forma controlada, reutilizando datos almacenados cuando sean válidos y permitiendo actualización bajo demanda cuando sea necesario. \\
-CU-04 & Configurar criterios de cálculo de métricas & El usuario ajusta criterios avanzados para interpretar los datos de Jira, como estados de inicio y fin, campos de esfuerzo, percentiles y criterios de agrupación, según las opciones disponibles en la versión utilizada. \\
+CU-01 & Autenticarse mediante \textit{Atlassian} & El usuario accede al sistema utilizando el mecanismo oficial de autenticación de \textit{Jira} o \textit{Atlassian}. \\
+CU-02 & Seleccionar ámbito de análisis & El usuario selecciona el proyecto principal de análisis y, cuando estén disponibles, criterios adicionales como tablero, \textit{Sprint}, rango temporal u otros filtros. \\
+CU-03 & Actualizar datos de \textit{Jira} & El sistema actualiza los datos procedentes de \textit{Jira Cloud} de forma controlada, reutilizando datos almacenados cuando sean válidos y permitiendo actualización bajo demanda cuando sea necesario. \\
+CU-04 & Configurar criterios de cálculo de métricas & El usuario ajusta criterios avanzados para interpretar los datos de \textit{Jira}, como estados de inicio y fin, campos de esfuerzo, percentiles y criterios de agrupación, según las opciones disponibles en la versión utilizada. \\
 CU-05 & Consultar \textit{dashboard} principal & El usuario visualiza las métricas clave del sistema en un \textit{dashboard} principal. \\
-CU-06 & Analizar métricas de flujo & El usuario consulta métricas como \textit{Lead Time}, \textit{Cycle Time}, \textit{WIP} y \textit{Throughput} o \textit{Velocity} según el contexto. \\
+CU-06 & Analizar métricas de flujo & El usuario consulta métricas como \textit{Lead Time}, \textit{Cycle Time}, \textit{WIP} y \textit{Velocity} según el contexto. \\
 CU-07 & Configurar reglas de alerta & El usuario define umbrales simples para detectar situaciones relevantes en las métricas calculadas. \\
 CU-08 & Consultar alertas & El usuario revisa alertas activas e históricas conservadas por el sistema según la política de retención definida. \\
 CU-09 & Consultar \textit{logs} del sistema & El usuario autenticado consulta eventos relevantes del sistema para diagnóstico y seguimiento. \\
@@ -266,7 +268,7 @@ CU-09 & Consultar \textit{logs} del sistema & El usuario autenticado consulta ev
 
 \subsection{Diagrama de casos de uso}
 
-La Figura~\ref{fig:casos-uso} representa de forma resumida el actor primario que inicia los casos de uso y los principales servicios que ofrece Nuvlo desde el punto de vista funcional. Los servicios externos Atlassian OAuth y Jira Cloud API no se incluyen en este diagrama porque actúan como colaboradores secundarios dentro de determinados flujos, no como actores que soliciten funcionalidades al sistema.
+La Figura~\ref{fig:casos-uso} representa de forma resumida el actor primario que inicia los casos de uso y los principales servicios que ofrece \textit{Nuvlo} desde el punto de vista funcional. Los servicios externos \textit{Atlassian OAuth} y \textit{Jira Cloud} \textit{API} no se incluyen en este diagrama porque actúan como colaboradores secundarios dentro de determinados flujos, no como actores que soliciten funcionalidades al sistema.
 
 \begin{figure}[htbp]
     \centering
@@ -289,17 +291,17 @@ Para facilitar su interpretación, se resumen a continuación los elementos prin
 El diagrama utiliza un único actor primario:
 
 \begin{itemize}
-    \item \textbf{Usuario}: persona que inicia la interacción con Nuvlo. Antes de autenticarse solo puede comenzar el acceso mediante Atlassian; una vez autenticado puede seleccionar el ámbito de análisis, actualizar datos, consultar \textit{dashboards}, analizar métricas, configurar reglas de alerta, consultar alertas y revisar \textit{logs}.
+    \item \textbf{Usuario}: persona que inicia la interacción con \textit{Nuvlo}. Antes de autenticarse solo puede comenzar el acceso mediante \textit{Atlassian}; una vez autenticado puede seleccionar el ámbito de análisis, actualizar datos, consultar \textit{dashboards}, analizar métricas, configurar reglas de alerta, consultar alertas y revisar \textit{logs}.
 \end{itemize}
 
-No se utiliza una generalización entre \textit{Usuario} y \textit{Usuario autenticado}, ya que la autenticación representa un cambio de estado dentro del flujo de uso y no una especialización estable de actor. Tampoco se modela una herencia entre Atlassian y Jira, porque en este diagrama no solicitan funcionalidades al sistema, sino que participan como sistemas externos en casos concretos.
+No se utiliza una generalización entre \textit{Usuario} y \textit{Usuario autenticado}, ya que la autenticación representa un cambio de estado dentro del flujo de uso y no una especialización estable de actor. Tampoco se modela una herencia entre \textit{Atlassian} y \textit{Jira}, porque en este diagrama no solicitan funcionalidades al sistema, sino que participan como sistemas externos en casos concretos.
 
-Las asociaciones del diagrama indican qué funcionalidades puede iniciar el usuario desde la aplicación. Además, se han añadido relaciones \textit{include} para hacer visibles dependencias funcionales obligatorias: CU-03 incluye CU-02, CU-05 incluye CU-02 y CU-06, CU-06 incluye CU-02 y CU-03, y CU-08 incluye CU-07. También se representan dos relaciones \textit{extend}: CU-09 puede extender CU-03 cuando el usuario revisa los \textit{logs} asociados a una actualización, y CU-08 puede extender CU-05 cuando el usuario accede a las alertas desde el contexto del \textit{dashboard}. La autenticación se representa como precondición común de los casos CU-02 a CU-09 mediante una nota, porque no implica ejecutar el inicio de sesión en cada interacción, sino disponer de una sesión Atlassian válida.
+Las asociaciones del diagrama indican qué funcionalidades puede iniciar el usuario desde la aplicación. Además, se han añadido relaciones \textit{include} para hacer visibles dependencias funcionales obligatorias: CU-03 incluye CU-02, CU-05 incluye CU-02 y CU-06, CU-06 incluye CU-02 y CU-03, y CU-08 incluye CU-07. También se representan dos relaciones \textit{extend}: CU-09 puede extender CU-03 cuando el usuario revisa los \textit{logs} asociados a una actualización, y CU-08 puede extender CU-05 cuando el usuario accede a las alertas desde el contexto del \textit{dashboard}. La autenticación se representa como precondición común de los casos CU-02 a CU-09 mediante una nota, porque no implica ejecutar el inicio de sesión en cada interacción, sino disponer de una sesión \textit{Atlassian} válida.
 
-\clearpage
+\FloatBarrier
 \subsection{Trazabilidad entre requisitos y casos de uso}
 
-La trazabilidad permite comprobar que los casos de uso identificados cubren los requisitos funcionales principales. La matriz se ha actualizado de acuerdo con la priorización final de requisitos, eliminando requisitos redundantes y separando las funcionalidades imprescindibles de las ampliaciones previstas.
+La trazabilidad permite comprobar que los casos de uso identificados cubren los requisitos funcionales principales. Esta relación se resume en la Tabla~\ref{tab:trazabilidad-rf-cu}. La matriz se ha actualizado de acuerdo con la priorización final de requisitos, eliminando requisitos redundantes y separando las funcionalidades imprescindibles de las ampliaciones previstas.
 
 {\renewcommand{\arraystretch}{1.25}\scriptsize
 \setlength{\tabcolsep}{3.2pt}
@@ -348,12 +350,12 @@ RF-31 & X &  &  &  &  &  &  &  &  \\\hline
 }
 
 La matriz anterior no sustituye a la descripción detallada de los casos de uso. Su función es validar de forma visual que cada requisito funcional queda relacionado con, al menos, un caso de uso identificado. La cobertura completa o parcial de cada requisito se justifica en la matriz requisito-prueba.
-\clearpage
+\FloatBarrier
 \subsection{Descripción detallada de los casos de uso}
 
 Una vez identificados los casos de uso principales y validada su relación con los requisitos funcionales, se describen de forma detallada. Cada ficha recoge el actor principal, los actores secundarios, las precondiciones, el flujo principal, los posibles flujos alternativos, las postcondiciones y los requisitos relacionados. Esta descripción permite concretar el comportamiento esperado del sistema desde el punto de vista del usuario.
 
-\subsubsection{CU-01: Autenticarse mediante Atlassian}
+\subsubsection{CU-01: Autenticarse mediante \textit{Atlassian}}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
 \begin{longtable}{p{3.2cm}p{10.2cm}}
@@ -361,21 +363,21 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \textbf{Campo} & \textbf{Descripción} \\
 \midrule
 \textbf{Actor principal} & Usuario. \\
-\textbf{Actores secundarios} & Atlassian. \\
-\textbf{Descripción} & Permite al usuario acceder al sistema utilizando el mecanismo oficial de autenticación de Atlassian, evitando el registro local de usuarios y el uso de credenciales propias de la aplicación. \\
-\textbf{Precondiciones} & El usuario dispone de una cuenta válida de Atlassian. El servicio de autenticación de Atlassian está disponible. \\
+\textbf{Actores secundarios} & \textit{Atlassian}. \\
+\textbf{Descripción} & Permite al usuario acceder al sistema utilizando el mecanismo oficial de autenticación de \textit{Atlassian}, evitando el registro local de usuarios y el uso de credenciales propias de la aplicación. \\
+\textbf{Precondiciones} & El usuario dispone de una cuenta válida de \textit{Atlassian}. El servicio de autenticación de \textit{Atlassian} está disponible. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
     \item El usuario accede a la aplicación.
-    \item El sistema muestra la opción de autenticación mediante Atlassian.
+    \item El sistema muestra la opción de autenticación mediante \textit{Atlassian}.
     \item El usuario selecciona iniciar sesión.
-    \item El sistema redirige al usuario al mecanismo de autenticación de Atlassian.
-    \item El usuario introduce sus credenciales en Atlassian y autoriza el acceso.
-    \item Atlassian valida la autenticación y devuelve la respuesta al sistema.
+    \item El sistema redirige al usuario al mecanismo de autenticación de \textit{Atlassian}.
+    \item El usuario introduce sus credenciales en \textit{Atlassian} y autoriza el acceso.
+    \item \textit{Atlassian} valida la autenticación y devuelve la respuesta al sistema.
     \item El sistema crea una sesión autenticada.
     \item El sistema muestra la pantalla principal de la aplicación.
 \end{enumerate}\end{minipage} \\
 \textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
-    \item El servicio de Atlassian no está disponible: el sistema informa de que no se puede completar la autenticación y el usuario permanece sin sesión iniciada.
+    \item El servicio de \textit{Atlassian} no está disponible: el sistema informa de que no se puede completar la autenticación y el usuario permanece sin sesión iniciada.
     \item El usuario cancela el proceso de autenticación: el sistema vuelve a la pantalla inicial y no crea una sesión.
     \item La autenticación no es válida: el sistema informa de que no se ha podido iniciar sesión.
 \end{itemize}\end{minipage} \\
@@ -395,9 +397,9 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \textbf{Campo} & \textbf{Descripción} \\
 \midrule
 \textbf{Actor principal} & Usuario autenticado. \\
-\textbf{Actores secundarios} & Jira Cloud. \\
-\textbf{Descripción} & Permite seleccionar el ámbito de datos sobre el que se desea trabajar. En el MVP se contempla como mínimo la selección de proyecto Jira importado; otros criterios como tablero, \textit{sprint}, rango temporal, etiquetas o tipo de incidencia quedan como ampliación de configuración avanzada. \\
-\textbf{Precondiciones} & El usuario ha iniciado sesión. La conexión con Jira Cloud está disponible o existen datos previamente sincronizados que pueden utilizarse para construir la selección. \\
+\textbf{Actores secundarios} & \textit{Jira Cloud}. \\
+\textbf{Descripción} & Permite seleccionar el ámbito de datos sobre el que se desea trabajar. En el \textit{MVP} se contempla como mínimo la selección de proyecto \textit{Jira} importado; otros criterios como tablero, \textit{Sprint}, rango temporal, etiquetas o tipo de incidencia quedan como ampliación de configuración avanzada. \\
+\textbf{Precondiciones} & El usuario ha iniciado sesión. La conexión con \textit{Jira Cloud} está disponible o existen datos previamente sincronizados que pueden utilizarse para construir la selección. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
     \item El usuario accede a la sección de selección de ámbito.
     \item El sistema consulta los proyectos disponibles y, cuando proceda, otros criterios asociados.
@@ -408,7 +410,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
     \item El sistema actualiza las vistas o prepara la actualización de datos según el ámbito definido.
 \end{enumerate}\end{minipage} \\
 \textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
-    \item Desde el paso 2, Jira Cloud no está disponible y no existen datos sincronizados reutilizables: el sistema informa de que no se pueden recuperar ámbitos de análisis y finaliza sin modificar la selección previa.
+    \item Desde el paso 2, \textit{Jira Cloud} no está disponible y no existen datos sincronizados reutilizables: el sistema informa de que no se pueden recuperar ámbitos de análisis y finaliza sin modificar la selección previa.
     \item Desde el paso 3, no existen proyectos disponibles para el usuario: el sistema informa de que no se han encontrado ámbitos de análisis y finaliza sin crear un ámbito seleccionado.
     \item Desde el paso 5, la selección no es válida: el sistema informa del error y finaliza sin guardar el nuevo ámbito de análisis.
 \end{itemize}\end{minipage} \\
@@ -419,8 +421,8 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\clearpage
-\subsubsection{CU-03: Actualizar datos de Jira}
+\FloatBarrier
+\subsubsection{CU-03: Actualizar datos de \textit{Jira}}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
 \begin{longtable}{p{3.2cm}p{10.2cm}}
@@ -428,15 +430,15 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \textbf{Campo} & \textbf{Descripción} \\
 \midrule
 \textbf{Actor principal} & Usuario autenticado. \\
-\textbf{Actores secundarios} & Jira Cloud. \\
-\textbf{Descripción} & Permite actualizar los datos procedentes de Jira Cloud de forma controlada, reutilizando la información almacenada cuando siga siendo válida y evitando sincronizaciones completas innecesarias. \\
+\textbf{Actores secundarios} & \textit{Jira Cloud}. \\
+\textbf{Descripción} & Permite actualizar los datos procedentes de \textit{Jira Cloud} de forma controlada, reutilizando la información almacenada cuando siga siendo válida y evitando sincronizaciones completas innecesarias. \\
 \textbf{Precondiciones} & El usuario ha iniciado sesión. Existe un ámbito de análisis seleccionado. \\
 \textbf{Relaciones} & Incluye CU-02 para utilizar el ámbito de análisis seleccionado. Puede ser extendido por CU-09 cuando el usuario consulta el registro de eventos generado por la actualización. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
     \item El usuario accede a un ámbito de análisis o solicita una actualización bajo demanda.
     \item El sistema comprueba la fecha de última actualización y el ámbito seleccionado.
     \item Si la información almacenada sigue siendo válida, el sistema reutiliza los datos disponibles.
-    \item Si la información está desactualizada, el sistema consulta Jira Cloud API.
+    \item Si la información está desactualizada, el sistema consulta \textit{Jira Cloud} \textit{API}.
     \item El sistema importa o actualiza únicamente los datos necesarios cuando sea posible.
     \item El sistema registra la fecha y hora de actualización.
     \item El sistema detecta posibles datos incompletos o inconsistentes.
@@ -444,8 +446,8 @@ Una vez identificados los casos de uso principales y validada su relación con l
     \item El sistema informa del estado de la actualización.
 \end{enumerate}\end{minipage} \\
 \textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
-    \item Desde el paso 4, Jira Cloud no está disponible cuando se necesitan datos remotos: el sistema registra el evento, informa del error y finaliza reutilizando datos almacenados si existen.
-    \item Desde el paso 5, la API devuelve datos incompletos: el sistema registra la incidencia detectada, conserva únicamente los datos válidos y finaliza indicando que la actualización ha sido parcial.
+    \item Desde el paso 4, \textit{Jira Cloud} no está disponible cuando se necesitan datos remotos: el sistema registra el evento, informa del error y finaliza reutilizando datos almacenados si existen.
+    \item Desde el paso 5, la \textit{API} devuelve datos incompletos: el sistema registra la incidencia detectada, conserva únicamente los datos válidos y finaliza indicando que la actualización ha sido parcial.
     \item Desde el paso 8, se produce un error durante el cálculo de métricas: el sistema registra el error y finaliza indicando que los datos se han actualizado, pero las métricas no se han recalculado completamente.
 \end{itemize}\end{minipage} \\
 \textbf{Postcondiciones} & Los datos quedan actualizados o se reutilizan los datos almacenados válidos. Las métricas afectadas se recalculan cuando procede. \\
@@ -456,7 +458,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 }
 
 
-\clearpage
+\FloatBarrier
 \subsubsection{CU-04: Configurar criterios de cálculo de métricas}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -466,7 +468,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \midrule
 \textbf{Actor principal} & Usuario autenticado. \\
 \textbf{Actores secundarios} & Ninguno. \\
-\textbf{Descripción} & Permite definir, como configuración avanzada, cómo debe interpretar el sistema los datos procedentes de Jira para calcular métricas, incluyendo estados de inicio y fin, campo de esfuerzo, rango temporal, percentiles y criterios de agrupación. \\
+\textbf{Descripción} & Permite definir, como configuración avanzada, cómo debe interpretar el sistema los datos procedentes de \textit{Jira} para calcular métricas, incluyendo estados de inicio y fin, campo de esfuerzo, rango temporal, percentiles y criterios de agrupación. \\
 \textbf{Precondiciones} & El usuario ha iniciado sesión. Existe un ámbito de análisis disponible. El sistema dispone de estados, campos o datos configurables y la versión utilizada permite modificar dichos criterios. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
     \item El usuario accede a la sección de configuración de criterios de cálculo.
@@ -490,7 +492,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \subsubsection{CU-05: Consultar \textit{dashboard} principal}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -522,7 +524,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \subsubsection{CU-06: Analizar métricas de flujo}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -532,7 +534,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \midrule
 \textbf{Actor principal} & Usuario autenticado. \\
 \textbf{Actores secundarios} & Ninguno. \\
-\textbf{Descripción} & Permite consultar métricas de flujo y rendimiento del equipo, como \textit{Velocity}, \textit{WIP}, \textit{Lead Time}, \textit{Cycle Time} y otras métricas adicionales cuando existan datos suficientes. \\
+\textbf{Descripción} & Permite consultar métricas de flujo y evolución del equipo, como \textit{Velocity}, \textit{WIP}, \textit{Lead Time}, \textit{Cycle Time} y otras métricas adicionales cuando existan datos suficientes. \\
 \textbf{Precondiciones} & El usuario ha iniciado sesión. Existe un ámbito de análisis seleccionado. El sistema dispone de datos sincronizados o almacenados. Los criterios necesarios para el cálculo de métricas están configurados. \\\
 \textbf{Relaciones} & Incluye CU-02 para acotar el análisis e incluye CU-03 para trabajar con datos actualizados o reutilizados según la política de sincronización. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
@@ -555,7 +557,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \subsubsection{CU-07: Configurar reglas de alerta}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -588,7 +590,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \subsubsection{CU-08: Consultar alertas}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -619,7 +621,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 \subsubsection{CU-09: Consultar \textit{logs} del sistema}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -650,5 +652,5 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\clearpage
+\FloatBarrier
 

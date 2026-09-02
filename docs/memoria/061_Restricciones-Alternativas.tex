@@ -1,7 +1,7 @@
-\chapter{Restricciones y estudio de alternativas}
+\chapter{Restricciones y alternativas}
 \label{restriccionesAlternativas}
 
-Este capítulo recoge las restricciones que condicionan el desarrollo de Nuvlo y las decisiones técnicas adoptadas para construir la aplicación. A diferencia del capítulo de antecedentes, centrado en herramientas existentes del mercado, aquí se justifican las alternativas de arquitectura, lenguajes, plataformas y tecnologías utilizadas durante la implementación.
+Este capítulo recoge las restricciones que condicionan el desarrollo de \textit{Nuvlo} y las decisiones técnicas adoptadas para construir la aplicación. A diferencia del capítulo de antecedentes, centrado en herramientas existentes del mercado, aquí se justifican las alternativas de arquitectura, lenguajes, plataformas y tecnologías utilizadas durante la implementación.
 
 \section{Restricciones del proyecto}
 
@@ -9,23 +9,23 @@ El desarrollo de la aplicación está condicionado por un conjunto de restriccio
 
 \subsection{Restricciones funcionales}
 
-La primera restricción funcional es que Jira Cloud se utiliza como fuente principal de datos. La aplicación no sustituye a Jira ni permite gestionar el trabajo desde cero, sino que interpreta información ya existente en proyectos, tableros, \textit{sprints}, incidencias y transiciones. Por este motivo, las métricas dependen de la calidad de los datos disponibles en Jira y de la forma en la que el equipo haya utilizado sus flujos de trabajo.
+La primera restricción funcional es que \textit{Jira Cloud} se utiliza como fuente principal de datos. La aplicación no sustituye a \textit{Jira} ni permite gestionar el trabajo desde cero, sino que interpreta información ya existente en proyectos, tableros, \textit{Sprints}, incidencias y transiciones. Por este motivo, las métricas dependen de la calidad de los datos disponibles en \textit{Jira} y de la forma en la que el equipo haya utilizado sus flujos de trabajo.
 
-También se limita el alcance inicial a métricas ágiles de flujo y planificación: \textit{Velocity}, \textit{WIP}, \textit{Lead Time} y \textit{Cycle Time}. Otras métricas de ingeniería, como frecuencia de despliegue o tiempo de cambio en producción, quedan condicionadas a futuras integraciones con repositorios de código o plataformas de integración continua.
+También se limita el alcance inicial a métricas ágiles de flujo y planificación: \textit{Velocity}, \textit{WIP}, \textit{Lead Time} y \textit{Cycle Time}. Otras métricas de ingeniería, como la frecuencia de despliegue, denominada \textit{Deployment Frequency}, o el tiempo de cambio en producción, relacionado con \textit{Change Lead Time}, quedan condicionadas a futuras integraciones con repositorios de código o plataformas de integración continua.
 
 \subsection{Restricciones de seguridad}
 
-La conexión con Atlassian implica manejar información sensible. Por ello, el sistema debe evitar almacenar contraseñas locales, no debe exponer \textit{tokens} al navegador y debe proteger las operaciones autenticadas. Esta restricción motiva el uso de OAuth 2.0 3LO, el parámetro \textit{state}, PKCE y protección CSRF~\cite{AtlassianOAuth3LO,OWASPOAuth2,OWASPCSRF}.
+La conexión con \textit{Atlassian} implica manejar información sensible. Por ello, el sistema debe evitar almacenar contraseñas locales, no debe exponer \textit{tokens} al navegador y debe proteger las operaciones autenticadas. Esta restricción motiva el uso de \textit{OAuth} 2.0 3LO, el parámetro \textit{state}, \textit{PKCE} y protección \textit{CSRF}~\cite{AtlassianOAuth3LO,OWASPOAuth2,OWASPCSRF}.
 
-Además, el sistema debe aplicar el principio de mínimo privilegio en los permisos solicitados a Atlassian. Los \textit{scopes} se limitan a la lectura de datos necesarios para identificar al usuario y consultar recursos de Jira relacionados con proyectos, tableros, incidencias, \textit{sprints} y transiciones.
+Además, el sistema debe aplicar el principio de mínimo privilegio en los permisos solicitados a \textit{Atlassian}. Los \textit{scopes} se limitan a la lectura de datos necesarios para identificar al usuario y consultar recursos de \textit{Jira} relacionados con proyectos, tableros, incidencias, \textit{Sprints} y transiciones.
 
 \subsection{Restricciones de integración}
 
-La API de Jira Cloud impone límites de uso, paginación y posibles cambios de comportamiento entre versiones. Para reducir la dependencia directa de la API externa, Nuvlo sincroniza los datos necesarios y los conserva en una base de datos local. De esta forma, la interfaz no necesita llamar a Jira en cada carga del \textit{dashboard}, se reducen peticiones repetidas y se facilita la trazabilidad de los resultados.
+La \textit{API} de \textit{Jira Cloud} impone límites de uso, paginación y posibles cambios de comportamiento entre versiones. Para reducir la dependencia directa de la \textit{API} externa, \textit{Nuvlo} sincroniza los datos necesarios y los conserva en una base de datos local. De esta forma, la interfaz no necesita llamar a \textit{Jira} en cada carga del \textit{dashboard}, se reducen peticiones repetidas y se facilita la trazabilidad de los resultados.
 
 \subsection{Restricciones de despliegue y reproducibilidad}
 
-El entorno debe poder ejecutarse en local de forma reproducible. Por ese motivo se utiliza Docker Compose para levantar los servicios auxiliares, principalmente PostgreSQL y Redis~\cite{DockerComposeDocs}. También se mantiene un conjunto de datos de demostración \textit{offline}, que permite validar la aplicación sin depender de que Jira esté disponible durante una presentación o una prueba.
+El entorno debe poder ejecutarse en local de forma reproducible. Por ese motivo se utiliza \textit{Docker Compose} para levantar los servicios auxiliares, principalmente \textit{PostgreSQL} y \textit{Redis}~\cite{DockerComposeDocs}. También se mantiene un conjunto de datos de demostración \textit{offline}, que permite validar la aplicación sin depender de que \textit{Jira} esté disponible durante una presentación o una prueba.
 
 \section{Estudio de alternativas tecnológicas}
 
@@ -33,49 +33,49 @@ A partir de las restricciones anteriores se analizaron varias alternativas para 
 
 \subsection{Organización del repositorio}
 
-Se consideraron tres opciones: un único proyecto mezclado, varios repositorios independientes y un \textit{monorepo}. La opción elegida fue un \textit{monorepo} sencillo con \textit{npm workspaces}~\cite{NpmWorkspaces}.
+Se consideraron tres opciones: un único proyecto mezclado, varios repositorios independientes y un \textit{monorepo}. Un único proyecto mezclado consiste en situar \textit{frontend}, \textit{backend}, base de datos y documentación dentro de una misma estructura sin separación clara por paquetes. Varios repositorios independientes, o enfoque \textit{polyrepo}, consiste en mantener cada parte del sistema en un repositorio distinto. El \textit{monorepo} organiza varias aplicaciones y paquetes dentro de un único repositorio, manteniendo carpetas separadas para cada responsabilidad. La opción elegida fue un \textit{monorepo} sencillo con \textit{npm workspaces}~\cite{NpmWorkspaces}.
 
 Un único proyecto mezclado habría reducido la configuración inicial, pero dificultaría separar responsabilidades entre cliente, servidor, base de datos y documentación. Varios repositorios independientes habrían permitido una separación fuerte, aunque a costa de aumentar la coordinación, la configuración de entornos y la trazabilidad de cambios. El \textit{monorepo} ofrece un punto intermedio: mantiene separadas las aplicaciones y paquetes internos, pero conserva una única historia de cambios y una única entrada de instalación.
 
 \subsection{Frontend}
 
-Para la interfaz se eligió React con Vite~\cite{ReactDocs,ViteDocs}. React permite construir la aplicación mediante componentes reutilizables, lo que encaja con una interfaz formada por vistas, tarjetas de métricas, filtros, gráficos, alertas y paneles configurables. Vite se selecciona por su rapidez en desarrollo local y por una configuración más ligera que otras alternativas.
+Para la interfaz se eligió \textit{React} con \textit{Vite}~\cite{ReactDocs,ViteDocs}. \textit{React} permite construir la aplicación mediante componentes reutilizables, lo que encaja con una interfaz formada por vistas, tarjetas de métricas, filtros, gráficos, alertas y paneles configurables. \textit{Vite} se selecciona por su rapidez en desarrollo local y por una configuración más ligera que otras alternativas.
 
-Como alternativa se podría haber utilizado Angular, Vue o una aplicación renderizada desde servidor. Angular ofrece una estructura muy completa, pero introduce más complejidad inicial para el alcance del proyecto. Vue también habría sido válido, aunque React se ajusta mejor al ecosistema de componentes y librerías usado en la implementación. Una interfaz renderizada desde servidor simplificaría parte del cliente, pero limitaría la interacción dinámica necesaria para filtros, actualizaciones visuales y \textit{widgets}.
+Como alternativa se podría haber utilizado \textit{Angular}, \textit{Vue} o una aplicación renderizada desde servidor. \textit{Angular} ofrece una estructura muy completa, pero introduce más complejidad inicial para el alcance del proyecto: requiere asumir desde el principio una arquitectura más cerrada, mayor configuración de módulos, servicios, inyección de dependencias, enrutado y convenciones propias del \textit{framework}. Esa estructura puede ser ventajosa en equipos grandes, pero resulta menos ligera para una aplicación centrada en prototipado, visualización de métricas y evolución incremental. \textit{Vue} también habría sido válido, aunque \textit{React} se ajusta mejor al ecosistema de componentes y librerías usado en la implementación. Una interfaz renderizada desde servidor simplificaría parte del cliente, pero limitaría la interacción dinámica necesaria para filtros, actualizaciones visuales y \textit{widgets}.
 
 \subsection{Backend}
 
-Para la API se eligió Node.js con Express~\cite{NodeDocs,ExpressDocs}. Esta elección permite utilizar JavaScript en todo el proyecto, compartir criterios de validación y mantener un servidor HTTP sencillo. Express aporta una base madura y flexible para organizar rutas, \textit{middlewares}, autenticación, sincronización y servicios internos.
+Para la \textit{API} se eligió \textit{Node.js} con \textit{Express}~\cite{NodeDocs,ExpressDocs}. Esta elección permite utilizar \textit{JavaScript} en todo el proyecto, compartir criterios de validación y mantener un servidor HTTP sencillo. \textit{Express} aporta una base madura y flexible para organizar rutas, \textit{middlewares}, autenticación, sincronización y servicios internos.
 
-Se valoraron alternativas como Spring Boot, Django o NestJS. Spring Boot y Django son opciones sólidas, pero habrían implicado introducir otro lenguaje principal y una estructura más pesada. NestJS habría aportado más arquitectura desde el principio, aunque para el tamaño actual de la aplicación Express resulta suficiente y más directo.
+Se valoraron alternativas como \textit{Spring Boot}, \textit{Django} o \textit{NestJS}. \textit{Spring Boot} y \textit{Django} son opciones sólidas, pero habrían implicado introducir otro lenguaje principal y una estructura más pesada. \textit{NestJS} habría aportado más arquitectura desde el principio, aunque para el tamaño actual de la aplicación \textit{Express} resulta suficiente y más directo.
 
 \subsection{Persistencia principal}
 
-PostgreSQL se selecciona como base de datos principal por su madurez, soporte transaccional y adecuación para datos relacionales~\cite{PostgreSQLDocs}. El dominio de Nuvlo contiene usuarios, sesiones, proyectos, tableros, \textit{sprints}, incidencias, transiciones, métricas, alertas y registros de actividad, entidades que se benefician de relaciones claras y consultas consistentes.
+\textit{PostgreSQL} se selecciona como base de datos principal por su madurez, soporte transaccional y adecuación para datos relacionales~\cite{PostgreSQLDocs}. El dominio de \textit{Nuvlo} contiene usuarios, sesiones, proyectos, tableros, \textit{Sprints}, incidencias, transiciones, métricas, alertas y registros de actividad, entidades que se benefician de relaciones claras y consultas consistentes.
 
-Como alternativas se consideraron SQLite y MongoDB. SQLite habría simplificado el arranque local, pero resulta menos adecuada para representar un entorno cercano a producción con varios servicios y políticas de retención. MongoDB puede ser útil para documentos flexibles, pero el modelo de Nuvlo requiere relaciones y trazabilidad entre entidades, por lo que PostgreSQL encaja mejor.
+Como alternativas se consideraron \textit{SQLite} y \textit{MongoDB}. \textit{SQLite} habría simplificado el arranque local, pero resulta menos adecuada para representar un entorno cercano a producción con varios servicios y políticas de retención. \textit{MongoDB} puede ser útil para documentos flexibles, pero el modelo de \textit{Nuvlo} requiere relaciones y trazabilidad entre entidades, por lo que \textit{PostgreSQL} encaja mejor.
 
 \subsection{Acceso a datos}
 
-Prisma se eligió como ORM para definir el modelo de datos, ejecutar migraciones y acceder a PostgreSQL desde el \textit{backend}~\cite{PrismaDocs}. Frente a consultas SQL manuales, Prisma reduce código repetitivo y centraliza el esquema. Frente a otros ORMs, ofrece una experiencia adecuada en proyectos Node.js y facilita mantener el esquema junto al código fuente.
+\textit{Prisma} se eligió como \textit{ORM}, siglas de \textit{Object-Relational Mapping}, para definir el modelo de datos, ejecutar migraciones y acceder a \textit{PostgreSQL} desde el \textit{backend}~\cite{PrismaDocs}. Un \textit{ORM} permite trabajar con entidades del dominio desde el código de la aplicación y traducir esas operaciones a consultas sobre la base de datos relacional. Frente a consultas SQL manuales, \textit{Prisma} reduce código repetitivo y centraliza el esquema. Frente a otros \textit{ORMs}, ofrece una experiencia adecuada en proyectos \textit{Node.js} y facilita mantener el esquema junto al código fuente.
 
 \subsection{Datos temporales y caché}
 
-Redis se utiliza como almacén temporal para cachés de corta duración, estados de sincronización y datos auxiliares con caducidad automática~\cite{RedisDocs}. El estado OAuth, el verificador PKCE y la protección CSRF se gestionan mediante \textit{cookies} temporales y cabeceras HTTP, mientras que Redis queda reservado para información operativa que puede regenerarse si se pierde.
+\textit{Redis} se utiliza como almacén temporal para cachés de corta duración, estados de sincronización y datos auxiliares con caducidad automática~\cite{RedisDocs}. El estado \textit{OAuth}, el verificador \textit{PKCE} y la protección \textit{CSRF} se gestionan mediante \textit{cookies} temporales y cabeceras HTTP, mientras que \textit{Redis} queda reservado para información operativa que puede regenerarse si se pierde.
 
-Una alternativa sería guardar todo en PostgreSQL. Aunque sería posible, obligaría a implementar más limpieza manual para datos de vida corta. Otra opción sería mantener esos datos solo en memoria del proceso Node.js, pero se perderían al reiniciar el servidor y sería menos robusto si en el futuro hubiera más de una instancia.
+Una alternativa sería guardar todo en \textit{PostgreSQL}. Aunque sería posible, obligaría a implementar más limpieza manual para datos de vida corta. Otra opción sería mantener esos datos solo en memoria del proceso \textit{Node.js}, pero se perderían al reiniciar el servidor y sería menos robusto si en el futuro hubiera más de una instancia.
 
 \subsection{Autenticación}
 
-Se descartó un registro local con correo y contraseña porque el sistema depende de Jira como fuente de datos. En su lugar, se eligió OAuth 2.0 3LO de Atlassian~\cite{AtlassianOAuth3LO}. Así, el usuario autoriza Nuvlo con su cuenta de Atlassian y la aplicación accede únicamente a los recursos permitidos.
+Se descartó un registro local con correo y contraseña porque el sistema depende de \textit{Jira} como fuente de datos. En su lugar, se eligió \textit{OAuth} 2.0 3LO de \textit{Atlassian}~\cite{AtlassianOAuth3LO}. Así, el usuario autoriza \textit{Nuvlo} con su cuenta de \textit{Atlassian} y la aplicación accede únicamente a los recursos permitidos.
 
-Esta decisión evita almacenar contraseñas propias, permite usar los mecanismos de acceso de Atlassian y mantiene coherencia con el requisito de que los proyectos y datos procedan de Jira. El uso de OAuth también facilita revocar permisos desde la propia cuenta de Atlassian.
+Esta decisión evita almacenar contraseñas propias, permite usar los mecanismos de acceso de \textit{Atlassian} y mantiene coherencia con el requisito de que los proyectos y datos procedan de \textit{Jira}. El uso de \textit{OAuth} también facilita revocar permisos desde la propia cuenta de \textit{Atlassian}.
 
 \subsection{Pruebas y validación}
 
-Para las pruebas unitarias e integración se utiliza Vitest~\cite{VitestGuide}. Para pruebas de interfaz de extremo a extremo se utiliza Playwright~\cite{PlaywrightDocs}. Esta combinación permite validar cálculos de métricas, endpoints del \textit{backend}, flujos de usuario y comportamiento visual básico de la aplicación.
+Para las pruebas unitarias e integración se utiliza \textit{Vitest}~\cite{VitestGuide}. Para pruebas de interfaz de extremo a extremo se utiliza \textit{Playwright}~\cite{PlaywrightDocs}. Esta combinación permite validar cálculos de métricas, endpoints del \textit{backend}, flujos de usuario y comportamiento visual básico de la aplicación.
 
-Se descartó limitar la validación a pruebas manuales porque no sería suficiente para demostrar de forma repetible el comportamiento de métricas, alertas, filtros y sincronización. También se descartó depender solo de Jira real, ya que una API externa puede fallar o no disponer de datos adecuados en el momento de la demostración.
+Se descartó limitar la validación a pruebas manuales porque no sería suficiente para demostrar de forma repetible el comportamiento de métricas, alertas, filtros y sincronización. También se descartó depender solo de \textit{Jira} real, ya que una \textit{API} externa puede fallar o no disponer de datos adecuados en el momento de la demostración.
 
 \section{Resumen de decisiones}
 
@@ -90,21 +90,21 @@ La Tabla~\ref{tab:alternativasTecnicas} resume las decisiones adoptadas y el mot
 \midrule
 Organización del repositorio & \textit{Monorepo} con \textit{npm workspaces} & Mantiene una única historia de cambios y separa \textit{frontend}, \textit{backend}, paquetes, base de datos y documentación. \\
 \midrule
-Interfaz web & React + Vite & Componentización, desarrollo local rápido y buen encaje con \textit{dashboards} interactivos. \\
+Interfaz web & \textit{React} + \textit{Vite} & Componentización, desarrollo local rápido y buen encaje con \textit{dashboards} interactivos. \\
 \midrule
-API & Node.js + Express & Misma familia tecnológica que el cliente, servidor ligero y suficiente para la API REST. \\
+\textit{API} & \textit{Node.js} + \textit{Express} & Misma familia tecnológica que el cliente, servidor ligero y suficiente para la \textit{API REST}. \\
 \midrule
-Base de datos principal & PostgreSQL & Modelo relacional, consistencia y trazabilidad de datos sincronizados. \\
+Base de datos principal & \textit{PostgreSQL} & Modelo relacional, consistencia y trazabilidad de datos sincronizados. \\
 \midrule
-Acceso a datos & Prisma & Esquema centralizado, migraciones y menor repetición de consultas. \\
+Acceso a datos & \textit{Prisma} & Esquema centralizado, migraciones y menor repetición de consultas. \\
 \midrule
-Datos efímeros & Redis & TTL nativo para cachés temporales y estado de sincronización; OAuth/PKCE/CSRF se apoyan en \textit{cookies} temporales. \\
+Datos efímeros & \textit{Redis} & \textit{TTL} nativo para cachés temporales y estado de sincronización; \textit{OAuth}/\textit{PKCE}/\textit{CSRF} se apoyan en \textit{cookies} temporales. \\
 \midrule
-Autenticación & OAuth 2.0 3LO Atlassian & Evita contraseñas locales y conecta directamente con la cuenta Jira del usuario. \\
+Autenticación & \textit{OAuth} 2.0 3LO \textit{Atlassian} & Evita contraseñas locales y conecta directamente con la cuenta \textit{Jira} del usuario. \\
 \midrule
-Entorno local & Docker Compose & Reproducibilidad de PostgreSQL, Redis y servicios auxiliares. \\
+Entorno local & \textit{Docker Compose} & Reproducibilidad de \textit{PostgreSQL}, \textit{Redis} y servicios auxiliares. \\
 \midrule
-Validación & Vitest + Playwright & Pruebas automatizadas de lógica, API y flujos de interfaz. \\
+Validación & \textit{Vitest} + \textit{Playwright} & Pruebas automatizadas de lógica, \textit{API} y flujos de interfaz. \\
 \bottomrule
 \end{tabularx}
 \caption{Resumen de alternativas tecnológicas seleccionadas.}

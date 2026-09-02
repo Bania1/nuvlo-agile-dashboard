@@ -7,35 +7,35 @@
 % \minitoc
 % \pagebreak
 
-En la industria actual del desarrollo de software, la gestión de proyectos se apoya con frecuencia en enfoques ágiles, implementados habitualmente mediante marcos de trabajo como Scrum y Kanban. En este contexto, las métricas se convierten en una herramienta fundamental para que los equipos puedan medir su rendimiento, evaluar la eficiencia de su flujo de trabajo y diagnosticar la salud general del proceso de desarrollo. Indicadores como la velocidad de entrega (\textit{Velocity}), el tiempo de ciclo (\textit{Cycle Time}), el tiempo de entrega (\textit{Lead Time}) y el trabajo en curso (\textit{WIP}) permiten tomar decisiones basadas en evidencia y avanzar hacia la mejora continua.
+En la industria actual del desarrollo de software, la gestión de proyectos se apoya con frecuencia en enfoques iterativos o por ciclos, donde el trabajo se planifica, ejecuta, revisa y ajusta de forma progresiva. Dentro de este contexto se utilizan marcos y sistemas de gestión como \textit{Scrum} y \textit{Kanban}. Las métricas se convierten así en una herramienta fundamental para que los equipos puedan observar su evolución, evaluar la eficiencia de su flujo de trabajo y diagnosticar la salud general del proceso de desarrollo. Indicadores como la velocidad de entrega (\textit{Velocity}), el tiempo de ciclo (\textit{Cycle Time}), el tiempo de entrega (\textit{Lead Time}) y el trabajo en curso (\textit{WIP}) permiten tomar decisiones basadas en evidencias y avanzar hacia la mejora continua.
 
-Sin embargo, a pesar de la importancia de estas métricas, muchos equipos encuentran dificultades para obtener una visión unificada y útil de las mismas. La información relativa al trabajo suele estar fragmentada en distintas herramientas (por ejemplo, Jira para la gestión de tareas, GitHub para el código o plataformas de despliegue), y las soluciones comerciales que prometen integrar y visualizar estos datos a menudo tienen costes elevados o están orientadas a grandes organizaciones. Esta falta de visibilidad lleva a que, en la práctica, muchas decisiones se tomen más por intuición que por datos objetivos, lo cual limita la capacidad de mejorar el proceso de forma sistemática.
+Sin embargo, a pesar de la importancia de estas métricas, muchos equipos encuentran dificultades para obtener una visión unificada y útil de las mismas. La información relativa al trabajo suele estar fragmentada en distintas herramientas (por ejemplo, \textit{Jira} para la gestión de tareas, \textit{GitHub} para el código o plataformas de despliegue), y las soluciones comerciales que prometen integrar y visualizar estos datos a menudo tienen costes elevados o están orientadas a grandes organizaciones. Esta falta de visibilidad lleva a que, en la práctica, muchas decisiones se tomen más por intuición que por datos objetivos, lo cual limita la capacidad de mejorar el proceso de forma sistemática.
 
-Este Trabajo Fin de Grado surge como respuesta a esta problemática, con el objetivo de desarrollar un sistema web de visualización de métricas para equipos ágiles que trabajan con Scrum y Kanban. La herramienta permitirá centralizar, analizar y mostrar indicadores clave a partir de los datos almacenados en Jira, fuente principal del sistema, de modo que los equipos puedan contar con \textit{dashboards} intuitivos y personalizados que faciliten la toma de decisiones basada en datos y la evaluación transparente del rendimiento del proyecto.
+Este Trabajo Fin de Grado (TFG) surge como respuesta a esta problemática. Su objetivo es desarrollar \textit{Nuvlo}, un sistema web de visualización de métricas para equipos ágiles que trabajan con \textit{Scrum} y \textit{Kanban}. \textit{Nuvlo} permitirá centralizar, analizar y mostrar indicadores clave a partir de los datos almacenados en \textit{Jira}, fuente principal del sistema, de modo que los equipos puedan contar con \textit{dashboards} intuitivos y personalizados que faciliten la toma de decisiones basada en datos y la evaluación transparente de la evolución del trabajo.
 
 
 \section{Motivación}
 
-La motivación principal de este proyecto es democratizar el acceso a la analítica ágil de calidad, ofreciendo una solución de bajo coste, personalizable y replicable, que pueda ser utilizada tanto por equipos profesionales como por estudiantes o grupos de trabajo con recursos limitados.
+La motivación principal de \textit{Nuvlo} es democratizar el acceso a la analítica ágil de calidad, ofreciendo una solución de bajo coste, personalizable y replicable, que pueda ser utilizada tanto por equipos profesionales como por estudiantes o grupos de trabajo con recursos limitados.
 
-Actualmente, herramientas como Jira permiten gestionar el trabajo de forma eficiente, pero sus capacidades analíticas avanzadas suelen estar disponibles solo en planes de pago o requieren la integración con soluciones externas de terceros. Además, estas soluciones tienden a ofrecer \textit{dashboards} genéricos, con poca flexibilidad para adaptarse a las necesidades específicas de cada equipo. Esto genera una barrera importante para equipos pequeños o medianos, que no pueden asumir el coste de licencias premium pero que, al mismo tiempo, necesitan visibilidad sobre sus métricas para mejorar su forma de trabajar.
+Actualmente, herramientas como \textit{Jira} permiten gestionar el trabajo de forma eficiente, pero sus capacidades analíticas avanzadas suelen estar disponibles solo en planes de pago o requieren la integración con soluciones externas de terceros. Además, estas soluciones tienden a ofrecer \textit{dashboards} genéricos, con poca flexibilidad para adaptarse a las necesidades específicas de cada equipo. Esto genera una barrera importante para equipos pequeños o medianos, que no pueden asumir el coste de licencias premium pero que, al mismo tiempo, necesitan visibilidad sobre sus métricas para mejorar su forma de trabajar.
 
 El presente TFG busca cubrir ese hueco mediante una plataforma que:
 \begin{itemize}
-    \item Centralice los datos procedentes de Jira, evitando la dispersión de la información.
+    \item Centralice los datos procedentes de \textit{Jira}, evitando la dispersión de la información.
     \item Calcule automáticamente métricas clave como \textit{Velocity}, \textit{Cycle Time}, \textit{Lead Time} y \textit{WIP}.
     \item Ofrezca \textit{dashboards} intuitivos y personalizables, adaptados a las necesidades de cada equipo.
     \item Sea técnica y económicamente replicable, utilizando tecnologías modernas y de amplio uso en la industria.
 \end{itemize}
 
-De esta forma, se pretende devolver a los equipos el control sobre sus procesos de mejora continua, basándose en evidencia y no solo en intuición.
+De esta forma, se pretende devolver a los equipos el control sobre sus procesos de mejora continua, basándose en evidencias y no solo en intuición.
 
 
 \section{Estructura de la memoria}
 
 Esta memoria se organiza en varios capítulos y anexos que recogen de forma progresiva el análisis, diseño, desarrollo y validación del sistema:
 \begin{enumerate}
-\item La presente introducción, donde se contextualiza el proyecto y se resume la motivación principal.
+\item La presente introducción, donde se contextualiza el TFG y se resume la motivación principal.
 \item La definición del problema, dedicada a describir la situación actual de los equipos ágiles y las limitaciones que justifican el desarrollo del sistema.
 \item El capítulo de objetivos, donde se concreta el objetivo general y los objetivos específicos del trabajo.
 \item El capítulo de antecedentes, donde se analizan herramientas existentes y se comparan sus limitaciones con el enfoque propuesto.

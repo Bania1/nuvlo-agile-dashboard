@@ -4,57 +4,134 @@
 
 \section{Introducción}
 
-Este anexo describe el uso básico de Nuvlo desde el punto de vista de un usuario final. Nuvlo es una aplicación web para consultar métricas ágiles calculadas a partir de datos de Jira Cloud, tomando como referencia la gestión de trabajo de Jira y la información disponible mediante su API REST~\cite{AtlassianJira,AtlassianJiraRestV3}. La aplicación no sustituye a Jira como herramienta de gestión de proyectos, sino que actúa como una capa de análisis para visualizar indicadores como \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, alertas y registros de actividad.
+Este anexo describe el uso básico de \textit{Nuvlo} desde el punto de vista de un usuario final. \textit{Nuvlo} es una aplicación web para consultar métricas ágiles calculadas a partir de datos de \textit{Jira Cloud}, tomando como referencia la gestión de trabajo de \textit{Jira} y la información disponible mediante su \textit{API REST}~\cite{AtlassianJira,AtlassianJiraRestV3}. La aplicación no sustituye a \textit{Jira} como herramienta de gestión de proyectos, sino que actúa como una capa de análisis para visualizar indicadores como \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, alertas y registros de actividad.
 
 El sistema ofrece dos modos de trabajo:
 
 \begin{itemize}
-    \item \textbf{Modo Jira}: utiliza autenticación OAuth con Atlassian y sincroniza datos reales desde Jira Cloud~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3}.
-    \item \textbf{Modo demo \textit{offline}}: utiliza un conjunto de datos local controlado para mostrar y probar el funcionamiento de la aplicación sin depender de Jira Cloud ni de la conexión de red.
+    \item \textbf{Modo \textit{Jira}}: utiliza autenticación \textit{OAuth} con \textit{Atlassian} y sincroniza datos reales desde \textit{Jira Cloud}~\cite{AtlassianOAuth3LO,AtlassianJiraRestV3}.
+    \item \textbf{Modo demo \textit{offline}}: utiliza un conjunto de datos local controlado para mostrar y probar el funcionamiento de la aplicación sin depender de \textit{Jira Cloud} ni de la conexión de red.
 \end{itemize}
+
 
 \section{Instalación y puesta en marcha}
 
-Para ejecutar Nuvlo en un entorno local se necesita tener instalado Node.js, npm y Docker. La versión recomendada para el desarrollo es Node.js 24 LTS, ya que es la utilizada durante la implementación del proyecto. Docker se emplea para levantar los servicios auxiliares de PostgreSQL y Redis.
+Para ejecutar \textit{Nuvlo} en un entorno local se necesita tener instalado \textit{Node.js}, npm y \textit{Docker}. La versión recomendada para el desarrollo es \textit{Node.js} 24 LTS, ya que es la utilizada durante la implementación del proyecto. \textit{Docker} se emplea para levantar los servicios auxiliares de \textit{PostgreSQL} y \textit{Redis}~\cite{NodeDocs,DockerComposeDocs}.
+
+\subsection{Preparación de la integración con \textit{Atlassian}}
+
+Antes de arrancar la aplicación en modo \textit{Jira}, es necesario registrar una integración \textit{OAuth} 2.0 3LO en la consola de desarrollo de \textit{Atlassian}~\cite{AtlassianOAuth3LO}. Esta configuración permite que el usuario autorice a \textit{Nuvlo} desde la pantalla oficial de \textit{Atlassian}, sin introducir credenciales de \textit{Jira} dentro de la aplicación.
+
+El proceso de configuración en \textit{Atlassian Developer Console} se realiza en varios pasos. En primer lugar, se accede a la consola y se crea una nueva integración \textit{OAuth} 2.0 3LO desde la opción de creación de aplicaciones (Figura~\ref{fig:manual-atlassian-oauth-app}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/instalacion/atlassian-crear-oauth.png}
+    \caption{Creación de una integración \textit{OAuth} 2.0 en \textit{Atlassian Developer Console}}
+    \label{fig:manual-atlassian-oauth-app}
+\end{figure}
+\FloatBarrier
+
+A continuación, se indica un nombre reconocible para la aplicación, por ejemplo \textit{Nuvlo TFG}, y se selecciona acceso a nivel de recurso cuando se quiera limitar la autorización al sitio de \textit{Jira Cloud} elegido por el usuario. La vista general de la integración permite comprobar el tipo de autorización, el estado de distribución y las \textit{APIs} añadidas (Figura~\ref{fig:manual-atlassian-overview}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/instalacion/atlassian-overview.png}
+    \caption{Vista general de la integración \textit{OAuth} configurada para \textit{Nuvlo}}
+    \label{fig:manual-atlassian-overview}
+\end{figure}
+\FloatBarrier
+
+Después, en el apartado de autorización, se añade como \textit{Callback URL} la dirección \texttt{http://localhost:3002/api/auth/atlassian/callback}. Esta dirección debe coincidir exactamente con la variable \texttt{ATLASSIAN\_REDIRECT\_URI} del fichero de entorno, ya que \textit{Atlassian} solo redirige al usuario hacia direcciones previamente registradas (Figura~\ref{fig:manual-atlassian-callback}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/instalacion/atlassian-callback.png}
+    \caption{Configuración de la URL de redirección de \textit{Atlassian OAuth}}
+    \label{fig:manual-atlassian-callback}
+\end{figure}
+\FloatBarrier
+
+Por último, en el apartado de permisos se añaden las \textit{APIs} necesarias y se seleccionan los \textit{scopes} de lectura usados por la aplicación (Figura~\ref{fig:manual-atlassian-scopes}). Los \textit{scopes} se localizan desde la opción \textit{Permissions} de la consola, buscando dentro de cada \textit{API} añadida~\cite{AtlassianJiraOAuthScopes}. Para \textit{Nuvlo} se utilizan permisos de solo lectura siempre que es posible:
+
+\begin{itemize}
+    \item \texttt{read:me}: permite obtener el perfil básico de la cuenta autorizada.
+    \item \texttt{read:jira-user}: permite leer información de usuarios de \textit{Jira} accesible para la cuenta autorizada.
+    \item \texttt{read:jira-work}: permite consultar proyectos, incidencias y datos de trabajo de \textit{Jira}.
+    \item \texttt{read:project:jira}: permite consultar proyectos con permisos granulares.
+    \item \texttt{read:issue-details:jira}: permite leer detalles de incidencias.
+    \item \texttt{read:jql:jira}: permite realizar búsquedas mediante \textit{JQL}.
+    \item \texttt{read:board-scope:jira-software}: permite acceder a tableros de \textit{Jira Software}.
+    \item \texttt{read:sprint:jira-software}: permite consultar \textit{Sprints}.
+    \item \texttt{offline\_access}: permite recibir \textit{refresh tokens} rotatorios para renovar la sesión sin repetir el consentimiento en cada acceso.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/instalacion/atlassian-permissions.png}
+    \caption{Pantalla de permisos desde la que se configuran las \textit{APIs} y \textit{scopes} de \textit{Jira Cloud}}
+    \label{fig:manual-atlassian-scopes}
+\end{figure}
+\FloatBarrier
+
+Una vez creada la integración, se copian el \textit{Client ID} y el \textit{Client Secret} generados por \textit{Atlassian}. Estos valores se incorporan únicamente al fichero local \texttt{.env} y no deben publicarse en el repositorio.
+
+\subsection{Configuración local y arranque}
+
+Una vez preparada la integración con \textit{Atlassian}, se configura el entorno local de la aplicación. Para ello se parte de la plantilla \texttt{.env.example}, se crea un fichero \texttt{.env} y se rellenan las variables de conexión con la base de datos, \textit{Redis}, seguridad de sesión y \textit{OAuth}. En particular, deben definirse \texttt{DATABASE\_URL}, \texttt{REDIS\_URL}, \texttt{JWT\_SECRET}, \texttt{ENCRYPTION\_KEY}, \texttt{ATLASSIAN\_CLIENT\_ID}, \texttt{ATLASSIAN\_CLIENT\_SECRET}, \texttt{ATLASSIAN\_REDIRECT\_URI} y \texttt{ATLASSIAN\_SCOPES}.
 
 El proceso general de instalación es el siguiente:
 
 \begin{enumerate}
     \item Obtener el código fuente del repositorio del proyecto.
     \item Crear el fichero de configuración local a partir de la plantilla \texttt{.env.example}.
-    \item Rellenar las variables de entorno necesarias, especialmente las relacionadas con PostgreSQL, Redis, seguridad de sesión y OAuth de Atlassian.
-    \item Instalar las dependencias de Node.js mediante \texttt{npm install}.
-    \item Levantar PostgreSQL y Redis con \texttt{docker compose up -d}.
-    \item Generar el cliente de Prisma con \texttt{npm run db:generate}.
+    \item Rellenar las variables de entorno necesarias. Los secretos deben mantenerse solo en local.
+    \item Instalar las dependencias de \textit{Node.js} mediante \texttt{npm install}.
+    \item Levantar \textit{PostgreSQL} y \textit{Redis} con \texttt{docker compose up -d}.
+    \item Generar el cliente de \textit{Prisma} con \texttt{npm run db:generate}.
     \item Preparar los datos de demostración con \texttt{npm run demo:data}.
     \item Aplicar el esquema de base de datos con \texttt{npm run db:push}.
     \item Cargar los datos iniciales con \texttt{npm run db:seed}.
     \item Arrancar la aplicación con \texttt{npm run dev}.
 \end{enumerate}
 
-Una vez iniciada, la interfaz web queda disponible en \texttt{http://localhost:5174} y la API en \texttt{http://localhost:3002}. Si el puerto del cliente estuviera ocupado, Vite puede seleccionar automáticamente el siguiente puerto disponible; en ese caso se debe utilizar la URL indicada por la terminal.
+La Figura~\ref{fig:manual-instalacion-terminal} muestra una ejecución resumida de los comandos principales de puesta en marcha. Esta captura no incluye variables de entorno ni secretos, únicamente la comprobación de versiones, servicios locales y comandos de arranque.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{img/app-demo/00-instalacion-terminal.png}
+    \caption{Comandos principales para la puesta en marcha local de \textit{Nuvlo}}
+    \label{fig:manual-instalacion-terminal}
+\end{figure}
+\FloatBarrier
+
+Una vez iniciada, la interfaz web queda disponible en \texttt{http://localhost:5174} y la \textit{API} en \texttt{http://localhost:3002}. Si el puerto del cliente estuviera ocupado, \textit{Vite} puede seleccionar automáticamente el siguiente puerto disponible; en ese caso se debe utilizar la URL indicada por la terminal.
+
+De forma opcional, pueden levantarse las herramientas visuales de base de datos con \texttt{docker compose --profile tools up -d}. En ese caso, \textit{pgAdmin} permite inspeccionar \textit{PostgreSQL} desde \texttt{http://localhost:5050} y \textit{RedisInsight} permite consultar las claves temporales de \textit{Redis} desde \texttt{http://localhost:5540}. Estas herramientas se usan para depuración y revisión técnica, no son necesarias para el usuario final.
+
+\FloatBarrier
+\clearpage
 \section{Acceso a la aplicación}
 
-Al abrir la aplicación, el usuario encuentra una pantalla de entrada con el botón \textit{Conectar con Jira} (Figura~\ref{fig:manual-login-nuvlo}). Este botón inicia el flujo oficial de autenticación de Atlassian~\cite{AtlassianOAuth3LO}. El usuario no crea una cuenta específica en Nuvlo, ya que la cuenta válida es la cuenta de Atlassian/Jira.
+Al abrir la aplicación, el usuario encuentra una pantalla de entrada con el botón \textit{Conectar con Jira} (Figura~\ref{fig:manual-login-nuvlo}). Este botón inicia el flujo oficial de autenticación de \textit{Atlassian}~\cite{AtlassianOAuth3LO}. El usuario no crea una cuenta específica en \textit{Nuvlo}, ya que la cuenta válida es la cuenta de \textit{Atlassian}/\textit{Jira}.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.92\textwidth]{img/app-demo/01-login-jira.png}
-    \caption{Pantalla de entrada de Nuvlo}
+    \caption{Pantalla de entrada de \textit{Nuvlo}}
     \label{fig:manual-login-nuvlo}
 \end{figure}
 
-Desde esta misma pantalla también se puede acceder a la demo \textit{offline}, descrita en el apartado~\ref{sec:manual-demo-offline}. Esta alternativa permite usar la aplicación con datos controlados sin iniciar sesión en Jira.
+Desde esta misma pantalla también se puede acceder a la demo \textit{offline}, descrita en el apartado~\ref{sec:manual-demo-offline}. Esta alternativa permite usar la aplicación con datos controlados sin iniciar sesión en \textit{Jira}.
 
 \section{\textit{Dashboard} principal}
 
-Tras iniciar sesión o acceder al modo demo, Nuvlo muestra el \textit{dashboard} principal (Figura~\ref{fig:manual-dashboard-jira}). Esta vista resume el estado del proyecto seleccionado e incluye tarjetas de métricas, gráficos, avisos y una lista de incidencias recientes.
+Tras iniciar sesión o acceder al modo demo, \textit{Nuvlo} muestra el \textit{dashboard} principal (Figura~\ref{fig:manual-dashboard-jira}). Esta vista resume el estado del proyecto seleccionado e incluye tarjetas de métricas, gráficos, avisos y una lista de incidencias recientes.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth,trim=0 420bp 0 0,clip]{img/app-jira/01-dashboard-jira.png}
-    \caption{\textit{Dashboard} principal con datos sincronizados desde Jira}
+    \caption{\textit{Dashboard} principal con datos sincronizados desde \textit{Jira}}
     \label{fig:manual-dashboard-jira}
 \end{figure}
 
@@ -64,10 +141,10 @@ Las tarjetas superiores muestran:
     \item \textbf{\textit{Lead Time}}: tiempo desde la creación de una incidencia hasta su finalización, métrica habitual para analizar el flujo de entrega~\cite{Anderson2010Kanban}.
     \item \textbf{\textit{Cycle Time}}: tiempo desde que una incidencia entra en trabajo activo hasta que se finaliza.
     \item \textbf{\textit{WIP}}: trabajo en curso visible según los filtros aplicados.
-    \item \textbf{\textit{Velocity}}: trabajo completado, usando puntos de historia cuando Jira los proporciona o número de incidencias como alternativa, en línea con la planificación iterativa descrita en Scrum~\cite{ScrumGuide2020}.
+    \item \textbf{\textit{Velocity}}: trabajo completado, usando puntos de historia cuando \textit{Jira} los proporciona o número de incidencias como alternativa, en línea con la planificación iterativa descrita en \textit{Scrum}~\cite{ScrumGuide2020}.
 \end{itemize}
 
-En proyectos reales creados para demostración, algunas métricas temporales pueden aparecer con valores muy bajos o nulos si las transiciones de Jira se han producido en un intervalo corto. Para validar cálculos temporales históricos se utiliza el \textit{dataset} \textit{offline} controlado del apartado~\ref{sec:manual-demo-offline}.
+En proyectos reales creados para demostración, algunas métricas temporales pueden aparecer con valores muy bajos o nulos si las transiciones de \textit{Jira} se han producido en un intervalo corto. Para validar cálculos temporales históricos se utiliza el \textit{dataset} \textit{offline} controlado del apartado~\ref{sec:manual-demo-offline}.
 
 \section{Filtros y \textit{widgets}}
 
@@ -80,18 +157,18 @@ El botón \textit{Filtros} abre un panel de filtrado rápido (Figura~\ref{fig:ma
     \label{fig:manual-filtros-widgets}
 \end{figure}
 
-\section{Sincronización con Jira}
+\section{Sincronización con \textit{Jira}}
 
-Cuando hay una sesión OAuth activa, el botón \textit{Sincronizar Jira}, visible en el \textit{dashboard} de la Figura~\ref{fig:manual-dashboard-jira}, actualiza los datos del proyecto seleccionado. La aplicación solicita los datos necesarios a Jira Cloud, incluidos datos de incidencias y cambios de estado cuando están disponibles~\cite{AtlassianJiraIssuesApi}, los almacena en PostgreSQL y recalcula el \textit{dashboard} desde la base de datos local. Este diseño reduce llamadas repetidas a Jira y permite consultar la información aunque la API externa no se llame en cada interacción de la interfaz.
+Cuando hay una sesión \textit{OAuth} activa, el botón \textit{Sincronizar Jira}, visible en el \textit{dashboard} de la Figura~\ref{fig:manual-dashboard-jira}, actualiza los datos del proyecto seleccionado. La aplicación solicita los datos necesarios a \textit{Jira Cloud}, incluidos datos de incidencias y cambios de estado cuando están disponibles~\cite{AtlassianJiraIssuesApi}, los almacena en \textit{PostgreSQL} y recalcula el \textit{dashboard} desde la base de datos local. Este diseño reduce llamadas repetidas a \textit{Jira} y permite consultar la información aunque la \textit{API} externa no se llame en cada interacción de la interfaz.
 
 \section{Vista de tablero}
 
-La vista de tablero muestra las incidencias agrupadas por estado (Figura~\ref{fig:manual-tablero-jira}). Cuando existen datos reales sincronizados, la vista indica que está mostrando incidencias persistidas desde PostgreSQL para el proyecto de Jira seleccionado.
+La vista de tablero muestra las incidencias agrupadas por estado (Figura~\ref{fig:manual-tablero-jira}). Cuando existen datos reales sincronizados, la vista indica que está mostrando incidencias persistidas desde \textit{PostgreSQL} para el proyecto de \textit{Jira} seleccionado.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{img/app-jira/03-tablero-jira.png}
-    \caption{Tablero Kanban con incidencias reales sincronizadas}
+    \caption{Tablero \textit{Kanban} con incidencias reales sincronizadas}
     \label{fig:manual-tablero-jira}
 \end{figure}
 
@@ -107,26 +184,26 @@ La vista de alertas permite crear reglas simples basadas en umbrales (Figura~\re
 \end{figure}
 
 Cuando existen alertas activas, la campana de notificaciones muestra un contador y puede aparecer un aviso emergente. La vista de alertas permite consultar las reglas activas, pausarlas o eliminarlas, como se aprecia en la Figura~\ref{fig:manual-alertas-jira}.
-
+\newpage
 \section{Registro de actividad}
 
 La vista de actividad muestra eventos relevantes del sistema, como inicios de sesión, renovaciones de \textit{token}, sincronizaciones, creación de reglas de alerta y tareas de limpieza (Figura~\ref{fig:manual-actividad-jira}). Estos \textit{logs} sirven como apoyo para depuración y trazabilidad durante el uso de la aplicación.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.92\textwidth,trim=0 760bp 0 0,clip]{img/app-jira/05-actividad-jira.png}
-    \caption{Registro de actividad de Nuvlo}
+    \includegraphics[width=0.92\textwidth]{img/app-jira/05-actividad-jira.png}
+    \caption{Registro de actividad de \textit{Nuvlo}}
     \label{fig:manual-actividad-jira}
 \end{figure}
 
 \section{Configuración}
 
-La vista de configuración resume el estado de conexión con Jira, los proyectos visibles y la información asociada a la sesión (Figura~\ref{fig:manual-configuracion-jira}). También permite ajustar y guardar la configuración de análisis del proyecto: estados que representan trabajo iniciado, estados finales, tipos de incidencia, etiquetas, rango temporal y percentiles utilizados. Al guardar estos criterios, el \textit{dashboard} se recalcula con el nuevo ámbito. Si el usuario desea volver al comportamiento inicial, puede restaurar los valores por defecto y guardarlos de nuevo desde la misma vista. Además, la vista ofrece una forma clara de volver a conectar Jira si la sesión caduca o si el usuario quiere renovar permisos.
+La vista de configuración resume el estado de conexión con \textit{Jira}, los proyectos visibles y la información asociada a la sesión (Figura~\ref{fig:manual-configuracion-jira}). También permite ajustar y guardar la configuración de análisis del proyecto: estados que representan trabajo iniciado, estados finales, tipos de incidencia, etiquetas, rango temporal y percentiles utilizados. Al guardar estos criterios, el \textit{dashboard} se recalcula con el nuevo ámbito. Si el usuario desea volver al comportamiento inicial, puede restaurar los valores por defecto y guardarlos de nuevo desde la misma vista. Además, la vista ofrece una forma clara de volver a conectar \textit{Jira} si la sesión caduca o si el usuario quiere renovar permisos.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{img/app-jira/06-configuracion-jira.png}
-    \caption{Configuración y estado de conexión con Jira}
+    \caption{Configuración y estado de conexión con \textit{Jira}}
     \label{fig:manual-configuracion-jira}
 \end{figure}
 
@@ -143,7 +220,7 @@ La interfaz se adapta a pantallas pequeñas (Figura~\ref{fig:manual-dashboard-mo
 
 \section{Demo \textit{offline}}\label{sec:manual-demo-offline}
 
-La demo \textit{offline} se utiliza para mostrar el comportamiento de la aplicación con un conjunto de datos controlado (Figura~\ref{fig:manual-demo-offline-dashboard}). Su objetivo principal es permitir pruebas y demostraciones aunque Jira Cloud no esté disponible, aunque la cuenta de Atlassian no esté configurada o aunque el proyecto real no tenga suficiente histórico para calcular métricas temporales representativas.
+La demo \textit{offline} se utiliza para mostrar el comportamiento de la aplicación con un conjunto de datos controlado (Figura~\ref{fig:manual-demo-offline-dashboard}). Su objetivo principal es permitir pruebas y demostraciones aunque \textit{Jira Cloud} no esté disponible, aunque la cuenta de \textit{Atlassian} no esté configurada o aunque el proyecto real no tenga suficiente histórico para calcular métricas temporales representativas.
 
 \begin{figure}[htbp]
     \centering
@@ -152,11 +229,11 @@ La demo \textit{offline} se utiliza para mostrar el comportamiento de la aplicac
     \label{fig:manual-demo-offline-dashboard}
 \end{figure}
 
-En este modo se mantienen las mismas vistas principales de la aplicación: \textit{dashboard}, filtros, tablero, alertas, actividad, configuración y vista móvil. La diferencia es el origen de los datos: en lugar de sincronizar información desde Jira Cloud, Nuvlo carga un \textit{dataset} local preparado para contener incidencias, estados, \textit{sprints}, tiempos de flujo y alertas de ejemplo.
+En este modo se mantienen las mismas vistas principales de la aplicación: \textit{dashboard}, filtros, tablero, alertas, actividad, configuración y vista móvil. La diferencia es el origen de los datos: en lugar de sincronizar información desde \textit{Jira Cloud}, \textit{Nuvlo} carga un \textit{dataset} local preparado para contener incidencias, estados, \textit{Sprints}, tiempos de flujo y alertas de ejemplo.
 
-La demo \textit{offline} puede estar disponible antes de iniciar sesión, desde la pantalla de entrada. Esto se plantea como una opción de demostración y validación, no como acceso a datos reales de una organización. Los datos mostrados son ficticios y no contienen información privada ni proceden de Jira Cloud. Por tanto, un usuario puede explorar la interfaz y las funcionalidades visuales sin autorizar su cuenta Atlassian, pero para trabajar con proyectos reales necesita usar \textit{Conectar con Jira}.
+La demo \textit{offline} puede estar disponible antes de iniciar sesión, desde la pantalla de entrada. Esto se plantea como una opción de demostración y validación, no como acceso a datos reales de una organización. Los datos mostrados son ficticios y no contienen información privada ni proceden de \textit{Jira Cloud}. Por tanto, un usuario puede explorar la interfaz y las funcionalidades visuales sin autorizar su cuenta \textit{Atlassian}, pero para trabajar con proyectos reales necesita usar \textit{Conectar con Jira}.
 
-A diferencia de Jira real, este \textit{dataset} sí contiene valores temporales preparados para comprobar que los cálculos de \textit{Lead Time}, \textit{Cycle Time}, percentiles, \textit{WIP} y \textit{Velocity} se visualizan correctamente. Las funcionalidades se comportan igual desde el punto de vista de interacción, pero los resultados no deben interpretarse como métricas reales de un equipo.
+A diferencia de \textit{Jira} real, este \textit{dataset} sí contiene valores temporales preparados para comprobar que los cálculos de \textit{Lead Time}, \textit{Cycle Time}, percentiles, \textit{WIP} y \textit{Velocity} se visualizan correctamente. En las tarjetas y gráficos, P50 indica la mediana de los tiempos y P85 indica que el 85\% de las incidencias queda por debajo o igual a ese valor; por ello ayudan a interpretar la distribución de tiempos junto a la media. Las funcionalidades se comportan igual desde el punto de vista de interacción, pero los resultados no deben interpretarse como métricas reales de un equipo.
 
 \phantomsection
 \addcontentsline{toc}{section}{Referencias}

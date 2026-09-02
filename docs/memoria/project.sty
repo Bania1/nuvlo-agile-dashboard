@@ -74,6 +74,14 @@
 \captionsetup[table]{belowskip=0pt}
 \captionsetup[figure]{aboveskip=5pt}
 \captionsetup[figure]{belowskip=0pt}
+% Allow LaTeX to combine text and figures more easily in CI/PDF builds.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.72}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
 % - Make all tables centered and [htbp]
 \let\originaltable\table
 \let\endoriginaltable\endtable

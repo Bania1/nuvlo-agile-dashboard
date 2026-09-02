@@ -2,20 +2,20 @@
 
 \section{Conclusiones}
 
-El desarrollo de Nuvlo ha permitido construir una aplicación web completa para visualizar métricas ágiles a partir de datos de Jira Cloud. El proyecto cubre desde la autenticación con Atlassian hasta la sincronización, persistencia, cálculo de indicadores y presentación en una interfaz \textit{responsive}.
+El desarrollo de \textit{Nuvlo} ha permitido construir una aplicación web completa para visualizar métricas ágiles a partir de datos de \textit{Jira Cloud}. El proyecto cubre desde la autenticación con \textit{Atlassian} hasta la sincronización, persistencia, cálculo de indicadores y presentación en una interfaz \textit{responsive}.
 
-Una de las decisiones más importantes ha sido no depender de Jira en cada interacción de la interfaz. La sincronización hacia una base de datos local mejora la estabilidad, facilita depurar resultados y permite explicar con claridad cómo se calculan las métricas. Esta decisión también encaja con las restricciones habituales de trabajar con APIs externas. Además, la política de retención separa los datos históricos necesarios para el análisis de los datos temporales y \textit{logs} que pueden expirar, evitando un crecimiento indefinido del almacenamiento.
+Una de las decisiones más importantes ha sido no depender de \textit{Jira} en cada interacción de la interfaz. La sincronización hacia una base de datos local mejora la estabilidad, facilita depurar resultados y permite explicar con claridad cómo se calculan las métricas. Esta decisión también encaja con las restricciones habituales de trabajar con APIs externas. Además, la política de retención separa los datos históricos necesarios para el análisis de los datos temporales y \textit{logs} que pueden expirar, evitando un crecimiento indefinido del almacenamiento.
 
 El uso de un \textit{monorepo} sencillo ha resultado adecuado para el alcance del trabajo. Permite mantener juntos \textit{frontend}, \textit{backend}, base de datos, pruebas y documentación sin añadir una capa de herramientas innecesaria, manteniendo al mismo tiempo una separación clara entre aplicaciones, paquetes y documentación.
 
 \section{Limitaciones}
 
-La principal limitación está relacionada con la calidad del histórico de Jira. Si un proyecto no contiene suficientes incidencias, \textit{sprints} o transiciones, algunas métricas temporales no pueden mostrar resultados representativos. Por ello se mantiene una demo \textit{offline} controlada como apoyo de validación.
+La principal limitación está relacionada con la calidad del histórico de \textit{Jira}. Si un proyecto no contiene suficientes incidencias, \textit{Sprints} o transiciones, algunas métricas temporales no pueden mostrar resultados representativos. Por ello se mantiene una demo \textit{offline} controlada como apoyo de validación.
 
 Otra limitación es que el sistema se centra en métricas de flujo y planificación. No se ha implementado una integración completa con repositorios Git o herramientas de despliegue, por lo que métricas como \textit{Deployment Frequency} quedan documentadas como mejora futura.
 
 \section{Trabajo futuro}
 
-Como trabajo futuro se propone desplegar Nuvlo en un entorno cloud con configuración productiva, ampliar la cobertura de pruebas end-to-end y mejorar la matriz requisito-prueba con evidencias enlazadas a ejecuciones concretas. También sería útil añadir configuración avanzada de métricas por equipo, exportación de informes y soporte para más fuentes de datos.
+Como trabajo futuro se propone desplegar \textit{Nuvlo} en un entorno cloud con configuración productiva, ampliar la cobertura de pruebas end-to-end y mejorar la matriz requisito-prueba con evidencias enlazadas a ejecuciones concretas. También sería útil añadir configuración avanzada de métricas por equipo, exportación de informes y soporte para más fuentes de datos.
 
-Otra línea interesante consiste en integrar información procedente de GitHub o de sistemas de integración continua. Esto permitiría complementar las métricas de Jira con métricas de entrega software y obtener una visión más completa del flujo de trabajo del equipo.
+Otra línea interesante consiste en integrar información procedente de \textit{GitHub} o de sistemas de integración continua. Esto permitiría complementar las métricas de \textit{Jira} con métricas de entrega software y obtener una visión más completa del flujo de trabajo del equipo.

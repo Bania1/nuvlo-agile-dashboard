@@ -1,0 +1,11 @@
+$ node -v
+v24.19.0
+$ npm -v
+11.17.0
+$ docker --version
+Docker version 27.5.1, build 9f9e405
+$ docker compose ps --format table
+NAME                 IMAGE                       COMMAND                  SERVICE        CREATED      STATUS                PORTS
+nuvlo_postgres       postgres:16-alpine          "docker-entrypoint.s…"   postgres       8 days ago   Up 3 days (healthy)   0.0.0.0:5433->5432/tcp
+nuvlo_redis          redis:7-alpine              "docker-entrypoint.s…"   redis          8 days ago   Up 3 days (healthy)   0.0.0.0:6379->6379/tcp
+nuvlo_redisinsight   redis/redisinsight:latest   "./docker-entry.sh n…"   redisinsight   8 days ago   Up 3 days             0.0.0.0:5540->5540/tcp

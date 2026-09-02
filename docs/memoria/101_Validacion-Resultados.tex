@@ -2,67 +2,109 @@
 
 \section{Estrategia de validación}
 
-La validación de Nuvlo combina pruebas automatizadas, revisión manual de la interfaz y comprobación con datos reales de Jira. Esta estrategia busca cubrir dos aspectos distintos: que los cálculos internos sean correctos y que la aplicación sea usable en los flujos principales.
+La validación de \textit{Nuvlo} combina pruebas automatizadas, revisión manual de la interfaz y comprobación con datos reales de \textit{Jira}. Esta estrategia busca cubrir dos aspectos distintos: que los cálculos internos sean correctos y que la aplicación sea usable en los flujos principales.
 
 Para conectar implementación y requisitos se utiliza una matriz requisito-prueba. En ella, cada requisito funcional, no funcional o de integración se asocia con una prueba, una revisión manual o una evidencia de uso. La matriz completa se recoge en la Tabla~\ref{tab:matriz-requisito-prueba}, dentro del capítulo de requisitos, y se resume en este capítulo desde el punto de vista de la validación.
 
 \section{Tipos de prueba utilizados}
 
-Antes de interpretar la matriz requisito-prueba conviene distinguir los tipos de comprobación empleados durante el desarrollo:
+Antes de interpretar la matriz requisito-prueba conviene distinguir los tipos de comprobación empleados durante el desarrollo. En esta validación se consideran percentiles como medida estadística complementaria, concepto definido también en el glosario: un percentil indica el valor por debajo del cual se sitúa un porcentaje determinado de observaciones. Por ejemplo, P50 representa la mediana, es decir, el 50\% de los valores queda por debajo o igual a ese valor; P85 indica que el 85\% de las incidencias analizadas presenta un tiempo igual o inferior. En métricas temporales como \textit{Lead Time} y \textit{Cycle Time}, estos valores son útiles porque reducen la dependencia de casos extremos y ayudan a interpretar mejor la distribución de tiempos, no solo la media.
 
 \begin{itemize}
-    \item \textbf{Pruebas unitarias}: verifican funciones aisladas, especialmente cálculos de métricas, percentiles, validaciones de datos y reglas de alerta. Se ejecutan con Vitest~\cite{VitestGuide}.
-    \item \textbf{Pruebas de integración}: comprueban que varias piezas funcionan juntas, por ejemplo API, repositorios, PostgreSQL, Redis y servicios de sincronización.
-    \item \textbf{Pruebas con Jira real}: validan el flujo OAuth, la lectura de proyectos, la sincronización de incidencias y el almacenamiento local de datos procedentes de Jira Cloud.
+    \item \textbf{Pruebas unitarias}: verifican funciones aisladas, especialmente cálculos de métricas, percentiles, validaciones de datos y reglas de alerta. Se ejecutan con \textit{Vitest}~\cite{VitestGuide}.
+    \item \textbf{Pruebas de integración}: comprueban que varias piezas funcionan juntas, por ejemplo \textit{API}, repositorios, \textit{PostgreSQL}, \textit{Redis} y servicios de sincronización.
+    \item \textbf{Pruebas con \textit{Jira} real}: validan el flujo \textit{OAuth}, la lectura de proyectos, la sincronización de incidencias y el almacenamiento local de datos procedentes de \textit{Jira Cloud}.
     \item \textbf{Pruebas con \textit{dataset} \textit{offline}}: usan datos controlados para comprobar cálculos que requieren histórico suficiente, como \textit{Lead Time}, \textit{Cycle Time}, percentiles o \textit{Velocity}.
-    \item \textbf{Pruebas end-to-end}: recorren la aplicación desde el navegador, incluyendo navegación, filtros, \textit{widgets}, alertas, \textit{logs} y modo demo. Se plantean con Playwright~\cite{PlaywrightDocs}.
+    \item \textbf{Pruebas end-to-end}: recorren la aplicación desde el navegador, incluyendo navegación, filtros, \textit{widgets}, alertas, \textit{logs} y modo demo. Se plantean con \textit{Playwright}~\cite{PlaywrightDocs}.
     \item \textbf{Revisión visual y \textit{responsive}}: comprueba capturas en escritorio y móvil para validar legibilidad, navegación y coherencia con las vistas previstas.
 \end{itemize}
 
 \section{Pruebas automatizadas}
 
-Las pruebas unitarias se centran en cálculos de métricas, percentiles, validaciones y reglas de alerta. Para ello se utiliza Vitest~\cite{VitestGuide}. Las pruebas de integración comprueban el comportamiento de la API, la persistencia y los servicios que dependen de PostgreSQL o Redis. En los casos relacionados con Jira se utilizan datos controlados o respuestas simuladas para evitar depender siempre de una conexión externa.
+Las pruebas unitarias se centran en cálculos de métricas, percentiles, validaciones y reglas de alerta. Para ello se utiliza \textit{Vitest}~\cite{VitestGuide}. Las pruebas de integración comprueban el comportamiento de la \textit{API}, la persistencia y los servicios que dependen de \textit{PostgreSQL} o \textit{Redis}. En los casos relacionados con \textit{Jira} se utilizan datos controlados o respuestas simuladas para evitar depender siempre de una conexión externa.
 
-En el repositorio, estas comprobaciones se ejecutan mediante el comando \texttt{npm test}, que lanza las pruebas definidas en los paquetes del \textit{monorepo}. Además, se utiliza \texttt{npm run build} para comprobar que la aplicación puede compilarse correctamente y \texttt{npm run test:e2e} para ejecutar las pruebas de extremo a extremo disponibles.
+En el repositorio, estas comprobaciones se ejecutan mediante el comando \texttt{npm test}, que lanza las pruebas definidas en los paquetes del \textit{monorepo}. En la última ejecución documentada, las pruebas del \textit{backend} completaron 5 ficheros y 16 casos correctos. Además, se utiliza \texttt{npm run build} para comprobar que la aplicación puede compilarse correctamente y \texttt{npm run test:e2e} para ejecutar las pruebas de extremo a extremo disponibles; la ejecución \textit{E2E} completó 2 pruebas correctas sobre \textit{Chromium}.
 
-Las pruebas end-to-end se plantean con Playwright~\cite{PlaywrightDocs}. Su objetivo es recorrer los flujos principales desde el punto de vista del usuario: entrada en modo demo, navegación por vistas, uso de filtros, sincronización, consulta de alertas y revisión del registro de actividad.
+Las pruebas end-to-end se plantean con \textit{Playwright}~\cite{PlaywrightDocs}. Su objetivo es recorrer los flujos principales desde el punto de vista del usuario: entrada en modo demo, navegación por vistas, uso de filtros, sincronización, consulta de alertas y revisión del registro de actividad.
 
-\section{Matriz requisito-prueba}
 
-La matriz completa de validación se muestra en la Tabla~\ref{tab:matriz-requisito-prueba}. Para evitar repetir en este capítulo toda la tabla, la Tabla~\ref{tab:resumen-validacion-requisitos} resume la lectura global de esa matriz.
+\section{Casos de prueba definidos}
 
-{\renewcommand{\arraystretch}{1.22}\footnotesize
-\begin{longtable}{p{3.0cm}p{3.1cm}p{6.0cm}}
-\caption{Resumen de la matriz requisito-prueba}\label{tab:resumen-validacion-requisitos}\\
+Para que la validación sea trazable, se definieron los casos de prueba recogidos en la Tabla~\ref{tab:casos-prueba-validacion}. Estos casos combinan pruebas automatizadas, revisión funcional y comprobaciones manuales con datos reales o controlados. La evidencia no se limita a capturas de pantalla: en los cálculos internos resulta más apropiado usar pruebas automatizadas, mientras que las capturas se reservan para funcionalidades visibles desde la interfaz.
+
+{\renewcommand{\arraystretch}{1.18}\scriptsize
+\begin{longtable}{>{\raggedright\arraybackslash}p{1.15cm}>{\raggedright\arraybackslash}p{2.85cm}>{\raggedright\arraybackslash}p{4.65cm}>{\raggedright\arraybackslash}p{4.65cm}}
+\caption{Casos de prueba definidos para la validación}\label{tab:casos-prueba-validacion}\\
 \toprule
-\textbf{Bloque} & \textbf{Estado general} & \textbf{Evidencia principal} \\
+\textbf{ID} & \textbf{Objetivo} & \textbf{Procedimiento} & \textbf{Evidencia} \\
 \midrule
 \endfirsthead
 \toprule
-\textbf{Bloque} & \textbf{Estado general} & \textbf{Evidencia principal} \\
+\textbf{ID} & \textbf{Objetivo} & \textbf{Procedimiento} & \textbf{Evidencia} \\
 \midrule
 \endhead
-Integración Jira y autenticación & Cumplido & Flujo OAuth 2.0 3LO, sesión protegida, sincronización de proyecto real y persistencia en PostgreSQL. \\
-\textit{Dashboard} y visualización & Cumplido & \textit{Dashboard} \textit{responsive}, filtros rápidos, \textit{widgets} configurables, ayudas contextuales y capturas de escritorio/móvil. \\
-Métricas principales & Cumplido & Cálculo de \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, media y percentiles con \textit{dataset} \textit{offline} y datos sincronizados. \\
-Alertas y actividad & Cumplido & Reglas de umbral, contador visual de alertas, notificación emergente, historial de alertas y registro de actividad. \\
-Retención, seguridad y mantenimiento & Cumplido & Cookies \texttt{httpOnly}, CSRF, PKCE, cifrado de \textit{tokens}, Redis con TTL y limpieza de \textit{logs}/alertas antiguos. \\
-Configuración avanzada y métricas futuras & Cumplido/Futuro & La configuración de análisis se guarda por proyecto y afecta al recálculo de métricas. Quedan como ampliación no imprescindible la selección manual completa de campos personalizados de esfuerzo, \textit{Deployment Frequency} y métricas adicionales Scrum/Kanban. \\
+CP-01 & Validar cálculo de métricas y percentiles & Ejecutar pruebas unitarias sobre funciones de \textit{Velocity}, \textit{WIP}, \textit{Lead Time}, \textit{Cycle Time}, media y percentiles configurables. & Fichero \path{apps/api/src/services/metrics.test.js} y ejecución de \texttt{npm test}. \\
+CP-02 & Validar reglas de alerta & Comprobar creación, evaluación y activación de reglas de umbral sobre métricas calculadas. & Fichero \path{apps/api/src/services/alerts.test.js} y vista de alertas de la Figura~\ref{fig:manual-alertas-jira}. \\
+CP-03 & Validar seguridad de operaciones mutables & Comprobar generación y validación de protección \textit{CSRF} y sesión protegida. & Fichero \path{apps/api/src/security/csrf.test.js} y revisión de código de seguridad. \\
+CP-04 & Validar endpoints e integración del \textit{backend} & Ejecutar pruebas de integración sobre rutas principales, configuración de análisis, autorización y persistencia simulada. & Fichero \path{apps/api/src/app.integration.test.js} y ejecución de \texttt{npm test}. \\
+CP-05 & Validar retención de datos & Comprobar la política de limpieza de \textit{logs} y alertas antiguas con datos controlados. & Fichero \path{apps/api/src/services/retentionPolicy.test.js}. \\
+CP-06 & Validar flujo de interfaz en demo \textit{offline} & Ejecutar prueba \textit{E2E} sobre entrada en demo, \textit{dashboard}, filtros, \textit{widgets} y navegación principal. & Fichero \path{apps/web/e2e/dashboard-demo.spec.js}, comando \texttt{npm run test:e2e} y Figura~\ref{fig:manual-demo-offline-dashboard}. \\
+CP-07 & Validar integración con \textit{Jira} real & Iniciar sesión mediante \textit{Atlassian OAuth}, sincronizar un proyecto de \textit{Jira} y comprobar que los datos quedan persistidos localmente. & Capturas de las Figuras~\ref{fig:manual-dashboard-jira},~\ref{fig:manual-tablero-jira} y revisión de \textit{PostgreSQL}. \\
+CP-08 & Validar visualización \textit{responsive} & Revisar la interfaz en escritorio y móvil, comprobando legibilidad, navegación y reorganización de elementos. & Captura móvil de la Figura~\ref{fig:manual-dashboard-movil} y revisión visual. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
 }
 
 
-\section{Validación con Jira real}
+\section{Evidencia de ejecución de pruebas}
 
-La aplicación se ha probado con un proyecto real de Jira creado para demostración. Este escenario permite validar el flujo OAuth, la obtención de proyectos accesibles, la sincronización de incidencias y la persistencia en la base de datos local. Las capturas del manual de usuario muestran la aplicación funcionando con datos procedentes de Jira.
+Además de identificar los casos de prueba, se conserva una evidencia resumida de la ejecución realizada durante la validación. El extracto de la Figura~\ref{fig:evidencia-ejecucion-pruebas} recoge los comandos principales, su resultado y el número de pruebas superadas. Los ficheros completos de salida se conservan como material de validación complementario para poder revisar el detalle si fuera necesario.
 
-La validación con Jira real también sirve para detectar limitaciones prácticas. Por ejemplo, si las incidencias se crean y cierran en un intervalo muy corto, \textit{Lead Time} y \textit{Cycle Time} pueden aparecer como cero o valores poco representativos. Esto no implica que el cálculo esté ausente, sino que el histórico disponible no contiene todavía información temporal suficiente para un análisis realista.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{evidencias/pruebas/captura-terminal-pruebas.png}
+\caption{Captura de terminal con la ejecución de pruebas automatizadas y compilación}
+\label{fig:evidencia-ejecucion-pruebas}
+\end{figure}
+\FloatBarrier
+
+\section{Matriz requisito-prueba}
+
+La matriz completa de validación se muestra en la Tabla~\ref{tab:matriz-requisito-prueba}. La evidencia de ejecución queda resumida en la Figura~\ref{fig:evidencia-ejecucion-pruebas}. Para evitar repetir en este capítulo toda la tabla, la Tabla~\ref{tab:resumen-validacion-requisitos} resume la lectura global de esa matriz y la relaciona con los casos de prueba definidos en la Tabla~\ref{tab:casos-prueba-validacion}.
+
+{\renewcommand{\arraystretch}{1.22}\footnotesize
+\begin{longtable}{p{2.65cm}p{2.45cm}p{5.2cm}p{2.35cm}}
+\caption{Resumen de la matriz requisito-prueba}\label{tab:resumen-validacion-requisitos}\\
+\toprule
+\textbf{Bloque} & \textbf{Estado general} & \textbf{Evidencia principal} & \textbf{Casos} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Bloque} & \textbf{Estado general} & \textbf{Evidencia principal} & \textbf{Casos} \\
+\midrule
+\endhead
+Integración \textit{Jira} y autenticación & Cumplido & Flujo \textit{OAuth} 2.0 3LO, sesión protegida, sincronización de proyecto real y persistencia en \textit{PostgreSQL}. & CP-04, CP-07 \\
+\textit{Dashboard} y visualización & Cumplido & \textit{Dashboard} \textit{responsive}, filtros rápidos, \textit{widgets} configurables, ayudas contextuales y capturas de escritorio/móvil. & CP-06, CP-08 \\
+Métricas principales & Cumplido & Cálculo de \textit{WIP}, \textit{Velocity}, \textit{Lead Time}, \textit{Cycle Time}, media y percentiles con \textit{dataset} \textit{offline} y datos sincronizados. & CP-01, CP-06 \\
+Alertas y actividad & Cumplido & Reglas de umbral, contador visual de alertas, notificación emergente, historial de alertas y registro de actividad. & CP-02, CP-06 \\
+Retención, seguridad y mantenimiento & Cumplido & Cookies \texttt{httpOnly}, \textit{CSRF}, \textit{PKCE}, cifrado de \textit{tokens}, \textit{Redis} con \textit{TTL} y limpieza de \textit{logs}/alertas antiguos. & CP-03, CP-05 \\
+Configuración avanzada y métricas futuras & Cumplido/Futuro & La configuración de análisis se guarda por proyecto y afecta al recálculo de métricas. Quedan como ampliación no imprescindible la selección manual completa de campos personalizados de esfuerzo, \textit{Deployment Frequency} y métricas adicionales \textit{Scrum}/\textit{Kanban}. & CP-04, CP-01 \\
+\bottomrule
+\end{longtable}
+\vspace{0.45em}
+}
+
+
+\section{Validación con \textit{Jira} real}
+
+La aplicación se ha probado con un proyecto real de \textit{Jira} creado para demostración. Este escenario permite validar el flujo \textit{OAuth}, la obtención de proyectos accesibles, la sincronización de incidencias y la persistencia en la base de datos local. Las capturas del manual de usuario muestran la aplicación funcionando con datos procedentes de \textit{Jira}.
+
+La validación con \textit{Jira} real también sirve para detectar limitaciones prácticas. Por ejemplo, si las incidencias se crean y cierran en un intervalo muy corto, \textit{Lead Time} y \textit{Cycle Time} pueden aparecer como cero o valores poco representativos. Esto no implica que el cálculo esté ausente, sino que el histórico disponible no contiene todavía información temporal suficiente para un análisis realista.
 
 \section{Validación con demo \textit{offline}}
 
-La demo \textit{offline} cubre el caso contrario: proporciona datos preparados para que todas las métricas tengan valores visibles y coherentes. Este modo es útil para presentaciones, pruebas sin conexión y comprobaciones de regresión visual. Al no depender de la API de Jira, permite demostrar el comportamiento esperado de la interfaz incluso si la autenticación externa falla o no hay red disponible.
+La demo \textit{offline} cubre el caso contrario: proporciona datos preparados para que todas las métricas tengan valores visibles y coherentes. En este modo se pueden comprobar percentiles de tiempos de flujo: P50 representa la mediana de los valores y P85 representa un valor alto de referencia bajo el que queda el 85\% de las observaciones. Este modo es útil para presentaciones, pruebas sin conexión y comprobaciones de regresión visual. Al no depender de la \textit{API} de \textit{Jira}, permite demostrar el comportamiento esperado de la interfaz incluso si la autenticación externa falla o no hay red disponible.
 
 
 \section{Retos y problemas encontrados}
@@ -70,11 +112,11 @@ La demo \textit{offline} cubre el caso contrario: proporciona datos preparados p
 Durante el desarrollo se detectaron varios problemas que condicionaron decisiones técnicas y ayudaron a validar el comportamiento real de la aplicación. No todos fueron errores de programación en sentido estricto; algunos estuvieron relacionados con restricciones de las APIs externas, configuración del entorno o calidad de los datos disponibles.
 
 \begin{itemize}
-    \item \textbf{Autenticación con Atlassian}: el paso desde una prueba con token personal a OAuth 2.0 3LO obligó a rediseñar el flujo de acceso. Fue necesario configurar correctamente \textit{scopes}, URI de redirección, parámetro \textit{state}, PKCE y protección CSRF para que el usuario no tuviera que registrarse localmente.
-    \item \textbf{Cambios en la API de Jira Cloud}: algunos endpoints de búsqueda utilizados en pruebas iniciales devolvían errores por cambios o deprecaciones. La sincronización se adaptó al endpoint actual con paginación y selección explícita de campos.
-    \item \textbf{Calidad del histórico de Jira}: en proyectos recién creados, las incidencias no siempre tienen transiciones suficientes para calcular tiempos de flujo representativos. Por ello se incorporó una demo \textit{offline} con datos controlados que permite validar métricas aunque Jira real no tenga todavía histórico útil.
-    \item \textbf{Gestión de sesión y expiración}: los \textit{tokens} de Atlassian pueden expirar o renovarse mediante \textit{refresh tokens} rotatorios. La aplicación separa la sesión del navegador de la autorización Atlassian y contempla renovación, cierre de sesión y errores de autenticación.
-    \item \textbf{Persistencia y retención}: fue necesario distinguir datos persistentes, datos operativos y datos efímeros. PostgreSQL conserva la información necesaria para análisis e histórico, mientras que Redis almacena estados temporales con TTL.
+    \item \textbf{Autenticación con \textit{Atlassian}}: el paso desde una prueba con token personal a \textit{OAuth} 2.0 3LO obligó a rediseñar el flujo de acceso. Fue necesario configurar correctamente \textit{scopes}, URI de redirección, parámetro \textit{state}, \textit{PKCE} y protección \textit{CSRF} para que el usuario no tuviera que registrarse localmente.
+    \item \textbf{Cambios en la \textit{API} de \textit{Jira Cloud}}: algunos endpoints de búsqueda utilizados en pruebas iniciales devolvían errores por cambios o deprecaciones. La sincronización se adaptó al endpoint actual con paginación y selección explícita de campos.
+    \item \textbf{Calidad del histórico de \textit{Jira}}: en proyectos recién creados, las incidencias no siempre tienen transiciones suficientes para calcular tiempos de flujo representativos. Por ello se incorporó una demo \textit{offline} con datos controlados que permite validar métricas aunque \textit{Jira} real no tenga todavía histórico útil.
+    \item \textbf{Gestión de sesión y expiración}: los \textit{tokens} de \textit{Atlassian} pueden expirar o renovarse mediante \textit{refresh tokens} rotatorios. La aplicación separa la sesión del navegador de la autorización \textit{Atlassian} y contempla renovación, cierre de sesión y errores de autenticación.
+    \item \textbf{Persistencia y retención}: fue necesario distinguir datos persistentes, datos operativos y datos efímeros. \textit{PostgreSQL} conserva la información necesaria para análisis e histórico, mientras que \textit{Redis} almacena estados temporales con \textit{TTL}.
     \item \textbf{Coherencia visual y \textit{responsive}}: algunas vistas y figuras iniciales resultaban demasiado grandes o se salían de márgenes. La interfaz y las capturas se revisaron para mejorar legibilidad en escritorio y móvil.
 \end{itemize}
 
@@ -83,7 +125,7 @@ Estos retos permitieron ajustar el alcance de la versión implementada y separar
 
 \section{Resultados obtenidos}
 
-El resultado actual es un producto mínimo viable (MVP) funcional de Nuvlo. La aplicación permite iniciar sesión con Atlassian, sincronizar información de Jira, consultar métricas ágiles, aplicar filtros, configurar \textit{widgets}, crear alertas y revisar actividad. Además, dispone de una demo \textit{offline} que actúa como respaldo para validación y presentación. Según la matriz requisito-prueba, no quedan requisitos \textit{Must Have} pendientes; los elementos parciales o futuros corresponden a mejoras clasificadas con menor prioridad.
+El resultado actual es un producto mínimo viable (\textit{MVP}) funcional de \textit{Nuvlo}. La aplicación permite iniciar sesión con \textit{Atlassian}, sincronizar información de \textit{Jira}, consultar métricas ágiles, aplicar filtros, configurar \textit{widgets}, crear alertas y revisar actividad. Además, dispone de una demo \textit{offline} que actúa como respaldo para validación y presentación. Según la matriz requisito-prueba, no quedan requisitos \textit{Must Have} pendientes; los elementos parciales o futuros corresponden a mejoras clasificadas con menor prioridad.
 
 El sistema todavía no pretende cubrir todos los escenarios de una herramienta comercial. Algunas mejoras, como métricas avanzadas, despliegue productivo, integración con repositorios de código o análisis predictivo, quedan fuera del alcance principal y se recogen como líneas de trabajo futuro.
 
