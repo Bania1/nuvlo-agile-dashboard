@@ -53,7 +53,7 @@ test('board and settings use clear Jira wording', async ({ page }) => {
   await mockJiraProjectsApi(page);
   await page.goto('/dashboard/board');
 
-  await expect(page.getByText('Tablero sincronizado desde Jira')).toBeVisible();
+  await expect(page.getByText('Tablero sincronizado desde Jira', { exact: true })).toBeVisible();
   await expect(page.getByText('Tablero sincronizado desde Jira y consultado desde PostgreSQL para PCC')).toBeVisible();
   await expect(page.getByText(/\d+ puntos/).first()).toBeVisible();
   await expect(page.getByText('Comprometido')).toBeHidden();

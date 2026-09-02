@@ -9,6 +9,12 @@ import { DashboardView } from './views/DashboardView.jsx';
 import { Landing } from './views/Landing.jsx';
 import { SettingsView } from './views/SettingsView.jsx';
 
+const activeProjectStorageKey = 'nuvlo_active_project';
+const chartPeriodStorageKey = 'nuvlo_chart_period';
+const expiredSessionNoticeKey = 'nuvlo_auth_expired_notice';
+const expiredSessionMessage = 'Tu sesion ha caducado. Vuelve a conectar Jira para continuar.';
+const redirectToLoginErrors = ['INVALID_SESSION', 'ATLASSIAN_REFRESH_TOKEN_MISSING'];
+
 export function App() {
   const isDashboard = window.location.pathname.startsWith('/dashboard');
   return isDashboard ? <DashboardApp /> : <Landing />;
@@ -20,8 +26,8 @@ function DashboardApp() {
   const [jiraProjects, setJiraProjects] = useState(null);
   const [jiraIssues, setJiraIssues] = useState(null);
   const [projectDashboard, setProjectDashboard] = useState(null);
-  const [activeProjectKey, setActiveProjectKey] = useState(() => window.localStorage.getItem('nuvlo_active_project') || '');
-  const [chartPeriod, setChartPeriod] = useState(() => window.localStorage.getItem('nuvlo_chart_period') || '8');
+  const [activeProjectKey, setActiveProjectKey] = useState(() => window.localStorage.getItem(activeProjectStorageKey) || '');
+  const [chartPeriod, setChartPeriod] = useState(() => window.localStorage.getItem(chartPeriodStorageKey) || '8');
   const [analysisScope, setAnalysisScope] = useState(null);
   const [syncState, setSyncState] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -40,19 +46,28 @@ function DashboardApp() {
   }, []);
 
   function shouldRedirectToLogin(error) {
-    return error?.status === 401 && ['INVALID_SESSION', 'ATLASSIAN_REFRESH_TOKEN_MISSING'].includes(error.payload?.error || error.payload?.code);
+    const code = error?.payload?.error || error?.payload?.code;
+    return error?.status === 401 && redirectToLoginErrors.includes(code);
   }
 
-  function handleAuthExpired() {
-    window.sessionStorage.setItem('nuvlo_auth_expired_notice', 'Tu sesion ha caducado. Vuelve a conectar Jira para continuar.');
+  function buildEmptyAlertSummary(source = 'postgres') {
+    return { source, activeCount: 0, activeAlerts: [], rules: [] };
+  }
+
+  function clearJiraState(nextAlertSummary = null) {
     setJiraProjects(null);
     setJiraIssues(null);
     setProjectDashboard(null);
     setSyncState(null);
-    setAlertSummary(null);
+    setAlertSummary(nextAlertSummary);
     setAnalysisScope(null);
     setActiveProjectKey('');
-    window.localStorage.removeItem('nuvlo_active_project');
+    window.localStorage.removeItem(activeProjectStorageKey);
+  }
+
+  function handleAuthExpired() {
+    window.sessionStorage.setItem(expiredSessionNoticeKey, expiredSessionMessage);
+    clearJiraState();
     window.location.assign('/');
   }
 
@@ -67,6 +82,7 @@ function DashboardApp() {
           handleAuthExpired();
           return;
         }
+        if (error?.status === 401) clearJiraState();
         if (alive) setJiraProjects(null);
       }
     }
@@ -82,7 +98,7 @@ function DashboardApp() {
       setActiveProjectKey('');
       return;
     }
-    const stored = window.localStorage.getItem('nuvlo_active_project');
+    const stored = window.localStorage.getItem(activeProjectStorageKey);
     const nextProject = projects.some((project) => project.key === activeProjectKey)
       ? activeProjectKey
       : projects.some((project) => project.key === stored)
@@ -111,6 +127,10 @@ function DashboardApp() {
       } catch (error) {
         if (shouldRedirectToLogin(error)) {
           handleAuthExpired();
+          return;
+        }
+        if (error?.status === 401) {
+          clearJiraState();
           return;
         }
         if (alive) {
@@ -146,7 +166,7 @@ function DashboardApp() {
   }, []);
 
   const activeDashboard = projectDashboard || data;
-  const hasRealProjectData = Boolean(projectDashboard && jiraIssues?.issues?.length);
+  const hasRealProjectData = Boolean(projectDashboard && jiraIssues?.source);
 
   // Si no hay proyecto Jira conectado, la UI conserva una experiencia demostrable con avisos simulados.
   const fallbackAlertSummary = useMemo(() => {
@@ -186,15 +206,20 @@ function DashboardApp() {
         handleAuthExpired();
         return null;
       }
-      setAlertSummary(fallbackAlertSummary);
-      return fallbackAlertSummary;
+      const emptySummary = projectKey ? buildEmptyAlertSummary('postgres') : fallbackAlertSummary;
+      setAlertSummary(emptySummary);
+      return emptySummary;
     }
   }
 
   useEffect(() => {
     if (!data) return;
-    loadAlertSummary();
-  }, [activeProjectKey, activeDashboard?.summary?.wip, activeDashboard?.summary?.velocity, fallbackAlertSummary]);
+    if (!activeProjectKey) {
+      setAlertSummary(fallbackAlertSummary);
+      return;
+    }
+    loadAlertSummary(activeProjectKey);
+  }, [activeProjectKey, projectDashboard?.summary?.wip, projectDashboard?.summary?.velocity, data?.summary?.wip, data?.summary?.leadTime?.average]);
 
   useEffect(() => {
     const firstAlert = alertSummary?.activeAlerts?.[0];
@@ -244,7 +269,7 @@ function DashboardApp() {
 
   function selectProject(projectKey) {
     if (!projectKey || projectKey === activeProjectKey) return;
-    window.localStorage.setItem('nuvlo_active_project', projectKey);
+    window.localStorage.setItem(activeProjectStorageKey, projectKey);
     setActiveProjectKey(projectKey);
     setIsProjectLoading(true);
     setAnalysisScope(null);
@@ -253,7 +278,7 @@ function DashboardApp() {
   }
 
   function updateChartPeriod(value) {
-    window.localStorage.setItem('nuvlo_chart_period', value);
+    window.localStorage.setItem(chartPeriodStorageKey, value);
     setChartPeriod(value);
   }
 
@@ -299,14 +324,7 @@ function DashboardApp() {
     } catch {
       // If the server session already expired, still clear local UI state.
     }
-    setJiraProjects(null);
-    setJiraIssues(null);
-    setProjectDashboard(null);
-    setSyncState(null);
-    setAlertSummary(fallbackAlertSummary);
-    setAnalysisScope(null);
-    setActiveProjectKey('');
-    window.localStorage.removeItem('nuvlo_active_project');
+    clearJiraState(fallbackAlertSummary);
   }
 
   function navigateTo(event, href) {
@@ -322,10 +340,10 @@ function DashboardApp() {
       <Sidebar currentPath={currentPath} importedProjects={importedProjects} activeProjectKey={activeProjectKey} onProjectSelect={selectProject} onNavigate={navigateTo} isJiraConnected={Boolean(jiraProjects)} alertCount={alertSummary?.activeCount || 0} />
       <section className="workspace">
         <div className={`view-transition ${isProjectLoading ? 'is-project-loading' : ''}`} key={currentPath}>
-          <Topbar data={activeDashboard} view={view} canSync={Boolean(activeProjectKey)} syncState={syncState} filtersOpen={filtersOpen} alertSummary={alertSummary} chartPeriod={chartPeriod} onChartPeriodChange={updateChartPeriod} onToggleFilters={() => setFiltersOpen((open) => !open)} onSync={syncActiveProject} onNavigate={navigateTo} />
+          <Topbar data={activeDashboard} view={view} canSync={Boolean(jiraProjects && activeProjectKey)} syncState={syncState} filtersOpen={filtersOpen} alertSummary={alertSummary} chartPeriod={chartPeriod} onChartPeriodChange={updateChartPeriod} onToggleFilters={() => setFiltersOpen((open) => !open)} onSync={syncActiveProject} onNavigate={navigateTo} />
           {isProjectLoading ? <p className="project-loading">Actualizando vista para {activeProjectKey}...</p> : null}
           {toastAlert ? <AlertToast alert={toastAlert} onClose={() => setToastAlert(null)} /> : null}
-          <ViewContent currentPath={currentPath} data={activeDashboard} demoData={data} activeProjectKey={activeProjectKey} jiraProjects={jiraProjects} jiraIssues={jiraIssues} hasRealProjectData={hasRealProjectData} syncState={syncState} filtersOpen={filtersOpen} chartPeriod={chartPeriod} analysisScope={analysisScope} onAnalysisChanged={refreshProjectAfterAnalysisChange} onAlertsChanged={loadAlertSummary} onLogout={logout} />
+          <ViewContent currentPath={currentPath} data={activeDashboard} demoData={data} activeProjectKey={activeProjectKey} jiraProjects={jiraProjects} jiraIssues={jiraIssues} hasRealProjectData={hasRealProjectData} syncState={syncState} filtersOpen={filtersOpen} chartPeriod={chartPeriod} analysisScope={analysisScope} onAnalysisChanged={refreshProjectAfterAnalysisChange} onAlertsChanged={loadAlertSummary} onLogout={logout} onAuthExpired={handleAuthExpired} />
         </div>
       </section>
     </main>
@@ -345,10 +363,10 @@ function AlertToast({ alert, onClose }) {
   );
 }
 
-function ViewContent({ currentPath, data, demoData, activeProjectKey, jiraProjects, jiraIssues, hasRealProjectData, syncState, filtersOpen, chartPeriod, analysisScope, onAnalysisChanged, onAlertsChanged, onLogout }) {
+function ViewContent({ currentPath, data, demoData, activeProjectKey, jiraProjects, jiraIssues, hasRealProjectData, syncState, filtersOpen, chartPeriod, analysisScope, onAnalysisChanged, onAlertsChanged, onLogout, onAuthExpired }) {
   if (currentPath.startsWith('/dashboard/board')) return <BoardView data={demoData} jiraIssues={jiraIssues} hasRealProjectData={hasRealProjectData} syncState={syncState} />;
-  if (currentPath.startsWith('/dashboard/alerts')) return <AlertsView data={data} projectKey={activeProjectKey} onAlertsChanged={onAlertsChanged} />;
-  if (currentPath.startsWith('/dashboard/activity')) return <ActivityView data={data} />;
+  if (currentPath.startsWith('/dashboard/alerts')) return <AlertsView data={data} projectKey={activeProjectKey} onAlertsChanged={onAlertsChanged} onAuthExpired={onAuthExpired} />;
+  if (currentPath.startsWith('/dashboard/activity')) return <ActivityView data={data} onAuthExpired={onAuthExpired} />;
   if (currentPath.startsWith('/dashboard/settings')) return <SettingsView data={data} projectKey={activeProjectKey} jiraProjects={jiraProjects} jiraIssues={jiraIssues} syncState={syncState} analysisScope={analysisScope} onAnalysisChanged={onAnalysisChanged} onLogout={onLogout} />;
   return <DashboardView data={data} filtersOpen={filtersOpen} chartPeriod={chartPeriod} />;
 }

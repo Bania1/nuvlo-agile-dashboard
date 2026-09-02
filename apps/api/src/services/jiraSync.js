@@ -8,6 +8,8 @@ const baseIssueFields = ['summary', 'issuetype', 'status', 'priority', 'assignee
 const nuvloStartedFieldName = 'nuvlo started at';
 const nuvloDoneFieldName = 'nuvlo done at';
 const fieldCache = new Map();
+const defaultSyncIssueLimit = 200;
+const persistedDashboardIssueLimit = 500;
 
 // Los campos custom de Jira cambian por instancia; se detectan por nombre/id y se cachean por cloudId.
 function normalizeText(value) {
@@ -340,7 +342,7 @@ async function fetchProject({ cloudId, accessToken, projectKey }) {
 }
 
 // Jira Cloud usa paginacion por nextPageToken en /search/jql.
-async function fetchProjectIssues({ cloudId, accessToken, projectKey, maxIssues = 100, storyPointsFieldId, sprintFieldId, temporalFieldIds = [] }) {
+async function fetchProjectIssues({ cloudId, accessToken, projectKey, maxIssues = defaultSyncIssueLimit, storyPointsFieldId, sprintFieldId, temporalFieldIds = [] }) {
   const issues = [];
   let nextPageToken;
 
@@ -364,7 +366,7 @@ async function fetchProjectIssues({ cloudId, accessToken, projectKey, maxIssues 
 }
 
 // Punto principal de importacion: guarda proyecto, boards, sprints, issues y transiciones en una transaccion.
-export async function syncJiraProject({ userId, projectKey, maxIssues = 100 }) {
+export async function syncJiraProject({ userId, projectKey, maxIssues = defaultSyncIssueLimit }) {
   const key = assertProjectKey(projectKey);
   const statusKey = `${userId}:${key}`;
   const syncRun = await prisma.syncRun.create({ data: { status: 'RUNNING', imported: { projectKey: key } } });
@@ -549,7 +551,8 @@ export async function getPersistedProjectIssues({ cloudId, projectKey }) {
     include: {
       issues: {
         orderBy: { jiraUpdatedAt: 'desc' },
-        take: 100,
+        // El selector "Todo" del dashboard necesita todos los buckets disponibles, no solo las issues recientes.
+        take: persistedDashboardIssueLimit,
         include: { sprint: true, transitions: { orderBy: { happenedAt: 'asc' } } },
       },
     },

@@ -1,3 +1,5 @@
+import { formatIssueEffort } from '../lib/formatters.js';
+
 export function BoardView({ data, jiraIssues, hasRealProjectData = Boolean(jiraIssues?.issues?.length), syncState }) {
   const hasJiraIssues = hasRealProjectData;
   const issuesSource = hasJiraIssues ? jiraIssues.issues : data.issues;
@@ -38,16 +40,10 @@ function TicketCard({ issue }) {
     <div className="ticket-card">
       <div>
         <strong>{issue.key}</strong>
-        <span>{formatEffort(issue.points)}</span>
+        <span>{formatIssueEffort(issue.points)}</span>
       </div>
       <p>{issue.summary}</p>
       <small>{issue.type} / {issue.assignee || 'Sin asignar'}</small>
     </div>
   );
-}
-
-function formatEffort(points) {
-  const value = Number(points);
-  if (!Number.isFinite(value) || value <= 0) return 'Sin puntos';
-  return value === 1 ? '1 punto' : `${value} puntos`;
 }

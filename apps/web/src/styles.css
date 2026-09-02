@@ -1562,7 +1562,7 @@ a:active,
 }
 
 .view-transition {
-  animation: viewFadeIn 260ms ease both;
+  animation: view-enter 220ms ease both;
 }
 
 .view-transition.is-project-loading {
@@ -1583,18 +1583,6 @@ a:active,
   font-weight: 850;
   box-shadow: 0 14px 30px rgba(18, 34, 30, 0.08);
 }
-
-@keyframes viewFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .issue-type-check-group {
   align-content: flex-start;
   min-height: auto;

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, BarChart3, Gauge, ListChecks, Timer } from 'lucide-react';
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CardHeader, HelpHint, MetricCard } from '../components/Cards.jsx';
+import { formatIssueEffort, isDoneStatus, isWipStatus, normalizeForSearch } from '../lib/formatters.js';
 
 // Preferencias locales: permiten adaptar el dashboard durante demo sin alterar datos persistidos.
 const defaultWidgets = {
@@ -171,13 +172,6 @@ function velocityTooltipLabel(name) {
   if (name === 'done') return 'Issues terminadas';
   return name;
 }
-
-function formatIssueEffort(points) {
-  const value = Number(points);
-  if (!Number.isFinite(value) || value <= 0) return 'Sin puntos';
-  return value === 1 ? '1 punto' : `${value} puntos`;
-}
-
 function filterChartPeriods(rows, period) {
   if (period === 'all') return rows;
   const count = Number(period) || 8;
@@ -241,19 +235,6 @@ function FlowBar({ label, value, maxValue, tone }) {
     </div>
   );
 }
-
-function normalizeForSearch(value) {
-  return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-function isDoneStatus(status) {
-  return ['done', 'listo', 'finalizada', 'finalizado'].includes(normalizeForSearch(status));
-}
-
-function isWipStatus(status) {
-  return ['in progress', 'en curso', 'review', 'revision'].includes(normalizeForSearch(status));
-}
-
 function buildStatusBreakdown(issues) {
   const counts = new Map();
   for (const issue of issues) counts.set(issue.status, (counts.get(issue.status) || 0) + 1);

@@ -25,7 +25,7 @@ function fallbackAlerts(data) {
   ];
 }
 
-export function AlertsView({ data, projectKey, onAlertsChanged }) {
+export function AlertsView({ data, projectKey, onAlertsChanged, onAuthExpired }) {
   const [rules, setRules] = useState(() => fallbackAlerts(data));
   const [source, setSource] = useState('fallback');
   const [form, setForm] = useState({ metricType: 'WIP', operator: 'GT', threshold: data.summary.wip || 5 });
@@ -42,9 +42,13 @@ export function AlertsView({ data, projectKey, onAlertsChanged }) {
       const payload = await fetchJson(`/api/jira/projects/${projectKey}/alerts`);
       setRules(payload.rules?.length ? payload.rules : []);
       setSource('postgres');
-    } catch {
-      setRules(fallbackAlerts(data));
-      setSource('fallback');
+    } catch (error) {
+      if (error?.status === 401) {
+        await onAuthExpired?.();
+        return;
+      }
+      setRules(projectKey ? [] : fallbackAlerts(data));
+      setSource(projectKey ? 'postgres' : 'fallback');
     }
   }
 
@@ -68,6 +72,10 @@ export function AlertsView({ data, projectKey, onAlertsChanged }) {
       await loadAlerts();
       await onAlertsChanged?.();
     } catch (error) {
+      if (error?.status === 401) {
+        await onAuthExpired?.();
+        return;
+      }
       setFeedback(error.message || 'No se pudo guardar la regla.');
     }
   }
@@ -81,6 +89,10 @@ export function AlertsView({ data, projectKey, onAlertsChanged }) {
       await loadAlerts();
       await onAlertsChanged?.();
     } catch (error) {
+      if (error?.status === 401) {
+        await onAuthExpired?.();
+        return;
+      }
       setFeedback(error.message || 'No se pudo actualizar la regla.');
     } finally {
       setBusyRuleId(null);
@@ -96,6 +108,10 @@ export function AlertsView({ data, projectKey, onAlertsChanged }) {
       await loadAlerts();
       await onAlertsChanged?.();
     } catch (error) {
+      if (error?.status === 401) {
+        await onAuthExpired?.();
+        return;
+      }
       setFeedback(error.message || 'No se pudo eliminar la regla.');
     } finally {
       setBusyRuleId(null);

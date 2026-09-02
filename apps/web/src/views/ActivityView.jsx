@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CardHeader } from '../components/Cards.jsx';
+import { normalizeForSearch } from '../lib/formatters.js';
 import { fetchJson } from '../lib/api.js';
 
 function formatRelativeTime(value) {
@@ -35,7 +36,7 @@ const typeLabels = {
   USER_ACTION: 'Usuario',
 };
 
-export function ActivityView({ data }) {
+export function ActivityView({ data, onAuthExpired }) {
   const [events, setEvents] = useState(() => fallbackEvents(data));
   const [source, setSource] = useState('fallback');
   const [filters, setFilters] = useState({ type: 'all', query: '' });
@@ -48,7 +49,11 @@ export function ActivityView({ data }) {
         if (!alive) return;
         setEvents(payload.events?.length ? payload.events : fallbackEvents(data));
         setSource(payload.events?.length ? 'postgres' : 'fallback');
-      } catch {
+      } catch (error) {
+        if (error?.status === 401) {
+          await onAuthExpired?.();
+          return;
+        }
         if (!alive) return;
         setEvents(fallbackEvents(data));
         setSource('fallback');
@@ -95,8 +100,4 @@ export function ActivityView({ data }) {
       </div>
     </section>
   );
-}
-
-function normalizeForSearch(value) {
-  return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
