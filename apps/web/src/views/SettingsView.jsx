@@ -13,8 +13,7 @@ const fallbackScope = {
   effortField: '',
 };
 
-export function SettingsView({ data, jiraProjects, jiraIssues, syncState, analysisScope, onAnalysisChanged, onLogout }) {
-  const projectKey = jiraProjects?.projects?.[0]?.key;
+export function SettingsView({ data, projectKey, jiraProjects, jiraIssues, syncState, analysisScope, onAnalysisChanged, onLogout }) {
   const [form, setForm] = useState(() => scopeToForm(analysisScope?.scope));
   const [feedback, setFeedback] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -69,7 +68,7 @@ export function SettingsView({ data, jiraProjects, jiraIssues, syncState, analys
           <a className="primary-button compact-button" href={`${apiUrl}/api/auth/atlassian/start`}>
             {jiraProjects ? 'Reconectar con Jira' : 'Conectar con Jira'}
           </a>
-          {jiraProjects ? <button className="secondary-action" onClick={onLogout}>Cerrar sesion</button> : null}
+          {jiraProjects ? <button className="danger-session-button" onClick={onLogout}>Cerrar sesion</button> : null}
         </div>
         <Field label="Estado" value={jiraProjects ? 'Conectado con Jira' : 'Demo offline'} />
         <Field label="Fuente actual" value={jiraProjects?.source || data.source} />
@@ -121,6 +120,7 @@ export function SettingsView({ data, jiraProjects, jiraIssues, syncState, analys
             options={analysisScope?.options?.issueTypes || []}
             selected={form.issueTypes}
             emptyText="Sin tipos detectados todavia"
+            className="issue-type-check-group"
             onChange={(value) => setForm((current) => ({ ...current, issueTypes: value }))}
           />
           <MultiCheck
@@ -149,10 +149,11 @@ export function SettingsView({ data, jiraProjects, jiraIssues, syncState, analys
               <input type="date" value={form.dateTo || ''} onChange={(event) => setForm((current) => ({ ...current, dateTo: event.target.value }))} />
             </label>
           </div>
-          <label className="effort-field-input">
-            Campo de esfuerzo
-            <input value={form.effortField || ''} onChange={(event) => setForm((current) => ({ ...current, effortField: event.target.value }))} placeholder="Deteccion automatica actual" />
-          </label>
+          <div className="effort-field-info">
+            <span>Campo de esfuerzo</span>
+            <strong>{form.effortField || 'Story point estimate detectado automaticamente'}</strong>
+            <p>Nuvlo usa este valor como puntos de historia para Velocity. Si una issue no tiene puntos, se muestra como "Sin puntos" y las metricas pueden caer al conteo de issues.</p>
+          </div>
           <div className="analysis-settings-actions">
             <button className="secondary-action" type="button" disabled={saving || !projectKey} onClick={restoreDefaultScope}>Restaurar valores iniciales</button>
             <button className="full-button" type="submit" disabled={saving || !projectKey}>{saving ? 'Guardando...' : 'Guardar configuracion'}</button>
@@ -166,7 +167,7 @@ export function SettingsView({ data, jiraProjects, jiraIssues, syncState, analys
   );
 }
 
-function MultiCheck({ title, help, options, selected, onChange, formatter = String, emptyText = 'Sin opciones disponibles' }) {
+function MultiCheck({ title, help, options, selected, onChange, formatter = String, emptyText = 'Sin opciones disponibles', className = '' }) {
   const normalizedOptions = [...new Set(options)].filter((option) => option !== null && option !== undefined && option !== '');
   function toggle(option) {
     const next = selected.includes(option)
@@ -176,7 +177,7 @@ function MultiCheck({ title, help, options, selected, onChange, formatter = Stri
   }
 
   return (
-    <fieldset className="multi-check-group">
+    <fieldset className={`multi-check-group ${className}`.trim()}>
       <legend>{title} {help ? <HelpHint text={help} /> : null}</legend>
       {normalizedOptions.length ? normalizedOptions.map((option) => (
         <label key={option}>

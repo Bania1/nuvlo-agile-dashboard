@@ -61,15 +61,30 @@ function recentIssues(issues) {
     }));
 }
 
+function sprintLabelFromIssue(issue) {
+  const label = (issue.labels || []).find((value) => /^sprint-[0-9]{2}$/i.test(value));
+  if (!label) return null;
+  const number = Number(label.split('-')[1]);
+  return { key: label.toLowerCase(), label: `Sprint ${String(number).padStart(2, '0')}`, order: number };
+}
+
+function periodFromIssue(issue, hasSprintData, hasSprintLabels) {
+  if (hasSprintData && issue.sprint?.name) return { key: issue.sprint.name, label: issue.sprint.name, order: issue.sprint.name };
+  if (hasSprintLabels) return sprintLabelFromIssue(issue) || { key: 'sin-sprint', label: 'Sin sprint', order: 999 };
+  const updatedAt = new Date(issue.updatedAt);
+  if (Number.isNaN(updatedAt.getTime())) return null;
+  const key = updatedAt.toISOString().slice(0, 10);
+  return { key, label: key.slice(5), order: key };
+}
+
 function buildThroughputSeries(issues, config) {
   const hasSprintData = issues.some((issue) => issue.sprint?.name);
+  const hasSprintLabels = !hasSprintData && issues.some((issue) => sprintLabelFromIssue(issue));
   const buckets = new Map();
   for (const issue of issues) {
-    const updatedAt = new Date(issue.updatedAt);
-    if (Number.isNaN(updatedAt.getTime())) continue;
-    const key = hasSprintData ? issue.sprint?.name || 'Sin sprint' : updatedAt.toISOString().slice(0, 10);
-    const label = hasSprintData ? key : key.slice(5);
-    const current = buckets.get(key) || { sprint: label, committed: 0, completed: 0, wip: 0, done: 0 };
+    const period = periodFromIssue(issue, hasSprintData, hasSprintLabels);
+    if (!period) continue;
+    const current = buckets.get(period.key) || { sprint: period.label, committed: 0, completed: 0, wip: 0, done: 0, order: period.order };
     const effort = issue.storyPoints ?? 1;
     current.committed += effort;
     if (isDoneIssue(issue, config.doneStatuses)) {
@@ -77,9 +92,13 @@ function buildThroughputSeries(issues, config) {
       current.done += 1;
     }
     if (isInProgressIssue(issue, config.startStatuses, config.doneStatuses)) current.wip += 1;
-    buckets.set(key, current);
+    buckets.set(period.key, current);
   }
-  return [...buckets.values()].sort((a, b) => a.sprint.localeCompare(b.sprint)).slice(-8);
+  const source = hasSprintData ? 'jira-sprint' : hasSprintLabels ? 'sprint-label' : 'updated-date';
+  const items = [...buckets.values()]
+    .sort((a, b) => String(a.order).localeCompare(String(b.order), undefined, { numeric: true }))
+    .map(({ order, ...item }) => item);
+  return { items, source };
 }
 
 function inferDoneTransition(issue, doneStatuses = []) {
@@ -149,7 +168,8 @@ export async function buildProjectDashboard({ cloudId, projectKey, userId = null
   const wip = issues.filter((issue) => isInProgressIssue(issue, config.startStatuses, config.doneStatuses)).length;
   const hasStoryPoints = doneIssues.some((issue) => typeof issue.storyPoints === 'number');
   const velocity = doneIssues.reduce((sum, issue) => sum + (hasStoryPoints ? issue.storyPoints || 0 : 1), 0);
-  const sprintMetrics = buildThroughputSeries(issues, config);
+  const throughputSeries = buildThroughputSeries(issues, config);
+  const sprintMetrics = throughputSeries.items;
   const latestSyncRun = await prisma.syncRun.findFirst({
     where: {
       AND: [
@@ -201,6 +221,7 @@ export async function buildProjectDashboard({ cloudId, projectKey, userId = null
     },
     charts: {
       sprintMetrics: sprintMetrics.length ? sprintMetrics : [{ sprint: 'Actual', committed: issues.length, completed: doneIssues.length, wip, done: doneIssues.length }],
+      velocityGrouping: throughputSeries.source,
       throughput: sprintMetrics.map((item) => ({ sprint: item.sprint, issues: item.done })),
       statusBreakdown: statusBreakdown(issues),
     },
@@ -233,7 +254,7 @@ export async function buildProjectDashboard({ cloudId, projectKey, userId = null
           }
         : {
             title: 'Velocity por periodo',
-            message: 'No hay sprints asociados a issues; se agrupa por fecha de actualizacion como fallback.',
+            message: throughputSeries.source === 'sprint-label' ? 'No hay sprints Jira asociados; se agrupa por etiquetas sprint-XX importadas desde CSV.' : 'No hay sprints asociados a issues; se agrupa por fecha de actualizacion como fallback.',
           },
       changelogIssues > 0
         ? {

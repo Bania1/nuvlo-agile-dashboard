@@ -2,9 +2,13 @@ import { Cloud } from 'lucide-react';
 import { apiUrl } from '../lib/api.js';
 
 export function Landing() {
+  const expiredNotice = window.sessionStorage.getItem('nuvlo_auth_expired_notice');
+  if (expiredNotice) window.sessionStorage.removeItem('nuvlo_auth_expired_notice');
+
   return (
     <main className="landing-shell">
       <section className="hero-card">
+        {expiredNotice ? <div className="landing-notice">{expiredNotice}</div> : null}
         <div className="brand-mark"><Cloud size={26} /> Nuvlo</div>
         <p className="eyebrow">Nube + flujo para equipos agiles</p>
         <h1>Metricas claras para entender como avanza tu trabajo en Jira.</h1>

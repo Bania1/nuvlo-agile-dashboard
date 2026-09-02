@@ -1,16 +1,17 @@
-export function BoardView({ data, jiraIssues, syncState }) {
-  const issuesSource = jiraIssues?.issues?.length ? jiraIssues.issues : data.issues;
-  const columns = jiraIssues?.issues?.length
+export function BoardView({ data, jiraIssues, hasRealProjectData = Boolean(jiraIssues?.issues?.length), syncState }) {
+  const hasJiraIssues = hasRealProjectData;
+  const issuesSource = hasJiraIssues ? jiraIssues.issues : data.issues;
+  const columns = hasJiraIssues
     ? [...new Set(issuesSource.map((issue) => issue.status))]
     : ['To Do', 'In Progress', 'Review', 'Done'];
 
   return (
     <>
       {syncState?.status ? <p className="source-note">Sync: {syncState.status}{syncState.imported ? ` · ${syncState.imported.issues} issues` : ''}</p> : null}
-      {jiraIssues?.issues?.length ? (
-        <p className="source-note">Mostrando issues reales de {jiraIssues.source === 'postgres' ? 'PostgreSQL' : 'Jira'} para {jiraIssues.projectKey}</p>
+      {hasJiraIssues ? (
+        <p className="source-note">Tablero sincronizado desde Jira y consultado desde {jiraIssues.source === 'postgres' ? 'PostgreSQL' : 'Jira'} para {jiraIssues.projectKey}</p>
       ) : (
-        <p className="source-note">Mostrando tablero demo desde CSV offline</p>
+        <p className="source-note">Tablero demo desde CSV offline</p>
       )}
       <section className="kanban-grid">
       {columns.map((status) => {
@@ -37,10 +38,16 @@ function TicketCard({ issue }) {
     <div className="ticket-card">
       <div>
         <strong>{issue.key}</strong>
-        <span>{issue.points} pts</span>
+        <span>{formatEffort(issue.points)}</span>
       </div>
       <p>{issue.summary}</p>
-      <small>{issue.type} / {issue.assignee}</small>
+      <small>{issue.type} / {issue.assignee || 'Sin asignar'}</small>
     </div>
   );
+}
+
+function formatEffort(points) {
+  const value = Number(points);
+  if (!Number.isFinite(value) || value <= 0) return 'Sin puntos';
+  return value === 1 ? '1 punto' : `${value} puntos`;
 }

@@ -96,6 +96,18 @@ Rutas demo disponibles: `/dashboard`, `/dashboard/board`, `/dashboard/alerts`, `
 > Nota: si trabajas dentro de WSL, usa Node.js 24 LTS dentro de Ubuntu antes de ejecutar los scripts de la app. El entorno Windows puede tener Node instalado, pero no siempre puede acceder al filesystem de WSL por permisos.
 
 
+
+## Dataset Jira realista
+
+Para preparar una demo historica dentro de Jira Cloud sin que Nuvlo escriba datos en Jira:
+
+```bash
+npm run jira-demo:data
+npm run jira-demo:check
+```
+
+El comando genera un CSV piloto, otro con las incidencias restantes y otro completo en `data/jira-demo/`. La guia de importacion esta en `docs/jira-demo-dataset.md` e incluye el mapeo recomendado para Jira Cloud, los campos auxiliares `Nuvlo Started At` y `Nuvlo Done At`, y el flujo para sincronizar despues el proyecto `PCC` desde Nuvlo.
+
 ## Acceso a PostgreSQL y Redis
 
 Para inspeccion rapida por CLI:

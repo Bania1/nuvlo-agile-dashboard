@@ -23,7 +23,7 @@ export function CardHeader({ title, subtitle, help }) {
       </div>
       <div className="card-header-tools">
         {help ? <HelpHint text={help} /> : null}
-        <ShieldCheck size={18} />
+        <ShieldCheck size={18} aria-label="Bloque validado por Nuvlo" title="Bloque validado por Nuvlo" />
       </div>
     </div>
   );

@@ -5,6 +5,8 @@ import { setSyncStatus } from '../cache/redis.js';
 import { logError, logInfo } from '../utils/logger.js';
 
 const baseIssueFields = ['summary', 'issuetype', 'status', 'priority', 'assignee', 'created', 'updated', 'labels'];
+const nuvloStartedFieldName = 'nuvlo started at';
+const nuvloDoneFieldName = 'nuvlo done at';
 const fieldCache = new Map();
 
 // Los campos custom de Jira cambian por instancia; se detectan por nombre/id y se cachean por cloudId.
@@ -32,6 +34,14 @@ function isSprintField(field) {
   return name === 'sprint' || name === 'sprints';
 }
 
+function isNuvloStartedAtField(field) {
+  return normalizeText(field.name) === nuvloStartedFieldName;
+}
+
+function isNuvloDoneAtField(field) {
+  return normalizeText(field.name) === nuvloDoneFieldName;
+}
+
 async function getJiraFields({ cloudId, accessToken }) {
   if (fieldCache.has(cloudId)) return fieldCache.get(cloudId);
   const fields = await jiraRequest({ cloudId, accessToken, path: '/field' });
@@ -51,6 +61,14 @@ async function detectSprintField({ cloudId, accessToken }) {
   return field?.id || null;
 }
 
+async function detectNuvloTemporalFields({ cloudId, accessToken }) {
+  const fields = await getJiraFields({ cloudId, accessToken });
+  return {
+    startedAtFieldId: fields.find(isNuvloStartedAtField)?.id || null,
+    doneAtFieldId: fields.find(isNuvloDoneAtField)?.id || null,
+  };
+}
+
 function parseStoryPoints(value) {
   if (value === null || value === undefined || value === '') return null;
   const parsed = Number(value);
@@ -61,6 +79,12 @@ function parseJiraDate(value) {
   if (typeof value === 'number') return new Date(value < 1000000000000 ? value * 1000 : value);
   const date = new Date(value || Date.now());
   return Number.isNaN(date.getTime()) ? new Date() : date;
+}
+
+function parseOptionalJiraDate(value) {
+  if (!value) return null;
+  const date = parseJiraDate(value);
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 function mapStatusChangelogItem(history, item) {
@@ -258,8 +282,10 @@ function appendCurrentStatusTransition(transitions, issue, existing) {
   ];
 }
 
-function mapIssue(issue, storyPointsFieldId, sprintFieldId, sprintIdByJiraId) {
+function mapIssue(issue, storyPointsFieldId, sprintFieldId, sprintIdByJiraId, temporalFields = {}) {
   const fields = issue.fields || {};
+  const nuvloStartedAt = parseOptionalJiraDate(temporalFields.startedAtFieldId ? fields[temporalFields.startedAtFieldId] : null);
+  const nuvloDoneAt = parseOptionalJiraDate(temporalFields.doneAtFieldId ? fields[temporalFields.doneAtFieldId] : null);
   const sprintJiraId = parseSprintJiraId(sprintFieldId ? fields[sprintFieldId] : null);
   return {
     jiraId: issue.id,
@@ -275,7 +301,28 @@ function mapIssue(issue, storyPointsFieldId, sprintFieldId, sprintIdByJiraId) {
     jiraCreatedAt: new Date(fields.created || Date.now()),
     jiraUpdatedAt: new Date(fields.updated || Date.now()),
     sprintId: sprintJiraId ? sprintIdByJiraId.get(sprintJiraId) || null : null,
+    nuvloStartedAt,
+    nuvloDoneAt,
   };
+}
+
+function buildNuvloTemporalTransitions(issue, existing) {
+  const transitions = [];
+  if (issue.nuvloStartedAt) {
+    transitions.push({
+      fromStatus: existing?.status || null,
+      toStatus: 'In Progress',
+      happenedAt: issue.nuvloStartedAt,
+    });
+  }
+  if (issue.nuvloDoneAt) {
+    transitions.push({
+      fromStatus: issue.nuvloStartedAt ? 'In Progress' : existing?.status || null,
+      toStatus: issue.status === 'Done' ? issue.status : 'Done',
+      happenedAt: issue.nuvloDoneAt,
+    });
+  }
+  return transitions.sort((a, b) => a.happenedAt.getTime() - b.happenedAt.getTime());
 }
 
 async function fetchProject({ cloudId, accessToken, projectKey }) {
@@ -293,7 +340,7 @@ async function fetchProject({ cloudId, accessToken, projectKey }) {
 }
 
 // Jira Cloud usa paginacion por nextPageToken en /search/jql.
-async function fetchProjectIssues({ cloudId, accessToken, projectKey, maxIssues = 100, storyPointsFieldId, sprintFieldId }) {
+async function fetchProjectIssues({ cloudId, accessToken, projectKey, maxIssues = 100, storyPointsFieldId, sprintFieldId, temporalFieldIds = [] }) {
   const issues = [];
   let nextPageToken;
 
@@ -305,7 +352,7 @@ async function fetchProjectIssues({ cloudId, accessToken, projectKey, maxIssues 
       searchParams: {
         jql: `project = ${projectKey} ORDER BY updated DESC`,
         maxResults: Math.min(50, maxIssues - issues.length),
-        fields: [...baseIssueFields, ...[storyPointsFieldId, sprintFieldId].filter(Boolean)],
+        fields: [...baseIssueFields, ...[storyPointsFieldId, sprintFieldId, ...temporalFieldIds].filter(Boolean)],
         ...(nextPageToken ? { nextPageToken } : {}),
       },
     });
@@ -326,13 +373,22 @@ export async function syncJiraProject({ userId, projectKey, maxIssues = 100 }) {
 
   try {
     const { atlassianSession, accessToken } = await getActiveAtlassianAccess(userId);
-    const [storyPointsFieldId, sprintFieldId] = await Promise.all([
+    const [storyPointsFieldId, sprintFieldId, temporalFields] = await Promise.all([
       detectStoryPointsField({ cloudId: atlassianSession.cloudId, accessToken }),
       detectSprintField({ cloudId: atlassianSession.cloudId, accessToken }),
+      detectNuvloTemporalFields({ cloudId: atlassianSession.cloudId, accessToken }),
     ]);
     const [projectPayload, rawIssues, agileData] = await Promise.all([
       fetchProject({ cloudId: atlassianSession.cloudId, accessToken, projectKey: key }),
-      fetchProjectIssues({ cloudId: atlassianSession.cloudId, accessToken, projectKey: key, maxIssues, storyPointsFieldId, sprintFieldId }),
+      fetchProjectIssues({
+        cloudId: atlassianSession.cloudId,
+        accessToken,
+        projectKey: key,
+        maxIssues,
+        storyPointsFieldId,
+        sprintFieldId,
+        temporalFieldIds: Object.values(temporalFields),
+      }),
       fetchProjectBoardsAndSprintsSafely({ cloudId: atlassianSession.cloudId, accessToken, projectKey: key }),
     ]);
     const changelogTransitionsByIssueId = await fetchIssueChangelogsSafely({
@@ -412,25 +468,31 @@ export async function syncJiraProject({ userId, projectKey, maxIssues = 100 }) {
 
       let created = 0;
       let updated = 0;
+      let syntheticTemporalIssues = 0;
       for (const rawIssue of rawIssues) {
-        const issue = mapIssue(rawIssue, storyPointsFieldId, sprintFieldId, sprintIdByJiraId);
+        const issue = mapIssue(rawIssue, storyPointsFieldId, sprintFieldId, sprintIdByJiraId, temporalFields);
+        const { nuvloStartedAt, nuvloDoneAt, ...issueData } = issue;
         const existing = await tx.issue.findUnique({
           where: { jiraId_projectId: { jiraId: issue.jiraId, projectId: project.id } },
         });
         const saved = await tx.issue.upsert({
           where: { jiraId_projectId: { jiraId: issue.jiraId, projectId: project.id } },
-          update: { ...issue, projectId: project.id },
-          create: { ...issue, projectId: project.id },
+          update: { ...issueData, projectId: project.id },
+          create: { ...issueData, projectId: project.id },
         });
         if (existing) updated += 1;
         else created += 1;
 
         const changelogTransitions = changelogTransitionsByIssueId.get(issue.jiraId) || [];
+        const temporalTransitions = buildNuvloTemporalTransitions({ ...issue, nuvloStartedAt, nuvloDoneAt }, existing);
+        if (!changelogTransitions.length && temporalTransitions.length) syntheticTemporalIssues += 1;
         const transitions = changelogTransitions.length
           ? appendCurrentStatusTransition(changelogTransitions, issue, existing)
-          : !existing || existing.status !== issue.status
-            ? [{ fromStatus: existing?.status || null, toStatus: issue.status, happenedAt: issue.jiraUpdatedAt }]
-            : [];
+          : temporalTransitions.length
+            ? temporalTransitions
+            : !existing || existing.status !== issue.status
+              ? [{ fromStatus: existing?.status || null, toStatus: issue.status, happenedAt: issue.jiraUpdatedAt }]
+              : [];
 
         if (transitions.length) {
           await tx.issueTransition.deleteMany({ where: { issueId: saved.id } });
@@ -455,11 +517,11 @@ export async function syncJiraProject({ userId, projectKey, maxIssues = 100 }) {
           userId,
           eventType: 'SYNC',
           message: `Sincronizacion Jira completada para ${key}.`,
-          metadata: { cloudId: atlassianSession.cloudId, projectKey: key, imported: rawIssues.length, created, updated, storyPointsFieldId, sprintFieldId, changelogIssues: changelogTransitionsByIssueId.size, boards: importedBoards, sprints: importedSprints },
+          metadata: { cloudId: atlassianSession.cloudId, projectKey: key, imported: rawIssues.length, created, updated, storyPointsFieldId, sprintFieldId, temporalFields, syntheticTemporalIssues, changelogIssues: changelogTransitionsByIssueId.size, boards: importedBoards, sprints: importedSprints },
         },
       });
 
-      const imported = { cloudId: atlassianSession.cloudId, projectKey: key, issues: rawIssues.length, created, updated, storyPointsFieldId, sprintFieldId, changelogIssues: changelogTransitionsByIssueId.size, boards: importedBoards, sprints: importedSprints };
+      const imported = { cloudId: atlassianSession.cloudId, projectKey: key, issues: rawIssues.length, created, updated, storyPointsFieldId, sprintFieldId, temporalFields, syntheticTemporalIssues, changelogIssues: changelogTransitionsByIssueId.size, boards: importedBoards, sprints: importedSprints };
       await tx.syncRun.update({
         where: { id: syncRun.id },
         data: { status: 'COMPLETED', finishedAt: new Date(), imported },

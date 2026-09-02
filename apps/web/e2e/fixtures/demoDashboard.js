@@ -42,17 +42,79 @@ export const demoDashboard = {
 
 export async function mockDemoApi(page, options = {}) {
   const jiraProjectsStatus = options.jiraProjectsStatus || 401;
+  const jiraProjectsError = options.jiraProjectsError || 'AUTH_REQUIRED';
   await page.route('http://localhost:3002/api/jira/projects', (route) => {
     if (jiraProjectsStatus === 204) return route.fulfill({ status: 204 });
     return route.fulfill({
-      status: 401,
+      status: jiraProjectsStatus,
       contentType: 'application/json',
-      body: JSON.stringify({ error: 'AUTH_REQUIRED' }),
+      body: JSON.stringify({ error: jiraProjectsError }),
     });
   });
   await page.route('http://localhost:3002/api/dashboard/demo', (route) => route.fulfill({
     status: 200,
     contentType: 'application/json',
     body: JSON.stringify(demoDashboard),
+  }));
+}
+
+
+function jiraDashboard(projectKey, projectName, velocity) {
+  return {
+    ...demoDashboard,
+    source: 'postgres-jira-sync',
+    project: { key: projectKey, name: projectName },
+    summary: {
+      ...demoDashboard.summary,
+      velocity,
+      throughput: projectKey === 'PCC' ? 80 : 12,
+      activeSprint: 'Sync 02/09/2026',
+    },
+    charts: {
+      ...demoDashboard.charts,
+      velocityGrouping: 'sprint-label',
+      sprintMetrics: [
+        { sprint: 'Sprint 01', committed: 10, completed: projectKey === 'PCC' ? 40 : 5, wip: 1, done: 4 },
+        { sprint: 'Sprint 02', committed: 12, completed: projectKey === 'PCC' ? 42 : 7, wip: 2, done: 5 },
+      ],
+    },
+    issues: demoDashboard.issues.map((issue) => ({ ...issue, key: `${projectKey}-${issue.key.split('-')[1]}` })),
+    recentIssues: demoDashboard.recentIssues.map((issue) => ({ ...issue, key: `${projectKey}-${issue.key.split('-')[1]}` })),
+  };
+}
+
+export async function mockJiraProjectsApi(page) {
+  const projects = [
+    { id: 'pcc', key: 'PCC', name: 'Plataforma Cliente Cloud' },
+    { id: 'tfg', key: 'TFG', name: 'TFG Agile Metrics Simulation' },
+  ];
+  const dashboards = {
+    PCC: jiraDashboard('PCC', 'Plataforma Cliente Cloud', 380),
+    TFG: jiraDashboard('TFG', 'TFG Agile Metrics Simulation', 58),
+  };
+
+  await mockDemoApi(page, { jiraProjectsStatus: 200 });
+  await page.route('http://localhost:3002/api/jira/projects', (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ source: 'jira-cloud', projects, site: { url: 'https://example.atlassian.net' }, session: { cacheTtlSeconds: 60 } }),
+  }));
+  await page.route(/http:\/\/localhost:3002\/api\/jira\/projects\/([^/]+)\/dashboard/, (route) => {
+    const key = route.request().url().match(/projects\/([^/]+)\/dashboard/)?.[1];
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(dashboards[key] || dashboards.PCC) });
+  });
+  await page.route(/http:\/\/localhost:3002\/api\/jira\/projects\/([^/]+)\/issues/, (route) => {
+    const key = route.request().url().match(/projects\/([^/]+)\/issues/)?.[1];
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ source: 'postgres', projectKey: key, issues: dashboards[key]?.issues || [] }) });
+  });
+  await page.route(/http:\/\/localhost:3002\/api\/jira\/projects\/([^/]+)\/alerts/, (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ source: 'postgres', rules: [] }),
+  }));
+  await page.route(/http:\/\/localhost:3002\/api\/jira\/projects\/([^/]+)\/analysis-scope/, (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ source: 'postgres', scope: null, options: { statuses: ['Por hacer', 'En curso', 'Listo'], issueTypes: ['Historia'], labels: [], percentileMarks: [50, 85] } }),
   }));
 }

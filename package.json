@@ -24,7 +24,9 @@
     "db:seed": "node prisma/seed-demo.js",
     "db:cleanup": "node scripts/cleanup-database.mjs",
     "db:cleanup:dry": "node scripts/cleanup-database.mjs --dry-run",
-    "demo:data": "node scripts/generate-demo-csv.mjs"
+    "demo:data": "node scripts/generate-demo-csv.mjs",
+    "jira-demo:data": "node scripts/generate-jira-demo-csv.mjs",
+    "jira-demo:check": "node scripts/generate-jira-demo-csv.mjs --check"
   },
   "devDependencies": {
     "prisma": "6.12.0"

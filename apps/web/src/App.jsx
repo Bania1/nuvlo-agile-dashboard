@@ -20,13 +20,15 @@ function DashboardApp() {
   const [jiraProjects, setJiraProjects] = useState(null);
   const [jiraIssues, setJiraIssues] = useState(null);
   const [projectDashboard, setProjectDashboard] = useState(null);
+  const [activeProjectKey, setActiveProjectKey] = useState(() => window.localStorage.getItem('nuvlo_active_project') || '');
+  const [chartPeriod, setChartPeriod] = useState(() => window.localStorage.getItem('nuvlo_chart_period') || '8');
   const [analysisScope, setAnalysisScope] = useState(null);
   const [syncState, setSyncState] = useState(null);
-  const [authNotice, setAuthNotice] = useState(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [alertSummary, setAlertSummary] = useState(null);
   const [toastAlert, setToastAlert] = useState(null);
   const [lastToastKey, setLastToastKey] = useState(null);
+  const [isProjectLoading, setIsProjectLoading] = useState(false);
   const [currentPath, setCurrentPath] = useState(() => normalizePath(window.location.pathname));
 
   useEffect(() => {
@@ -37,6 +39,23 @@ function DashboardApp() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  function shouldRedirectToLogin(error) {
+    return error?.status === 401 && ['INVALID_SESSION', 'ATLASSIAN_REFRESH_TOKEN_MISSING'].includes(error.payload?.error || error.payload?.code);
+  }
+
+  function handleAuthExpired() {
+    window.sessionStorage.setItem('nuvlo_auth_expired_notice', 'Tu sesion ha caducado. Vuelve a conectar Jira para continuar.');
+    setJiraProjects(null);
+    setJiraIssues(null);
+    setProjectDashboard(null);
+    setSyncState(null);
+    setAlertSummary(null);
+    setAnalysisScope(null);
+    setActiveProjectKey('');
+    window.localStorage.removeItem('nuvlo_active_project');
+    window.location.assign('/');
+  }
+
   useEffect(() => {
     let alive = true;
     async function loadJiraProjects() {
@@ -44,7 +63,10 @@ function DashboardApp() {
         const payload = await fetchJson('/api/jira/projects');
         if (alive) setJiraProjects(payload);
       } catch (error) {
-        if (error.status === 401) setAuthNotice('Tu sesion local ha caducado. Reconecta Jira para continuar con datos reales.');
+        if (shouldRedirectToLogin(error)) {
+          handleAuthExpired();
+          return;
+        }
         if (alive) setJiraProjects(null);
       }
     }
@@ -55,32 +77,55 @@ function DashboardApp() {
   }, []);
 
   useEffect(() => {
+    const projects = jiraProjects?.projects || [];
+    if (!projects.length) {
+      setActiveProjectKey('');
+      return;
+    }
+    const stored = window.localStorage.getItem('nuvlo_active_project');
+    const nextProject = projects.some((project) => project.key === activeProjectKey)
+      ? activeProjectKey
+      : projects.some((project) => project.key === stored)
+        ? stored
+        : projects[0].key;
+    if (nextProject !== activeProjectKey) setActiveProjectKey(nextProject);
+  }, [jiraProjects, activeProjectKey]);
+
+  useEffect(() => {
     let alive = true;
     async function loadProjectData() {
-      const projectKey = jiraProjects?.projects?.[0]?.key;
-      if (!projectKey) return;
+      if (!activeProjectKey) return;
+      setIsProjectLoading(true);
       try {
         const [issuesPayload, dashboardPayload] = await Promise.all([
-          fetchJson(`/api/jira/projects/${projectKey}/issues`),
-          fetchJson(`/api/jira/projects/${projectKey}/dashboard`),
+          fetchJson(`/api/jira/projects/${activeProjectKey}/issues`),
+          fetchJson(`/api/jira/projects/${activeProjectKey}/dashboard`),
         ]);
         if (alive) {
           setJiraIssues(issuesPayload);
           setProjectDashboard(dashboardPayload);
-          loadAnalysisScopeFor(projectKey).catch(() => {});
+          loadAnalysisScopeFor(activeProjectKey).catch((error) => {
+            if (shouldRedirectToLogin(error)) handleAuthExpired();
+          });
         }
-      } catch {
+      } catch (error) {
+        if (shouldRedirectToLogin(error)) {
+          handleAuthExpired();
+          return;
+        }
         if (alive) {
           setJiraIssues(null);
           setProjectDashboard(null);
         }
+      } finally {
+        if (alive) setIsProjectLoading(false);
       }
     }
     loadProjectData();
     return () => {
       alive = false;
     };
-  }, [jiraProjects]);
+  }, [activeProjectKey]);
 
   useEffect(() => {
     let alive = true;
@@ -100,8 +145,8 @@ function DashboardApp() {
     };
   }, []);
 
-  const activeProjectKey = jiraProjects?.projects?.[0]?.key;
   const activeDashboard = projectDashboard || data;
+  const hasRealProjectData = Boolean(projectDashboard && jiraIssues?.issues?.length);
 
   // Si no hay proyecto Jira conectado, la UI conserva una experiencia demostrable con avisos simulados.
   const fallbackAlertSummary = useMemo(() => {
@@ -118,14 +163,14 @@ function DashboardApp() {
     };
   }, [data]);
 
-  async function loadAlertSummary() {
-    if (!activeProjectKey) {
+  async function loadAlertSummary(projectKey = activeProjectKey) {
+    if (!projectKey) {
       setAlertSummary(fallbackAlertSummary);
       setAnalysisScope(null);
       return fallbackAlertSummary;
     }
     try {
-      const payload = await fetchJson(`/api/jira/projects/${activeProjectKey}/alerts`);
+      const payload = await fetchJson(`/api/jira/projects/${projectKey}/alerts`);
       const rules = payload.rules || [];
       const activeAlerts = rules.filter((rule) => rule.active);
       const nextSummary = {
@@ -136,7 +181,11 @@ function DashboardApp() {
       };
       setAlertSummary(nextSummary);
       return nextSummary;
-    } catch {
+    } catch (error) {
+      if (shouldRedirectToLogin(error)) {
+        handleAuthExpired();
+        return null;
+      }
       setAlertSummary(fallbackAlertSummary);
       return fallbackAlertSummary;
     }
@@ -162,36 +211,68 @@ function DashboardApp() {
   }
 
   const importedProjects = jiraProjects?.projects?.length
-    ? jiraProjects.projects.map((project) => `${project.key} · ${project.name}`)
-    : [data.project.name, 'Aplicacion Movil V2', 'Migracion Backend'];
-  const view = resolveView(currentPath);
+    ? jiraProjects.projects
+    : [{ key: 'DEMO', name: data.project.name }, { key: 'APP', name: 'Aplicacion Movil V2' }, { key: 'MIG', name: 'Migracion Backend' }];
+  const view = resolveView(currentPath, { isJiraConnected: Boolean(jiraProjects && activeProjectKey) });
 
   async function loadJiraIssuesFor(projectKey) {
     if (!projectKey) return;
-    const issuesPayload = await fetchJson(`/api/jira/projects/${projectKey}/issues`);
-    setJiraIssues(issuesPayload);
-    await loadProjectDashboardFor(projectKey);
-    await loadAlertSummary();
-    await loadAnalysisScopeFor(projectKey).catch(() => {});
+    try {
+      const issuesPayload = await fetchJson(`/api/jira/projects/${projectKey}/issues`);
+      setJiraIssues(issuesPayload);
+      await loadProjectDashboardFor(projectKey);
+      await loadAlertSummary(projectKey);
+      await loadAnalysisScopeFor(projectKey).catch((error) => {
+        if (shouldRedirectToLogin(error)) handleAuthExpired();
+      });
+    } catch (error) {
+      if (shouldRedirectToLogin(error)) handleAuthExpired();
+      else throw error;
+    }
   }
 
   async function loadProjectDashboardFor(projectKey) {
     if (!projectKey) return;
-    const dashboardPayload = await fetchJson(`/api/jira/projects/${projectKey}/dashboard`);
-    setProjectDashboard(dashboardPayload);
+    try {
+      const dashboardPayload = await fetchJson(`/api/jira/projects/${projectKey}/dashboard`);
+      setProjectDashboard(dashboardPayload);
+    } catch (error) {
+      if (shouldRedirectToLogin(error)) handleAuthExpired();
+      else throw error;
+    }
+  }
+
+  function selectProject(projectKey) {
+    if (!projectKey || projectKey === activeProjectKey) return;
+    window.localStorage.setItem('nuvlo_active_project', projectKey);
+    setActiveProjectKey(projectKey);
+    setIsProjectLoading(true);
+    setAnalysisScope(null);
+    setAlertSummary(null);
+    setSyncState(null);
+  }
+
+  function updateChartPeriod(value) {
+    window.localStorage.setItem('nuvlo_chart_period', value);
+    setChartPeriod(value);
   }
 
   async function loadAnalysisScopeFor(projectKey) {
     if (!projectKey) return null;
-    const payload = await fetchJson(`/api/jira/projects/${projectKey}/analysis-scope`);
-    setAnalysisScope(payload);
-    return payload;
+    try {
+      const payload = await fetchJson(`/api/jira/projects/${projectKey}/analysis-scope`);
+      setAnalysisScope(payload);
+      return payload;
+    } catch (error) {
+      if (shouldRedirectToLogin(error)) handleAuthExpired();
+      throw error;
+    }
   }
 
   async function refreshProjectAfterAnalysisChange() {
     if (!activeProjectKey) return;
     await loadProjectDashboardFor(activeProjectKey);
-    await loadAlertSummary();
+    await loadAlertSummary(activeProjectKey);
     await loadAnalysisScopeFor(activeProjectKey).catch(() => {});
   }
 
@@ -200,10 +281,14 @@ function DashboardApp() {
     if (!activeProjectKey) return;
     setSyncState({ status: 'RUNNING', projectKey: activeProjectKey });
     try {
-      const payload = await postJson(`/api/jira/projects/${activeProjectKey}/sync`, { maxIssues: 100 });
+      const payload = await postJson(`/api/jira/projects/${activeProjectKey}/sync`, { maxIssues: 200 });
       setSyncState(payload);
       await loadJiraIssuesFor(activeProjectKey);
     } catch (error) {
+      if (shouldRedirectToLogin(error)) {
+        handleAuthExpired();
+        return;
+      }
       setSyncState({ status: 'FAILED', projectKey: activeProjectKey, error: error.message });
     }
   }
@@ -220,6 +305,8 @@ function DashboardApp() {
     setSyncState(null);
     setAlertSummary(fallbackAlertSummary);
     setAnalysisScope(null);
+    setActiveProjectKey('');
+    window.localStorage.removeItem('nuvlo_active_project');
   }
 
   function navigateTo(event, href) {
@@ -232,13 +319,13 @@ function DashboardApp() {
 
   return (
     <main className="dashboard-shell">
-      <Sidebar currentPath={currentPath} importedProjects={importedProjects} onNavigate={navigateTo} isJiraConnected={Boolean(jiraProjects)} alertCount={alertSummary?.activeCount || 0} />
+      <Sidebar currentPath={currentPath} importedProjects={importedProjects} activeProjectKey={activeProjectKey} onProjectSelect={selectProject} onNavigate={navigateTo} isJiraConnected={Boolean(jiraProjects)} alertCount={alertSummary?.activeCount || 0} />
       <section className="workspace">
-        <div className="view-transition" key={currentPath}>
-          <Topbar data={activeDashboard} view={view} canSync={Boolean(activeProjectKey)} syncState={syncState} filtersOpen={filtersOpen} alertSummary={alertSummary} onToggleFilters={() => setFiltersOpen((open) => !open)} onSync={syncActiveProject} onNavigate={navigateTo} />
-          {authNotice ? <div className="auth-notice"><span>{authNotice}</span><a href={`${import.meta.env.VITE_API_URL || 'http://localhost:3002'}/api/auth/atlassian/start`}>Reconectar Jira</a></div> : null}
+        <div className={`view-transition ${isProjectLoading ? 'is-project-loading' : ''}`} key={currentPath}>
+          <Topbar data={activeDashboard} view={view} canSync={Boolean(activeProjectKey)} syncState={syncState} filtersOpen={filtersOpen} alertSummary={alertSummary} chartPeriod={chartPeriod} onChartPeriodChange={updateChartPeriod} onToggleFilters={() => setFiltersOpen((open) => !open)} onSync={syncActiveProject} onNavigate={navigateTo} />
+          {isProjectLoading ? <p className="project-loading">Actualizando vista para {activeProjectKey}...</p> : null}
           {toastAlert ? <AlertToast alert={toastAlert} onClose={() => setToastAlert(null)} /> : null}
-          <ViewContent currentPath={currentPath} data={activeDashboard} demoData={data} jiraProjects={jiraProjects} jiraIssues={jiraIssues} syncState={syncState} filtersOpen={filtersOpen} analysisScope={analysisScope} onAnalysisChanged={refreshProjectAfterAnalysisChange} onAlertsChanged={loadAlertSummary} onLogout={logout} />
+          <ViewContent currentPath={currentPath} data={activeDashboard} demoData={data} activeProjectKey={activeProjectKey} jiraProjects={jiraProjects} jiraIssues={jiraIssues} hasRealProjectData={hasRealProjectData} syncState={syncState} filtersOpen={filtersOpen} chartPeriod={chartPeriod} analysisScope={analysisScope} onAnalysisChanged={refreshProjectAfterAnalysisChange} onAlertsChanged={loadAlertSummary} onLogout={logout} />
         </div>
       </section>
     </main>
@@ -258,12 +345,12 @@ function AlertToast({ alert, onClose }) {
   );
 }
 
-function ViewContent({ currentPath, data, demoData, jiraProjects, jiraIssues, syncState, filtersOpen, analysisScope, onAnalysisChanged, onAlertsChanged, onLogout }) {
-  if (currentPath.startsWith('/dashboard/board')) return <BoardView data={demoData} jiraIssues={jiraIssues} syncState={syncState} />;
-  if (currentPath.startsWith('/dashboard/alerts')) return <AlertsView data={data} projectKey={jiraProjects?.projects?.[0]?.key} onAlertsChanged={onAlertsChanged} />;
+function ViewContent({ currentPath, data, demoData, activeProjectKey, jiraProjects, jiraIssues, hasRealProjectData, syncState, filtersOpen, chartPeriod, analysisScope, onAnalysisChanged, onAlertsChanged, onLogout }) {
+  if (currentPath.startsWith('/dashboard/board')) return <BoardView data={demoData} jiraIssues={jiraIssues} hasRealProjectData={hasRealProjectData} syncState={syncState} />;
+  if (currentPath.startsWith('/dashboard/alerts')) return <AlertsView data={data} projectKey={activeProjectKey} onAlertsChanged={onAlertsChanged} />;
   if (currentPath.startsWith('/dashboard/activity')) return <ActivityView data={data} />;
-  if (currentPath.startsWith('/dashboard/settings')) return <SettingsView data={data} jiraProjects={jiraProjects} jiraIssues={jiraIssues} syncState={syncState} analysisScope={analysisScope} onAnalysisChanged={onAnalysisChanged} onLogout={onLogout} />;
-  return <DashboardView data={data} filtersOpen={filtersOpen} />;
+  if (currentPath.startsWith('/dashboard/settings')) return <SettingsView data={data} projectKey={activeProjectKey} jiraProjects={jiraProjects} jiraIssues={jiraIssues} syncState={syncState} analysisScope={analysisScope} onAnalysisChanged={onAnalysisChanged} onLogout={onLogout} />;
+  return <DashboardView data={data} filtersOpen={filtersOpen} chartPeriod={chartPeriod} />;
 }
 
 

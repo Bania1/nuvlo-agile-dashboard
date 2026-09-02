@@ -268,7 +268,22 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
 
 .topbar-actions button:disabled {
   cursor: not-allowed;
-  opacity: 0.58;
+  opacity: 1;
+}
+
+.topbar-actions .sync-button:disabled,
+.topbar-actions .sync-button[disabled] {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  background: #164f37 !important;
+  border-color: #164f37 !important;
+  box-shadow: none !important;
+  opacity: 0.82;
+}
+
+.topbar-actions .sync-button:disabled svg,
+.topbar-actions .sync-button[disabled] svg {
+  color: white !important;
 }
 
 
@@ -478,6 +493,7 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
 
 .view-grid {
   display: grid;
+  align-items: start;
   gap: 14px;
 }
 
@@ -683,12 +699,14 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
 .analysis-settings-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 14px;
 }
 
 .multi-check-group {
   display: flex;
   flex-wrap: wrap;
+  align-self: start;
   gap: 8px;
   margin: 0;
   padding: 12px;
@@ -739,7 +757,7 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
 }
 
 .date-settings-grid label,
-.effort-field-input {
+.effort-field-info {
   display: grid;
   gap: 6px;
   color: #60736c;
@@ -749,8 +767,7 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
   text-transform: uppercase;
 }
 
-.date-settings-grid input,
-.effort-field-input input {
+.date-settings-grid input {
   width: 100%;
   border: 1px solid #cfe0d4;
   border-radius: 14px;
@@ -761,9 +778,33 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
   outline: none;
 }
 
-.effort-field-input,
+.effort-field-info,
 .analysis-settings-actions {
   grid-column: 1 / -1;
+}
+
+.effort-field-info {
+  padding: 13px 14px;
+  border: 1px solid #d8e5dc;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f8fbf8, #edf6ef);
+}
+
+.effort-field-info strong {
+  color: #12221e;
+  font-size: 0.95rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.effort-field-info p {
+  margin: 0;
+  color: #60736c;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.45;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .analysis-settings-actions {
@@ -776,8 +817,7 @@ button:disabled, [aria-disabled='true'] { cursor: not-allowed; }
   margin-top: 0;
 }
 
-.date-settings-grid input:focus,
-.effort-field-input input:focus {
+.date-settings-grid input:focus {
   border-color: #164f37;
   box-shadow: 0 0 0 3px rgba(22, 79, 55, 0.10);
 }
@@ -1453,3 +1493,175 @@ a:active,
 }
 
 
+
+
+/* Pulido funcional de demo Jira multi-proyecto. */
+.project-link {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 6px 10px;
+}
+
+.project-link strong {
+  color: #164f37;
+}
+
+.project-link span {
+  min-width: 0;
+}
+
+.landing-notice {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid #f2c2bd;
+  border-radius: 16px;
+  color: #8f1d14;
+  background: #fff4f2;
+  font-weight: 850;
+}
+
+.period-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d4e0d8;
+  border-radius: 15px;
+  padding: 0 10px;
+  color: #164f37;
+  background: white;
+  font-weight: 800;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+.period-select:hover {
+  transform: translateY(-1px);
+  border-color: #9fb9a9;
+  background: #f6fbf7;
+}
+
+.period-select select {
+  border: 0;
+  padding: 9px 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  font-weight: 900;
+  outline: none;
+}
+
+.topbar-actions .sync-button:not(:disabled):hover {
+  color: white;
+  background: #103d2b;
+  border-color: #103d2b;
+}
+
+.view-transition {
+  animation: viewFadeIn 260ms ease both;
+}
+
+.view-transition.is-project-loading {
+  opacity: 0.88;
+  filter: saturate(0.94);
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+
+.project-loading {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0 0 14px;
+  padding: 9px 13px;
+  border: 1px solid #cfe0d4;
+  border-radius: 999px;
+  color: #164f37;
+  background: rgba(255, 255, 255, 0.82);
+  font-weight: 850;
+  box-shadow: 0 14px 30px rgba(18, 34, 30, 0.08);
+}
+
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.issue-type-check-group {
+  align-content: flex-start;
+  min-height: auto;
+}
+
+.issue-type-check-group label {
+  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 0;
+  white-space: nowrap;
+}
+
+.danger-session-button {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: white;
+  background: #b42318;
+  font-weight: 900;
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.danger-session-button:hover {
+  transform: translateY(-1px);
+  background: #8f1d14;
+  box-shadow: 0 12px 28px rgba(180, 35, 24, 0.18);
+}
+
+.kanban-column {
+  display: flex;
+  flex-direction: column;
+  max-height: min(680px, calc(100vh - 180px));
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.column-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: -14px -14px 12px;
+  padding: 14px;
+  border-bottom: 1px solid #dce7df;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+}
+
+.ticket-stack {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #b7cabc transparent;
+}
+
+.ticket-stack::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ticket-stack::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #b7cabc;
+}
+
+@media (max-width: 720px) {
+  .kanban-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .kanban-column {
+    flex: 0 0 min(86vw, 360px);
+    scroll-snap-align: start;
+  }
+}

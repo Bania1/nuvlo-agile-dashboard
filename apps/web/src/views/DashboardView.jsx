@@ -25,10 +25,10 @@ const widgetLabels = [
   { key: 'statusChart', label: 'Estado actual' },
   { key: 'flowChart', label: 'Tiempos de flujo' },
   { key: 'issues', label: 'Issues recientes' },
-  { key: 'warnings', label: 'Avisos' },
+  { key: 'warnings', label: 'Validaciones de datos' },
 ];
 
-export function DashboardView({ data, filtersOpen }) {
+export function DashboardView({ data, filtersOpen, chartPeriod = '8' }) {
   const { summary, charts, warnings } = data;
   const [analysisFilters, setAnalysisFilters] = useState({ status: 'all', type: 'all', query: '' });
   const [visibleWidgets, setVisibleWidgets] = useState(() => readWidgetPreferences());
@@ -48,6 +48,7 @@ export function DashboardView({ data, filtersOpen }) {
     .slice(0, 6);
   const statusOptions = [...new Set(issueRows.map((issue) => issue.status))].filter(Boolean);
   const typeOptions = [...new Set(issueRows.map((issue) => issue.type))].filter(Boolean);
+  const visibleVelocitySeries = filterChartPeriods(charts.sprintMetrics || [], chartPeriod);
 
   useEffect(() => {
     window.localStorage.setItem('nuvlo_dashboard_widgets', JSON.stringify(visibleWidgets));
@@ -116,9 +117,9 @@ export function DashboardView({ data, filtersOpen }) {
 
       <section className="dashboard-grid">
         {visibleWidgets.velocityChart ? <article className="chart-card wide-card">
-          <CardHeader title="Velocity por periodo" subtitle={data.source === 'postgres-jira-sync' ? 'Throughput desde issues sincronizadas' : 'Committed frente a completed desde CSV'} help="Permite comparar la capacidad del equipo entre sprints o periodos. En Jira real se alimenta de los datos sincronizados." />
+          <CardHeader title="Velocity por periodo" subtitle={velocitySubtitle(data, visibleVelocitySeries)} help="Permite comparar la capacidad del equipo entre sprints o periodos. En Jira real se alimenta de los datos sincronizados." />
           <ResponsiveContainer width="100%" height={230}>
-            <AreaChart data={charts.sprintMetrics}>
+            <AreaChart data={visibleVelocitySeries} margin={{ left: 0, right: 10, top: 8, bottom: 0 }}>
               <defs>
                 <linearGradient id="completed" x1="0" x2="0" y1="0" y2="1">
                   <stop offset="5%" stopColor="#65a30d" stopOpacity={0.45} />
@@ -126,10 +127,11 @@ export function DashboardView({ data, filtersOpen }) {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#d8e6dc" />
-              <XAxis dataKey="sprint" />
-              <YAxis />
-              <Tooltip />
+              <XAxis dataKey="sprint" minTickGap={12} />
+              <YAxis width={38} allowDecimals={false} />
+              <Tooltip formatter={(value, name) => [value, velocityTooltipLabel(name)]} />
               <Area dataKey="completed" stroke="#65a30d" fill="url(#completed)" strokeWidth={3} />
+              <Bar dataKey="done" fill="#164f37" radius={[8, 8, 0, 0]} opacity={0.18} />
               <Line dataKey="committed" stroke="#164f37" strokeWidth={2} dot={false} />
             </AreaChart>
           </ResponsiveContainer>
@@ -142,7 +144,7 @@ export function DashboardView({ data, filtersOpen }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#d8e6dc" />
               <XAxis dataKey="status" />
               <YAxis allowDecimals={false} />
-              <Tooltip />
+              <Tooltip formatter={(value) => [value, 'Issues']} />
               <Bar dataKey="count" fill="#164f37" radius={[10, 10, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -156,10 +158,39 @@ export function DashboardView({ data, filtersOpen }) {
 
       <section className="lower-grid">
         {visibleWidgets.issues ? <IssueList title="Issues recientes" subtitle={data.source === 'postgres-jira-sync' ? 'Datos persistidos desde Jira' : 'Dataset local estilo Jira'} issues={visibleRecentIssues} /> : null}
-        {visibleWidgets.warnings ? <WarningsCard warnings={warnings} /> : null}
+        {visibleWidgets.warnings ? <WarningsCard warnings={warnings} source={data.source} /> : null}
       </section>
     </>
   );
+}
+
+
+function velocityTooltipLabel(name) {
+  if (name === 'completed') return 'Completado';
+  if (name === 'committed') return 'Esfuerzo total';
+  if (name === 'done') return 'Issues terminadas';
+  return name;
+}
+
+function formatIssueEffort(points) {
+  const value = Number(points);
+  if (!Number.isFinite(value) || value <= 0) return 'Sin puntos';
+  return value === 1 ? '1 punto' : `${value} puntos`;
+}
+
+function filterChartPeriods(rows, period) {
+  if (period === 'all') return rows;
+  const count = Number(period) || 8;
+  return rows.slice(-count);
+}
+
+function velocitySubtitle(data, rows) {
+  const source = data.charts?.velocityGrouping || 'period';
+  const visible = rows.length;
+  if (source === 'sprint-label') return `Velocity por Sprint simulado desde etiquetas Jira (${visible} periodos)`;
+  if (source === 'jira-sprint') return `Velocity por Sprint real de Jira (${visible} periodos)`;
+  if (source === 'updated-date') return `Velocity por fecha de actualizacion (${visible} periodos)`;
+  return data.source === 'postgres-jira-sync' ? `Throughput desde issues sincronizadas (${visible} periodos)` : `Committed frente a completed desde CSV (${visible} periodos)`;
 }
 
 function readWidgetPreferences() {
@@ -249,7 +280,7 @@ function IssueList({ title, subtitle, issues }) {
           <div className="issue-row" key={issue.key}>
             <strong>{issue.key}</strong>
             <span>{issue.summary}</span>
-            <small>{issue.status} / {issue.points} pts</small>
+            <small>{issue.status} / {formatIssueEffort(issue.points)}</small>
           </div>
         ))}
       </div>
@@ -257,10 +288,11 @@ function IssueList({ title, subtitle, issues }) {
   );
 }
 
-function WarningsCard({ warnings }) {
+function WarningsCard({ warnings, source }) {
+  const isJiraSource = source === 'postgres-jira-sync';
   return (
     <article className="table-card">
-      <CardHeader title="Avisos" subtitle="Validaciones de demo" help="Avisos de calidad de datos o inconsistencias detectadas durante el analisis." />
+      <CardHeader title="Validaciones de datos" subtitle={isJiraSource ? 'Lectura de datos Jira' : 'Lectura de demo offline'} help="Comprobaciones automáticas sobre la calidad, origen y limitaciones de los datos usados en el análisis. Las alertas por umbral se gestionan en la vista Alertas." />
       {warnings.map((warning) => (
         <div className="warning-row" key={warning.title}>
           <AlertTriangle size={18} />

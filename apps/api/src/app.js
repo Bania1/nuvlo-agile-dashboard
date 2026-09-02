@@ -305,11 +305,11 @@ export function createApp() {
   // Sincronizacion bajo demanda: Jira se consulta aqui y la UI lee despues desde PostgreSQL.
   app.post('/api/jira/projects/:projectKey/sync', authRequired, csrfRequired, async (req, res, next) => {
     try {
-      const requestedMaxIssues = Number(req.body?.maxIssues || 100);
+      const requestedMaxIssues = Number(req.body?.maxIssues || 200);
       const result = await syncJiraProject({
         userId: req.session.sub,
         projectKey: req.params.projectKey,
-        maxIssues: Math.min(Math.max(requestedMaxIssues || 100, 1), 250),
+        maxIssues: Math.min(Math.max(requestedMaxIssues || 200, 1), 250),
       });
       return res.status(201).json({
         source: 'jira-cloud',

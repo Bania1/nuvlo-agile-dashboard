@@ -1,0 +1,95 @@
+{
+  "config.version" : "2.0",
+  "config.project.from.csv" : "false",
+  "config.encoding" : "UTF-8",
+  "config.file.id" : "c161b700-4dfa-4f24-95d7-02096e180a8f",
+  "config.email.suffix" : "@",
+  "config.file.name" : "nuvlo-jira-demo-remaining.csv",
+  "config.field.mappings" : {
+    "Status" : {
+      "jira.field" : "status",
+      "userChanged" : "true",
+      "manualMapping" : "true"
+    },
+    "Nuvlo Started At" : {
+      "userChanged" : "true",
+      "manualMapping" : "false",
+      "existing.custom.field" : "10203"
+    },
+    "Nuvlo Done At" : {
+      "userChanged" : "true",
+      "manualMapping" : "false",
+      "existing.custom.field" : "10204"
+    },
+    "Issue Type" : {
+      "jira.field" : "issuetype",
+      "userChanged" : "true",
+      "manualMapping" : "true"
+    },
+    "Story point estimate" : {
+      "userChanged" : "true",
+      "manualMapping" : "false",
+      "existing.custom.field" : "10016"
+    },
+    "Description" : {
+      "jira.field" : "description",
+      "userChanged" : "true",
+      "manualMapping" : "false"
+    },
+    "Updated" : {
+      "jira.field" : "updated",
+      "userChanged" : "true",
+      "manualMapping" : "false"
+    },
+    "Priority" : {
+      "jira.field" : "priority",
+      "userChanged" : "true",
+      "manualMapping" : "true"
+    },
+    "Summary" : {
+      "jira.field" : "summary",
+      "userChanged" : "true",
+      "manualMapping" : "false"
+    },
+    "Labels" : {
+      "jira.field" : "labels",
+      "userChanged" : "true",
+      "manualMapping" : "false"
+    },
+    "Created" : {
+      "jira.field" : "created",
+      "userChanged" : "true",
+      "manualMapping" : "false"
+    }
+  },
+  "config.csv.file.id" : null,
+  "config.value.mappings" : {
+    "Status" : {
+      "Done" : "10074",
+      "To Do" : "10071",
+      "In Progress" : "10072",
+      "Review" : "10073"
+    },
+    "Issue Type" : {
+      "Task" : "10079",
+      "Bug" : "10078",
+      "Story" : "10077"
+    },
+    "Priority" : {
+      "High" : "2",
+      "Low" : "4",
+      "Medium" : "3",
+      "Highest" : "1"
+    }
+  },
+  "config.delimiter" : ",",
+  "config.project" : {
+    "project.type" : "software",
+    "project.key" : "PCC",
+    "project.description" : null,
+    "project.url" : null,
+    "project.name" : "Plataforma Cliente Cloud",
+    "project.lead" : null
+  },
+  "config.date.format" : "yyyy-MM-dd HH:mm"
+}

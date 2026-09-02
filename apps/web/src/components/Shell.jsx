@@ -10,7 +10,7 @@ const navItems = [
   { href: '/dashboard/settings', label: 'Configuracion', icon: Settings },
 ];
 
-export function Sidebar({ currentPath, importedProjects, onNavigate, isJiraConnected, alertCount = 0 }) {
+export function Sidebar({ currentPath, importedProjects, activeProjectKey, onProjectSelect, onNavigate, isJiraConnected, alertCount = 0 }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand"><Cloud size={24} /> <strong>Nuvlo</strong></div>
@@ -31,11 +31,18 @@ export function Sidebar({ currentPath, importedProjects, onNavigate, isJiraConne
       </nav>
       <section className="project-list" aria-label="Proyectos importados">
         <p className="nav-section-label">Proyectos importados</p>
-        {importedProjects.map((project, index) => (
-          <a className={`project-link ${index === 0 ? 'active' : ''}`} href="/dashboard" key={project} onClick={(event) => onNavigate(event, '/dashboard')}>
-            <span>{project}</span>
-          </a>
-        ))}
+        {importedProjects.map((project, index) => {
+          const active = project.key === activeProjectKey || (!activeProjectKey && index === 0);
+          return (
+            <a className={`project-link ${active ? 'active' : ''}`} href="/dashboard" key={project.key || project.name} onClick={(event) => {
+              onNavigate(event, '/dashboard');
+              onProjectSelect?.(project.key);
+            }}>
+              <strong>{project.key}</strong>
+              <span>{project.name}</span>
+            </a>
+          );
+        })}
       </section>
       <div className="connection-card">
         <span>{isJiraConnected ? 'Jira conectado' : 'Modo demo'}</span>
@@ -49,7 +56,7 @@ export function Sidebar({ currentPath, importedProjects, onNavigate, isJiraConne
   );
 }
 
-export function Topbar({ data, view, canSync, syncState, filtersOpen, alertSummary, onToggleFilters, onSync, onNavigate }) {
+export function Topbar({ data, view, canSync, syncState, filtersOpen, alertSummary, chartPeriod, onChartPeriodChange, onToggleFilters, onSync, onNavigate }) {
   return (
     <header className="topbar">
       <div>
@@ -59,7 +66,15 @@ export function Topbar({ data, view, canSync, syncState, filtersOpen, alertSumma
       </div>
       <div className="topbar-actions">
         <span className="live-pill">{data.source === 'postgres-jira-sync' ? 'Jira sync' : `Live tick ${data.simulation.tick}/5`}</span>
-        <button><CalendarDays size={17} /> Ultimos 6 sprints</button>
+        <label className="period-select">
+          <CalendarDays size={17} />
+          <select value={chartPeriod} onChange={(event) => onChartPeriodChange?.(event.target.value)} aria-label="Periodo de la grafica">
+            <option value="6">Ultimos 6 periodos</option>
+            <option value="8">Ultimos 8 periodos</option>
+            <option value="12">Ultimos 12 periodos</option>
+            <option value="all">Todo</option>
+          </select>
+        </label>
         <button className={filtersOpen ? 'active-filter-button' : ''} onClick={onToggleFilters}><Filter size={17} /> Filtros</button>
         <AlertBell alertSummary={alertSummary} onNavigate={onNavigate} />
         <button className="sync-button" disabled={!canSync || syncState?.status === 'RUNNING'} onClick={onSync}>
