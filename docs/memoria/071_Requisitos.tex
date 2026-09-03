@@ -146,7 +146,7 @@ RF-28 & Should & El sistema debería ofrecer una vista para consultar los \texti
 \textbf{ID} & \textbf{Prioridad} & \textbf{Descripción} & \textbf{Verificación} \\
 \midrule
 RF-29 & Must & El sistema debe gestionar la autenticación exclusivamente mediante el mecanismo oficial de autenticación de \textit{Jira} o \textit{Atlassian}. & Prueba de autenticación con cuenta de \textit{Atlassian}. \\
-RF-31 & Must & El sistema debe proteger las operaciones de configuración, sincronización y consulta de información de acuerdo con la sesión autenticada a través de \textit{Jira}. & Pruebas de autorización por sesión. \\
+RF-30 & Must & El sistema debe proteger las operaciones de configuración, sincronización y consulta de información de acuerdo con la sesión autenticada a través de \textit{Jira}. & Pruebas de autorización por sesión. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
@@ -230,7 +230,7 @@ RF-10, RF-16, RF-17, RF-18, RF-23 & Should/Could & Futuro & Requisitos de mejora
 RF-19, RF-21, RF-22, RNF-01 & Must/Should & Cumplido & \textit{Dashboard} \textit{responsive}, \textit{widgets} configurables, ayudas contextuales y capturas de escritorio/móvil. & \textit{E2E}, revisión \textit{responsive} y capturas \\
 RF-24--RF-26, RI-10 & Must/Should & Cumplido & Reglas de alerta persistidas, badge de notificación, aviso emergente e historial de eventos. Figura~\ref{fig:manual-alertas-jira}. & Integración y revisión funcional \\
 RF-27, RF-28, RNF-04 & Must/Should & Cumplido & Vista de actividad con \textit{logs} de autenticación, sincronización, alertas y retención. Figura~\ref{fig:manual-actividad-jira}. & Integración y revisión funcional \\
-RF-29, RF-31, RNF-05 & Must & Cumplido & \textit{OAuth} 2.0 3LO con \textit{Atlassian}, ausencia de registro local, \textit{cookies} \texttt{httpOnly}, \textit{CSRF}, \textit{PKCE} y cifrado de \textit{tokens} \textit{OAuth} en \textit{PostgreSQL}. & Revisión de código e integración \\
+RF-29, RF-30, RNF-05 & Must & Cumplido & \textit{OAuth} 2.0 3LO con \textit{Atlassian}, ausencia de registro local, \textit{cookies} \texttt{httpOnly}, \textit{CSRF}, \textit{PKCE} y cifrado de \textit{tokens} \textit{OAuth} en \textit{PostgreSQL}. & Revisión de código e integración \\
 RNF-02, RNF-03, RNF-06, RNF-07, RNF-09, RNF-10, RNF-11 & Must/Should & Cumplido & Persistencia normalizada, \textit{Redis} con \textit{TTL}, política de retención, estructura \textit{monorepo}, documentación técnica y pruebas automatizadas. & Unitarias, integración y revisión técnica \\
 RNF-08 & Should & Parcial & La arquitectura permite evolución incremental y el requisito queda definido con límites cuantitativos, pero no se han ejecutado pruebas de carga completas con el volumen máximo previsto. & Revisión técnica \\
 RI-07 & Must & Cumplido & Dataset \textit{offline} generado desde \textit{CSV}/\textit{script} y capturas demo reproducibles en \texttt{img/app-demo}. & \textit{E2E} y capturas demo \\
@@ -344,7 +344,7 @@ RF-26 &  &  &  &  &  &  &  & X &  \\\hline
 RF-27 &  &  &  &  &  &  &  &  & X \\\hline
 RF-28 &  &  &  &  &  &  &  &  & X \\\hline
 RF-29 & X &  &  &  &  &  &  &  &  \\\hline
-RF-31 & X &  &  &  &  &  &  &  &  \\\hline
+RF-30 & X &  &  &  &  &  &  &  &  \\\hline
 \end{longtable}
 \vspace{0.45em}
 }
@@ -355,6 +355,7 @@ La matriz anterior no sustituye a la descripción detallada de los casos de uso.
 
 Una vez identificados los casos de uso principales y validada su relación con los requisitos funcionales, se describen de forma detallada. Cada ficha recoge el actor principal, los actores secundarios, las precondiciones, el flujo principal, los posibles flujos alternativos, las postcondiciones y los requisitos relacionados. Esta descripción permite concretar el comportamiento esperado del sistema desde el punto de vista del usuario.
 
+\clearpage
 \subsubsection{CU-01: Autenticarse mediante \textit{Atlassian}}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -382,7 +383,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
     \item La autenticación no es válida: el sistema informa de que no se ha podido iniciar sesión.
 \end{itemize}\end{minipage} \\
 \textbf{Postcondiciones} & El usuario queda autenticado en el sistema y puede acceder a las funcionalidades protegidas. \\
-\textbf{Requisitos} & RF-29, RF-31. \\
+\textbf{Requisitos} & RF-29, RF-30. \\
 \bottomrule
 \end{longtable}
 \vspace{0.45em}
@@ -421,7 +422,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\FloatBarrier
+\clearpage
 \subsubsection{CU-03: Actualizar datos de \textit{Jira}}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -436,6 +437,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \textbf{Relaciones} & Incluye CU-02 para utilizar el ámbito de análisis seleccionado. Puede ser extendido por CU-09 cuando el usuario consulta el registro de eventos generado por la actualización. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
     \item El usuario accede a un ámbito de análisis o solicita una actualización bajo demanda.
+    \item Include CU-02: Seleccionar ámbito de análisis.
     \item El sistema comprueba la fecha de última actualización y el ámbito seleccionado.
     \item Si la información almacenada sigue siendo válida, el sistema reutiliza los datos disponibles.
     \item Si la información está desactualizada, el sistema consulta \textit{Jira Cloud} \textit{API}.
@@ -444,11 +446,12 @@ Una vez identificados los casos de uso principales y validada su relación con l
     \item El sistema detecta posibles datos incompletos o inconsistentes.
     \item El sistema recalcula las métricas afectadas.
     \item El sistema informa del estado de la actualización.
+    \item[] extension point Consulta de \textit{logs} de actualización.
 \end{enumerate}\end{minipage} \\
 \textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
-    \item Desde el paso 4, \textit{Jira Cloud} no está disponible cuando se necesitan datos remotos: el sistema registra el evento, informa del error y finaliza reutilizando datos almacenados si existen.
-    \item Desde el paso 5, la \textit{API} devuelve datos incompletos: el sistema registra la incidencia detectada, conserva únicamente los datos válidos y finaliza indicando que la actualización ha sido parcial.
-    \item Desde el paso 8, se produce un error durante el cálculo de métricas: el sistema registra el error y finaliza indicando que los datos se han actualizado, pero las métricas no se han recalculado completamente.
+    \item Desde el paso 5, \textit{Jira Cloud} no está disponible cuando se necesitan datos remotos: el sistema registra el evento, informa del error y finaliza reutilizando datos almacenados si existen.
+    \item Desde el paso 6, la \textit{API} devuelve datos incompletos: el sistema registra la incidencia detectada, conserva únicamente los datos válidos y finaliza indicando que la actualización ha sido parcial.
+    \item Desde el paso 9, se produce un error durante el cálculo de métricas: el sistema registra el error y finaliza indicando que los datos se han actualizado, pero las métricas no se han recalculado completamente.
 \end{itemize}\end{minipage} \\
 \textbf{Postcondiciones} & Los datos quedan actualizados o se reutilizan los datos almacenados válidos. Las métricas afectadas se recalculan cuando procede. \\
 \textbf{Requisitos} & RF-01, RF-03, RF-04, RF-05, RF-06, RF-11. \\
@@ -458,7 +461,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 }
 
 
-\FloatBarrier
+\clearpage
 \subsubsection{CU-04: Configurar criterios de cálculo de métricas}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -492,7 +495,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\FloatBarrier
+\clearpage
 \subsubsection{CU-05: Consultar \textit{dashboard} principal}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -507,15 +510,18 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \textbf{Relaciones} & Incluye CU-02 para utilizar el ámbito de análisis seleccionado. Puede ser extendido por CU-08 cuando existen alertas relevantes asociadas al estado mostrado en el \textit{dashboard}. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
     \item El usuario accede al \textit{dashboard} principal.
+    \item Include CU-02: Seleccionar ámbito de análisis.
+    \item Include CU-06: Analizar métricas de flujo.
     \item El sistema obtiene las métricas disponibles para el ámbito seleccionado.
     \item El sistema muestra las métricas clave mediante \textit{widgets} o visualizaciones.
     \item El usuario modifica filtros o rango temporal si lo desea.
     \item El sistema actualiza el \textit{dashboard} según los filtros aplicados.
+    \item[] extension point Consulta de alertas desde el \textit{dashboard}.
     \item El usuario consulta la información mostrada.
 \end{enumerate}\end{minipage} \\
 \textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
-    \item Desde el paso 2, no existen datos disponibles: el sistema informa de la situación y finaliza mostrando una vista vacía o datos de demostración claramente identificados.
-    \item Desde el paso 5, los filtros no devuelven resultados: el sistema informa de que no hay información para los criterios seleccionados y finaliza mostrando el estado vacío de la consulta.
+    \item Desde el paso 4, no existen datos disponibles: el sistema informa de la situación y finaliza mostrando una vista vacía o datos de demostración claramente identificados.
+    \item Desde el paso 7, los filtros no devuelven resultados: el sistema informa de que no hay información para los criterios seleccionados y finaliza mostrando el estado vacío de la consulta.
 \end{itemize}\end{minipage} \\
 \textbf{Postcondiciones} & El usuario visualiza el estado general del proyecto o equipo mediante las métricas disponibles. \\
 \textbf{Requisitos} & RF-09, RF-19, RF-20, RF-21, RF-22, RF-23. \\
@@ -524,7 +530,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\FloatBarrier
+\clearpage
 \subsubsection{CU-06: Analizar métricas de flujo}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -539,6 +545,8 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \textbf{Relaciones} & Incluye CU-02 para acotar el análisis e incluye CU-03 para trabajar con datos actualizados o reutilizados según la política de sincronización. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
     \item El usuario accede a la vista de análisis de métricas.
+    \item Include CU-02: Seleccionar ámbito de análisis.
+    \item Include CU-03: Actualizar datos de \textit{Jira}.
     \item El sistema muestra las métricas disponibles para el ámbito seleccionado.
     \item El usuario selecciona una métrica o conjunto de métricas.
     \item El sistema muestra los valores calculados y su evolución cuando proceda.
@@ -547,8 +555,8 @@ Una vez identificados los casos de uso principales y validada su relación con l
     \item El usuario interpreta los resultados mostrados.
 \end{enumerate}\end{minipage} \\
 \textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
-    \item Desde el paso 2, no existen datos suficientes para una métrica: el sistema informa de que la métrica no puede calcularse, indica cuando sea posible qué datos faltan y finaliza sin mostrar valores calculados para esa métrica.
-    \item Desde el paso 4 o 6, se produce un error en el cálculo: el sistema registra el error, informa al usuario y finaliza sin actualizar la visualización afectada.
+    \item Desde el paso 4, no existen datos suficientes para una métrica: el sistema informa de que la métrica no puede calcularse, indica cuando sea posible qué datos faltan y finaliza sin mostrar valores calculados para esa métrica.
+    \item Desde el paso 6 o 8, se produce un error en el cálculo: el sistema registra el error, informa al usuario y finaliza sin actualizar la visualización afectada.
 \end{itemize}\end{minipage} \\
 \textbf{Postcondiciones} & El usuario dispone de información analítica sobre el flujo de trabajo y las métricas seleccionadas. \\
 \textbf{Requisitos} & RF-09, RF-10, RF-12, RF-13, RF-14, RF-15, RF-16, RF-17. \\
@@ -557,7 +565,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\FloatBarrier
+\clearpage
 \subsubsection{CU-07: Configurar reglas de alerta}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -590,7 +598,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\FloatBarrier
+\clearpage
 \subsubsection{CU-08: Consultar alertas}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize
@@ -604,15 +612,16 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \textbf{Precondiciones} & El usuario ha iniciado sesión. Existen reglas de alerta configuradas. El sistema ha evaluado las métricas disponibles. \\
 \textbf{Flujo principal} & \begin{minipage}[t]{10.2cm}\begin{enumerate}[noitemsep,leftmargin=*]
     \item El usuario accede a la sección de alertas.
+    \item Include CU-07: Configurar reglas de alerta.
     \item El sistema muestra las alertas activas e históricas conservadas.
     \item El usuario filtra las alertas por estado, métrica o periodo si lo desea.
     \item El sistema actualiza la lista de alertas según los filtros aplicados.
     \item El usuario consulta el detalle de una alerta.
 \end{enumerate}\end{minipage} \\
 \textbf{Flujos alternativos} & \begin{minipage}[t]{10.2cm}\begin{itemize}[noitemsep,leftmargin=*]
-    \item Desde el paso 2, no existen alertas registradas: el sistema informa de que no hay alertas disponibles y finaliza mostrando una vista vacía.
-    \item Desde el paso 4, los filtros no devuelven resultados: el sistema informa de que no existen alertas para los criterios seleccionados y finaliza mostrando el estado vacío de la consulta.
-    \item Desde el paso 2, la alerta histórica ha expirado según la política de retención: el sistema no la muestra en la consulta ordinaria y finaliza mostrando solo las alertas vigentes.
+    \item Desde el paso 3, no existen alertas registradas: el sistema informa de que no hay alertas disponibles y finaliza mostrando una vista vacía.
+    \item Desde el paso 5, los filtros no devuelven resultados: el sistema informa de que no existen alertas para los criterios seleccionados y finaliza mostrando el estado vacío de la consulta.
+    \item Desde el paso 3, la alerta histórica ha expirado según la política de retención: el sistema no la muestra en la consulta ordinaria y finaliza mostrando solo las alertas vigentes.
 \end{itemize}\end{minipage} \\
 \textbf{Postcondiciones} & El usuario visualiza las alertas relevantes disponibles según los filtros aplicados y la política de retención definida. \\
 \textbf{Requisitos} & RF-25, RF-26. \\
@@ -621,7 +630,7 @@ Una vez identificados los casos de uso principales y validada su relación con l
 \vspace{0.45em}
 }
 
-\FloatBarrier
+\clearpage
 \subsubsection{CU-09: Consultar \textit{logs} del sistema}
 
 {\renewcommand{\arraystretch}{1.25}\footnotesize

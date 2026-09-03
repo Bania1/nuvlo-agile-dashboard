@@ -59,19 +59,33 @@ CP-08 & Validar visualización \textit{responsive} & Revisar la interfaz en escr
 
 \section{Evidencia de ejecución de pruebas}
 
-Además de identificar los casos de prueba, se conserva una evidencia resumida de la ejecución realizada durante la validación. El extracto de la Figura~\ref{fig:evidencia-ejecucion-pruebas} recoge los comandos principales, su resultado y el número de pruebas superadas. Los ficheros completos de salida se conservan como material de validación complementario para poder revisar el detalle si fuera necesario.
+Además de identificar los casos de prueba, se conserva una evidencia resumida de la ejecución realizada durante la validación. Las Figuras~\ref{fig:evidencia-npm-test},~\ref{fig:evidencia-e2e} y~\ref{fig:evidencia-build} recogen la ejecución real de las pruebas unitarias e integración, las pruebas \textit{end-to-end} y la compilación de producción. Los ficheros completos de salida se conservan como material de validación complementario para poder revisar el detalle si fuera necesario.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{evidencias/pruebas/captura-terminal-pruebas.png}
-\caption{Captura de terminal con la ejecución de pruebas automatizadas y compilación}
-\label{fig:evidencia-ejecucion-pruebas}
+\includegraphics[width=0.92\textwidth]{evidencias/pruebas/captura-terminal-npm-test.png}
+\caption{Ejecución de pruebas unitarias e integración con \texttt{npm test}}
+\label{fig:evidencia-npm-test}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{evidencias/pruebas/captura-terminal-e2e.png}
+\caption{Ejecución de pruebas \textit{end-to-end} con \texttt{npm run test:e2e}}
+\label{fig:evidencia-e2e}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{evidencias/pruebas/captura-terminal-build.png}
+\caption{Compilación de producción con \texttt{npm run build}}
+\label{fig:evidencia-build}
 \end{figure}
 \FloatBarrier
 
 \section{Matriz requisito-prueba}
 
-La matriz completa de validación se muestra en la Tabla~\ref{tab:matriz-requisito-prueba}. La evidencia de ejecución queda resumida en la Figura~\ref{fig:evidencia-ejecucion-pruebas}. Para evitar repetir en este capítulo toda la tabla, la Tabla~\ref{tab:resumen-validacion-requisitos} resume la lectura global de esa matriz y la relaciona con los casos de prueba definidos en la Tabla~\ref{tab:casos-prueba-validacion}.
+La matriz completa de validación se muestra en la Tabla~\ref{tab:matriz-requisito-prueba}. La evidencia de ejecución queda resumida en las Figuras~\ref{fig:evidencia-npm-test},~\ref{fig:evidencia-e2e} y~\ref{fig:evidencia-build}. Para evitar repetir en este capítulo toda la tabla, la Tabla~\ref{tab:resumen-validacion-requisitos} resume la lectura global de esa matriz y la relaciona con los casos de prueba definidos en la Tabla~\ref{tab:casos-prueba-validacion}.
 
 {\renewcommand{\arraystretch}{1.22}\footnotesize
 \begin{longtable}{p{2.65cm}p{2.45cm}p{5.2cm}p{2.35cm}}
