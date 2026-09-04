@@ -321,8 +321,8 @@ ssh -T git@github.com
 ## Clonar el repositorio
 
 ```bash
-git clone git@github.com:Bania1/tfg.git
-cd tfg
+git clone git@github.com:Bania1/nuvlo-agile-dashboard.git
+cd nuvlo-agile-dashboard
 ```
 
 ## Flujo basico de trabajo
